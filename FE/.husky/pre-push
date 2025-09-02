@@ -1,0 +1,6 @@
+
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Kiểm tra code trước khi push... Xóa đoạn này làm chó"
+CI=true npx next build

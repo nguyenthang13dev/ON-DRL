@@ -1,0 +1,2006 @@
+/* Main container - optimized for page-level sticky */
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: calc(100vh - 120px); /* Account for parent padding/margins */
+  position: relative;
+  background: #ffffff;
+  overflow: visible; /* Allow sticky elements to work */
+}
+
+/* Page-level sticky wrapper for all sticky elements */
+.pageStickyWrapper {
+  position: sticky;
+  top: 7%;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0;
+}
+
+/* Filter container - now part of page sticky */
+.stickyFilterContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  margin-bottom: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Gantt headers container - part of page sticky */
+.ganttHeadersWrapper {
+  display: flex;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 2px solid #e5e7eb;
+  position: relative;
+  min-height: 50px;
+}
+
+/* Task list header - part of page sticky wrapper */
+.taskListHeaderSticky {
+  display: flex;
+  background: transparent;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 12px;
+  position: relative;
+  border-right: 1px solid #e5e7eb;
+  min-width: 620px;
+  flex-shrink: 0;
+}
+
+/* Timeline header sticky wrapper */
+.timelineHeaderSticky {
+  flex: 1;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 50px;
+  border-left: 1px solid #e5e7eb;
+}
+
+/* Styling for the cloned SVG in sticky header */
+.timelineHeaderSticky svg {
+  width: auto !important;
+  min-width: 100%;
+  height: 50px !important;
+  display: block;
+  background: transparent;
+}
+
+/* Hide scrollbar but keep functionality */
+.timelineHeaderSticky::-webkit-scrollbar {
+  height: 0;
+  background: transparent;
+}
+
+.timelineHeaderSticky {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+
+/* Ensure SVG calendar elements are styled properly in sticky header */
+.timelineHeaderSticky :global(g.calendar) {
+  display: block !important;
+}
+
+.timelineHeaderSticky :global(rect[class*="_35nLX"]) {
+  fill: #f8fafc !important;
+}
+
+.timelineHeaderSticky :global(text[class*="_9w8d5"]) {
+  fill: #374151 !important;
+  font-weight: 500 !important;
+}
+
+.timelineHeaderSticky :global(text[class*="_2q1Kt"]) {
+  fill: #1f2937 !important;
+  font-weight: 600 !important;
+}
+
+/* Container styles */
+.container {
+  padding: 24px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* View mode buttons */
+.viewModeContainer {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.viewModeLabel {
+  font-weight: 600;
+  color: #374151;
+  margin-right: 12px;
+  font-size: 12px;
+}
+
+.viewModeButton {
+  padding: 8px 16px;
+  border: 2px solid #e5e7eb;
+  background: #ffffff;
+  color: #6b7280;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.viewModeButton:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.viewModeButton:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+
+  /* box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); */
+}
+
+.viewModeButton:hover:before {
+  left: 100%;
+}
+
+.viewModeButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.viewModeButtonActive {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Loading state */
+.loadingContainer {
+  background: #ffffff;
+  padding: 40px;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingText {
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Gantt container with horizontal scroll */
+.ganttContainer {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: auto; /* Allow scrolling for gantt content */
+  border: 1px solid #e5e7eb;
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  flex: 1;
+  height: auto;
+  min-height: 500px;
+  contain: layout style paint;
+  isolation: isolate;
+}
+
+/* Hide original gantt headers since we have page-level sticky */
+.ganttContainer :global(.gantt-table-header),
+.ganttContainer :global(.gantt-task-list-header),
+.ganttContainer :global(.gantt-header),
+.ganttContainer :global(.gantt-grid-header),
+.ganttContainer :global(.gantt-calendar) {
+  display: none !important;
+}
+
+/* Target and hide the specific calendar SVG by its dimensions */
+.ganttContainer :global(svg[width="5520"][height="50"]) {
+  display: none !important;
+}
+
+/* Also target by height only in case width changes with view mode */
+.ganttContainer :global(svg[height="50"][font-family]) {
+  display: none !important;
+}
+
+/* Reset all margins to prevent data loss */
+.ganttContainer :global(.gantt-chart) {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.ganttContainer :global(.gantt-table) {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.ganttContainer :global(.gantt-vertical-container) {
+  margin-top: 0 !important;
+}
+
+.ganttContainer:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+
+  z-index: 10;
+}
+
+/* Ensure gantt task list header is sticky */
+.ganttContainer :global(.gantt-table-header) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1001 !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ensure our custom header is sticky */
+.ganttContainer :global(.gantt-task-list-header) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1001 !important;
+ 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Make timeline header sticky too */
+.ganttContainer :global(.gantt-header) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+ 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Enhanced horizontal scrollbar for gantt container */
+.ganttContainer::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.ganttContainer::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.ganttContainer::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.ganttContainer::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #1d4ed8, #1e40af);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.ganttContainer::-webkit-scrollbar-corner {
+  background: #f1f5f9;
+  border: 1px solid #e5e7eb;
+}
+
+/* Sticky horizontal scrollbar */
+.ganttContainer {
+  scrollbar-width: auto;
+  scrollbar-color: #3b82f6 #f1f5f9;
+  scroll-behavior: smooth;
+}
+
+/* Ensure full height expansion */
+.ganttContainer :global(.gantt-container) {
+  height: 100% !important;
+  min-height: 500px;
+  max-height: none !important;
+}
+
+.ganttContainer :global(.gantt-table) {
+  height: 100% !important;
+  max-height: none !important;
+}
+
+.ganttContainer :global(.gantt-grid) {
+  height: 100% !important;
+  max-height: none !important;
+}
+
+/* Force horizontal scrollbar to always be visible */
+.ganttContainer::-webkit-scrollbar:horizontal {
+  height: 12px !important;
+  background: #f1f5f9 !important;
+  border-radius: 6px !important;
+}
+
+.ganttContainer::-webkit-scrollbar-thumb:horizontal {
+  background: linear-gradient(45deg, #3b82f6, #1d4ed8) !important;
+  border-radius: 6px !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Sticky horizontal scrollbar at bottom */
+.ganttContainer {
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.ganttContainer::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: transparent;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Custom header styles - Task List Header (left table) */
+.taskListHeader {
+  display: flex;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 2px solid #e5e7eb;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 12px;
+  /* Remove sticky - will be handled by global page sticky */
+  position: relative;
+  top: auto;
+  z-index: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.taskListHeaderColumn {
+  padding: 12px 16px;    
+  border-right: 1px solid #e5e7eb;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.taskListHeaderColumn:hover {
+  background: rgba(59, 130, 246, 0.05);
+  color: #3b82f6;
+}
+
+.taskListHeaderColumn:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+
+}
+
+/* Timeline Header (right SVG table) - Target the actual SVG calendar */
+.ganttContainer :global(svg g.calendar),
+.ganttContainer :global(.calendar),
+.ganttContainer :global(svg[font-family]) {
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 1001 !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Target specific gantt calendar elements */
+.ganttContainer :global(.gantt-header),
+.ganttContainer :global(.gantt-grid-header),
+.ganttContainer :global(.gantt-calendar) {
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 1001 !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ensure the SVG rect background for timeline header */
+.ganttContainer :global(svg rect[class*="_35nLX"]),
+.ganttContainer :global(svg rect[width="5520"]) {
+  fill: #f8fafc !important;
+  stroke: #e5e7eb !important;
+  stroke-width: 0 0 2px 0 !important;
+}
+
+/* Additional specific targeting for gantt timeline SVG elements */
+.ganttContainer :global(svg) {
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 1000 !important;
+}
+
+/* Target the actual calendar group inside SVG */
+.ganttContainer :global(svg > g.calendar) {
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 1001 !important;
+}
+
+/* Force sticky on any SVG with calendar content */
+.ganttContainer :global(svg[width][height]) {
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 1001 !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+}
+
+/* Target minified calendar classes */
+.ganttContainer :global(rect[class*="_35nLX"]) {
+  fill: #f8fafc !important;
+  stroke: #e5e7eb !important;
+  stroke-width: 2px !important;
+}
+
+.ganttContainer :global(text[class*="_9w8d5"]) {
+  fill: #374151 !important;
+  font-weight: 500 !important;
+}
+
+.ganttContainer :global(text[class*="_2q1Kt"]) {
+  fill: #1f2937 !important;
+  font-weight: 600 !important;
+}
+
+/* Task list table with horizontal scroll */
+.taskListTable {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  overflow-x: auto;
+  overflow-y: visible;
+  border-radius: 0 0 12px 12px;
+  max-width: 100%;
+  scrollbar-width: auto;
+  scrollbar-color: #3b82f6 #f1f5f9;
+  flex: 1;
+  height: auto;
+  min-height: 0;
+  position: relative;
+}
+
+.taskListRow {
+  display: flex;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f1f5f9;
+  position: relative;
+}
+
+.taskListRow:hover {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.03) 0%, rgba(147, 197, 253, 0.03) 100%);
+  /* box-shadow: -3px 0 0 #3b82f6; */
+}
+
+.taskListRowSelected {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.08) 0%, rgba(147, 197, 253, 0.05) 100%);
+  /* box-shadow: -4px 0 0 #3b82f6; */
+}
+
+.taskListColumn {
+  padding: 12px 16px;
+  border-right: 1px solid #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.4;
+  position: relative;
+  cursor: default;
+}
+
+/* Tooltip for truncated text */
+.columnTooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 5px;
+}
+
+.columnTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+.taskListColumn:hover .columnTooltip {
+  /* opacity: 1; */
+  visibility: visible;
+}
+
+.taskListColumnContent {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Task name column with hierarchy */
+.taskNameColumn {
+  font-weight: 500;
+}
+
+.taskNameProject {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.expanderButton {
+  cursor: pointer;
+  margin-right: 8px;
+  font-size: 10px;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.expanderButton:hover {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+  transform: scale(1.1);
+}
+
+/* Date column */
+.dateColumn {
+  color: #6b7280;
+  font-size: 12px;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Assignment columns - 3 types with hover effects */
+/* 1. Actual assignment (phanCong) - Green */
+.assignmentPhanCong {
+  color: #059669;
+
+  font-weight: 600;
+  font-size: 12px;
+  /* border-left: 3px solid #059669; */
+  padding-left: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+  
+}
+
+
+.assignmentPhanCong::before {
+ 
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+/* 2. Plan assignment (phanCongKH) - Blue */
+.assignmentPhanCongKH {
+  color: #2563eb;
+
+  font-weight: 500;
+  font-size: 12px;
+  /* border-left: 3px solid #2563eb; */
+  padding-left: 8px;
+
+font-weight: bold;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+
+
+.assignmentPhanCongKH::before {
+
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+/* 3. No assignment - Gray */
+.assignmentEmpty {
+  color: #9ca3af;
+ 
+  font-weight: 400;
+  font-size: 12px;
+  /* border-left: 3px solid #e5e7eb; */
+  padding-left: 8px;
+font-weight: bold;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+
+.assignmentEmpty::before {
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+/* Progress column */
+.progressColumn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progressBar {
+  width: 60px;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  margin-right: 10px !important;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  transition: width 0.3s ease;
+  border-radius: 3px;
+}
+
+.progressText {
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  min-width: 35px;
+}
+
+/* Empty state */
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 2px dashed #d1d5db;
+  margin: 20px 0;
+}
+
+.emptyStateIcon {
+  font-size: 48px;
+  color: #d1d5db;
+  margin-bottom: 16px;
+}
+
+.emptyStateTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.emptyStateText {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+/* Enhanced horizontal scroll for better UX */
+.ganttContainer {
+  scroll-behavior: smooth;
+  overflow-x: auto;
+  overflow-y: auto;
+  position: relative;
+}
+
+.ganttContainer :global(.gantt-table-container) {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-width: 100%;
+  height: 100%;
+}
+
+.ganttContainer :global(.gantt-chart) {
+  overflow-x: auto;
+  overflow-y: auto;
+  min-width: 800px;
+  height: 100%;
+}
+
+.ganttContainer :global(.gantt-vertical-container) {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.ganttContainer :global(.gantt) {
+  height: 100%;
+  overflow: auto;
+}
+
+/* Custom Gantt bar colors based on task status */
+.ganttContainer :global(.gantt-task-bar) {
+  transition: all 0.3s ease;
+}
+
+/* Due soon tasks - Yellow */
+.ganttContainer :global(.gantt-task-bar[data-status="dueSoon"]) {
+  fill: #f59e0b !important;
+  stroke: #d97706 !important;
+  stroke-width: 2px !important;
+}
+
+.ganttContainer :global(.gantt-task-bar[data-status="dueSoon"]:hover) {
+  fill: #fbbf24 !important;
+  stroke: #f59e0b !important;
+  filter: brightness(1.1);
+}
+
+/* Overdue moderate tasks - Orange */
+.ganttContainer :global(.gantt-task-bar[data-status="overdueModerate"]) {
+  fill: #fb923c !important;
+  stroke: #ea580c !important;
+  stroke-width: 2px !important;
+}
+
+.ganttContainer :global(.gantt-task-bar[data-status="overdueModerate"]:hover) {
+  fill: #fdba74 !important;
+  stroke: #fb923c !important;
+  filter: brightness(1.1);
+}
+
+/* Overdue severe tasks - Red */
+.ganttContainer :global(.gantt-task-bar[data-status="overdueSevere"]) {
+  fill: #ef4444 !important;
+  stroke: #dc2626 !important;
+  stroke-width: 2px !important;
+  animation: severeBarPulse 2s ease-in-out infinite;
+}
+
+.ganttContainer :global(.gantt-task-bar[data-status="overdueSevere"]:hover) {
+  fill: #f87171 !important;
+  stroke: #ef4444 !important;
+  filter: brightness(1.1);
+}
+
+/* Normal tasks - Default blue */
+.ganttContainer :global(.gantt-task-bar[data-status="normal"]) {
+  fill: #3b82f6 !important;
+  stroke: #2563eb !important;
+}
+
+.ganttContainer :global(.gantt-task-bar[data-status="normal"]:hover) {
+  fill: #60a5fa !important;
+  stroke: #3b82f6 !important;
+}
+
+/* Progress bars for different statuses */
+.ganttContainer :global(.gantt-task-progress[data-status="dueSoon"]) {
+  fill: #d97706 !important;
+}
+
+.ganttContainer :global(.gantt-task-progress[data-status="overdueModerate"]) {
+  fill: #ea580c !important;
+}
+
+.ganttContainer :global(.gantt-task-progress[data-status="overdueSevere"]) {
+  fill: #dc2626 !important;
+}
+
+.ganttContainer :global(.gantt-task-progress[data-status="normal"]) {
+  fill: #2563eb !important;
+}
+
+/* Milestone styling */
+.ganttContainer :global(.gantt-milestone[data-status="dueSoon"]) {
+  fill: #f59e0b !important;
+  stroke: #d97706 !important;
+}
+
+.ganttContainer :global(.gantt-milestone[data-status="overdueModerate"]) {
+  fill: #fb923c !important;
+  stroke: #ea580c !important;
+}
+
+.ganttContainer :global(.gantt-milestone[data-status="overdueSevere"]) {
+  fill: #ef4444 !important;
+  stroke: #dc2626 !important;
+}
+
+/* Animation for severe overdue bars */
+@keyframes severeBarPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+/* Custom tooltip styling */
+.ganttContainer :global(.gantt-tooltip) {
+  background: rgba(0, 0, 0, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  max-width: 300px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.ganttContainer :global(.gantt-tooltip-content) {
+  color: white !important;
+}
+
+/* Project bars styling */
+.ganttContainer :global(.gantt-task-project) {
+  fill: #8b5cf6 !important;
+  stroke: #7c3aed !important;
+}
+
+.ganttContainer :global(.gantt-task-project:hover) {
+  fill: #a78bfa !important;
+  stroke: #8b5cf6 !important;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .ganttContainer {
+    font-size: 12px;
+  }
+  
+  .taskListHeaderColumn,
+  .taskListColumn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .viewModeContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .viewModeButton {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .taskListHeaderColumn,
+  .taskListColumn {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
+  .ganttContainer {
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  .ganttContainer :global(.gantt-chart) {
+    min-width: 600px;
+  }
+
+  .columnTooltip {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+  }
+
+  .viewModeContainer {
+    flex-wrap: wrap;
+  }
+
+  .viewModeButton {
+    padding: 8px 12px;
+    font-size: 12px;
+    flex: 1;
+    min-width: 70px;
+  }
+
+  .ganttContainer :global(.gantt-chart) {
+    min-width: 500px;
+  }
+}
+
+/* Custom scrollbar */
+.taskListTable::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.taskListTable::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.taskListTable::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.taskListTable::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #1d4ed8, #1e40af);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.taskListTable::-webkit-scrollbar-corner {
+  background: #f1f5f9;
+  border: 1px solid #e5e7eb;
+}
+
+/* Animation utilities */
+.fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+
+/* Gantt Chart specific customizations */
+.ganttContainer :global(.gantt-table) {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.ganttContainer :global(.gantt-header) {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.ganttContainer :global(.gantt-vertical-scroll) {
+  width: 8px;
+}
+
+.ganttContainer :global(.gantt-vertical-scroll)::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ganttContainer :global(.gantt-vertical-scroll)::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.ganttContainer :global(.gantt-vertical-scroll)::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.ganttContainer :global(.gantt-vertical-scroll)::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.ganttContainer :global(.gantt-horizontal-scroll) {
+  height: 8px;
+}
+
+.ganttContainer :global(.gantt-horizontal-scroll)::-webkit-scrollbar {
+  height: 8px;
+}
+
+.ganttContainer :global(.gantt-horizontal-scroll)::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.ganttContainer :global(.gantt-horizontal-scroll)::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.ganttContainer :global(.gantt-horizontal-scroll)::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Enhanced task bar styles with modern design */
+.ganttContainer :global(.gantt-task-item) {
+  opacity: 0.95;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.ganttContainer :global(.gantt-task-item::before) {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.ganttContainer :global(.gantt-task-item:hover) {
+  opacity: 1;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.ganttContainer :global(.gantt-task-item:hover::before) {
+  left: 100%;
+}
+
+.ganttContainer :global(.gantt-task-item.project) {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border: 2px solid #1e40af;
+  min-height: 28px;
+}
+
+.ganttContainer :global(.gantt-task-item.task) {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: 2px solid #047857;
+  min-height: 24px;
+}
+
+.ganttContainer :global(.gantt-task-item.milestone) {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border: 2px solid #b45309;
+  min-height: 20px;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+/* Task progress fill */
+.ganttContainer :global(.gantt-task-progress) {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(2px);
+}
+
+/* Enhanced grid lines and timeline */
+.ganttContainer :global(.gantt-grid-body) {
+  background: linear-gradient(to right, #ffffff 0%, #fafbfc 100%);
+}
+
+.ganttContainer :global(.gantt-grid-row) {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.2s ease;
+}
+
+.ganttContainer :global(.gantt-grid-row:hover) {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.03) 0%, rgba(147, 197, 253, 0.02) 100%);
+}
+
+.ganttContainer :global(.gantt-grid-row:nth-child(even)) {
+  background: rgba(248, 250, 252, 0.5);
+}
+
+.ganttContainer :global(.gantt-grid-row:nth-child(even):hover) {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 197, 253, 0.03) 100%);
+}
+
+.ganttContainer :global(.gantt-today-line) {
+  stroke: #ef4444;
+  stroke-width: 3;
+  stroke-dasharray: 8,4;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.3));
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Vertical grid lines */
+.ganttContainer :global(.gantt-grid-column) {
+  border-right: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+.ganttContainer :global(.gantt-grid-column:hover) {
+  background: rgba(59, 130, 246, 0.02);
+}
+
+/* Calendar header */
+.ganttContainer :global(.gantt-header-cell) {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-right: 1px solid #e5e7eb;
+  color: #374151;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.ganttContainer :global(.gantt-header-cell:hover) {
+  background: rgba(59, 130, 246, 0.05);
+  color: #3b82f6;
+}
+
+/* Disable default gantt tooltip since we use custom portal tooltip */
+.ganttContainer :global(.gantt-tooltip),
+.ganttContainer :global([class*="tooltip"]),
+.ganttContainer :global([class*="Tooltip"]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+
+
+
+
+.ganttContainer :global(.gantt-tooltip::before) {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+  border-radius: 12px;
+  z-index: -1;
+  opacity: 0.3;
+}
+
+/* Hide task text labels in timeline - targeting specific classes from DOM */
+.ganttContainer :global(.gantt-task-text) {
+  display: none;
+}
+
+/* Hide text specifically in the bar group (task timeline area) */
+.ganttContainer :global(g.bar text) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Hide text with specific classes used in timeline */
+/*  */
+  
+/* Relationship arrows */
+.ganttContainer :global(.gantt-arrow) {
+  stroke: #6b7280;
+  stroke-width: 2;
+  fill: #6b7280;
+  opacity: 0.7;
+}
+
+.ganttContainer :global(.gantt-arrow:hover) {
+  stroke: #3b82f6;
+  fill: #3b82f6;
+  opacity: 1;
+}
+
+/* Overdue task warning styles with gradient levels */
+/* Due soon warning (1-2 days before deadline) */
+
+/* Overdue >7 days (red) */
+.taskListRowOverdueSevere {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.08) 0%, rgba(254, 226, 226, 0.05) 100%);
+
+}
+
+.taskListRowOverdueSevere:hover {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.12) 0%, rgba(254, 226, 226, 0.08) 100%);
+}
+
+/* Legacy overdue class for backward compatibility */
+.taskListRowOverdue {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.08) 0%, rgba(254, 226, 226, 0.05) 100%);
+  animation: warningPulse 2s ease-in-out infinite;
+}
+
+.taskListRowOverdue:hover {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.12) 0%, rgba(254, 226, 226, 0.08) 100%);
+}
+
+/* Task name styles for different warning levels */
+.taskNameDueSoon {
+  color:rgb(246, 182, 126) !important;
+  font-weight: 600 !important;
+}
+
+.taskNameDueSoon::before {
+  content: ' ';
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+.taskNameOverdueModerate {
+  color: red !important;
+  font-weight: 600 !important;
+}
+
+.taskNameOverdueModerate::before {
+  
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+.taskNameOverdueSevere {
+  color: #dc2626 !important;
+  font-weight: 600 !important;
+}
+
+.taskNameOverdueSevere::before {
+
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+/* Legacy overdue name */
+.taskNameOverdue {
+  color: #dc2626 !important;
+  font-weight: 600 !important;
+}
+
+.taskNameOverdue::before {
+ 
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+/* Progress bar styles for different warning levels */
+.progressBarDueSoon {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.1);
+  margin-right: 10px !important;
+ 
+}
+
+.progressFillDueSoon {
+  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+
+}
+
+.progressTextDueSoon {
+  color: #d97706 !important;
+  font-weight: 700 !important;
+}
+
+.progressBarOverdueModerate {
+  background: #fed7aa;
+  border: 1px solid #fb923c;
+  box-shadow: 0 0 0 1px rgba(251, 146, 60, 0.1);
+  margin-right: 10px !important;
+}
+
+.progressFillOverdueModerate {
+  background: linear-gradient(90deg, #fb923c 0%, #ea580c 100%);
+
+}
+
+.progressTextOverdueModerate {
+  /* color: #ea580c !important; */
+  font-weight: 700 !important;
+}
+
+.progressBarOverdueSevere {
+  background: #fecaca;
+  border: 1px solid #f87171;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.1);
+}
+
+.progressFillOverdueSevere {
+  background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+ 
+}
+
+.progressTextOverdueSevere {
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+/* Legacy overdue progress */
+.progressBarOverdue {
+  background: #fecaca;
+  border: 1px solid #f87171;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.1);
+}
+
+.progressFillOverdue {
+  background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+ 
+}
+
+.progressTextOverdue {
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+/* Indicator styles for different warning levels */
+.dueSoonIndicator {
+  color: #d97706;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.overdueModerateIndicator {
+  color: #ea580c;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: rgba(251, 146, 60, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(251, 146, 60, 0.2);
+}
+
+.overdueSevereIndicator {
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Legacy overdue indicator */
+.overdueIndicator {
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Animations for different warning levels */
+@keyframes dueSoonPulse {
+  0%, 100% {
+    border-left-color: #f59e0b;
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.08) 0%, rgba(254, 243, 199, 0.05) 100%);
+  }
+  50% {
+    border-left-color: #fbbf24;
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.12) 0%, rgba(254, 243, 199, 0.08) 100%);
+  }
+}
+
+@keyframes dueSoonProgress {
+  0%, 100% {
+    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+  }
+  50% {
+    background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+  }
+}
+
+@keyframes moderateOverduePulse {
+  0%, 100% {
+    border-left-color: #fb923c;
+    background: linear-gradient(90deg, rgba(251, 146, 60, 0.08) 0%, rgba(254, 215, 170, 0.05) 100%);
+  }
+  50% {
+    border-left-color: #fdba74;
+    background: linear-gradient(90deg, rgba(251, 146, 60, 0.12) 0%, rgba(254, 215, 170, 0.08) 100%);
+  }
+}
+
+@keyframes moderateOverdueProgress {
+  0%, 100% {
+    background: linear-gradient(90deg, #fb923c 0%, #ea580c 100%);
+  }
+  50% {
+    background: linear-gradient(90deg, #fdba74 0%, #fb923c 100%);
+  }
+}
+
+@keyframes severeOverduePulse {
+  0%, 100% {
+    border-left-color: #ef4444;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.08) 0%, rgba(254, 226, 226, 0.05) 100%);
+  }
+  50% {
+    border-left-color: #f87171;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.12) 0%, rgba(254, 226, 226, 0.08) 100%);
+  }
+}
+
+@keyframes severeOverdueProgress {
+  0%, 100% {
+    background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+  }
+  50% {
+    background: linear-gradient(90deg, #f87171 0%, #ef4444 100%);
+  }
+}
+
+/* Legacy animations */
+@keyframes warningPulse {
+  0%, 100% {
+    border-left-color: #ef4444;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.08) 0%, rgba(254, 226, 226, 0.05) 100%);
+  }
+  50% {
+    border-left-color: #f87171;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.12) 0%, rgba(254, 226, 226, 0.08) 100%);
+  }
+}
+
+@keyframes warningProgress {
+  0%, 100% {
+    background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+  }
+  50% {
+    background: linear-gradient(90deg, #f87171 0%, #ef4444 100%);
+  }
+}
+
+/* Overdue tooltip */
+.overdueTooltip {
+  background: rgba(220, 38, 38, 0.95) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  color: white !important;
+}
+
+.overdueTooltip::after {
+  border-top-color: rgba(220, 38, 38, 0.95) !important;
+}
+
+/* Filter and statistics styles */
+.filterContainer {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border: 2px solid #e5e7eb;
+  background: #ffffff;
+  color: #6b7280;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filterButton:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.filterButton.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+
+.filterButton.overdue.active {
+  background: #ef4444;
+  color: white;
+}
+
+.sortButton {
+  padding: 8px 16px;
+  border: 2px solid #e5e7eb;
+  background: #ffffff;
+  color: #6b7280;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sortButton:hover {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.sortButton.active {
+  background: #8b5cf6;
+  color: white;
+  border-color: #8b5cf6;
+}
+
+.statisticsContainer {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.statItem.total {
+  color: #374151;
+}
+
+.statItem.dueSoon {
+  color: #d97706;
+  border-color: #fbbf24;
+  background: #fef3c7;
+}
+
+.statItem.moderate {
+  color: #ea580c;
+  border-color: #fb923c;
+  background: #fed7aa;
+}
+
+.statItem.severe {
+  color: #dc2626;
+  border-color: #ef4444;
+  background: #fecaca;
+}
+
+.statIcon {
+  font-size: 14px;
+}
+
+.statNumber {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.statLabel {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* Notification styles */
+.notificationContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 400px;
+}
+
+.notificationItem {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideInNotification 0.3s ease-out;
+}
+
+.notificationItem.warning {
+  border-left: 4px solid #f59e0b;
+  background: #fef3c7;
+}
+
+.notificationItem.error {
+  border-left: 4px solid #ef4444;
+  background: #fecaca;
+}
+
+.notificationTitle {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.notificationMessage {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+@keyframes slideInNotification {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Filter Buttons Group */
+.filterButtonsGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+/* View Mode Buttons Group */
+.viewModeButtonsGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+/* Filter Button Base */
+.filterButton {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: #6c757d;
+}
+
+.filterButton:hover {
+  background: rgba(24, 144, 255, 0.1);
+  color: #1890ff;
+}
+
+/* Filter Button Active States */
+.filterButtonActive {
+  background: #1890ff !important;
+  color: #fff !important;
+}
+
+
+.filterButtonOverdueActive {
+  background: #ff4d4f !important;
+  color: #fff !important;
+}
+
+
+.filterButtonDueSoonActive {
+  background: #faad14 !important;
+  color: #fff !important;
+}
+
+
+.filterButtonSortActive {
+  background: #722ed1 !important;
+  color: #fff !important;
+}
+
+/* View Mode Label */
+.viewModeLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6c757d;
+  margin-right: 4px;
+}
+
+/* View Mode Button - Override existing styles to match inline styles */
+.viewModeButton {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: #6c757d;
+}
+
+
+.viewModeButton:hover {
+  background: rgba(24, 144, 255, 0.1);
+  color: #1890ff;
+}
+
+.viewModeButtonActive {
+  background: #1890ff !important;
+  color: #fff !important;
+}
+
+/* Responsive adjustments for sticky container */
+@media (max-width: 768px) {
+  .stickyFilterContainer {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .filterButtonsGroup,
+  .viewModeButtonsGroup {
+    justify-content: center;
+  }
+  
+  .filterButton,
+  .viewModeButton {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stickyFilterContainer {
+    padding: 8px 12px;
+  }
+  
+  .filterButtonsGroup,
+  .viewModeButtonsGroup {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .filterButton,
+  .viewModeButton {
+    padding: 6px 8px;
+    font-size: 11px;
+    min-width: 60px;
+  }
+}
+
+/* Task highlighting styles for scroll-to functionality */
+.ganttContainer :global([class*="gantt-task-bar"]),
+.ganttContainer :global([class*="gantt-task-item"]),
+.ganttContainer :global([class*="gantt-bar"]) {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ganttContainer :global([class*="gantt-task-bar"]:hover),
+.ganttContainer :global([class*="gantt-task-item"]:hover),
+
+
+/* Improved task selection highlighting */
+.taskHighlight {
+  filter: brightness(1.3) drop-shadow(0 0 12px #3b82f6) !important;
+  transform: scale(1.05) !important;
+  transition: all 0.3s ease !important;
+  z-index: 100 !important;
+}
+
+/* Make sure both headers are sticky - Task List Header (left table) */
+.ganttContainer :global(.gantt-table-header),
+.ganttContainer :global(.gantt-task-list-header) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1001 !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  border-bottom: 2px solid #e5e7eb !important;
+}
+
+/* Timeline Header (right SVG table) */
+.ganttContainer :global(.gantt-header),
+.ganttContainer :global(.gantt-grid-header),
+.ganttContainer :global(.gantt-calendar) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1001 !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Force sticky positioning for any header elements */
+.ganttContainer :global([class*="header"]) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 999 !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+}
+
+/* Additional sticky rules for gantt timeline headers */
+.ganttContainer :global(.gantt-chart-header),
+.ganttContainer :global(.gantt-timeline-header),
+.ganttContainer :global(.gantt-column-header) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 998 !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+
+
+/* Timeline row highlighting - target SVG grid rows */
+.ganttContainer :global(.gantt-grid-row) {
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+}
+
+.ganttContainer :global(.gantt-grid-row.row-selected) {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.05) 100%) !important;
+  stroke: #3b82f6 !important;
+  stroke-width: 2px !important;
+}
+
+/* Task list row highlighting (left table) */
+.taskListRowSelected {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.05) 100%);
+  /* border-left: 1px solid #3b82f6 !important; */
+  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.2);
+  animation: highlightFadeIn 0.3s ease-in-out;
+}
+
+/* Timeline task bar highlighting */
+.ganttContainer :global([data-task-selected="true"]) {
+  filter: brightness(1.3) drop-shadow(0 0 12px #3b82f6) !important;
+  transform: scale(1.05) !important;
+  transition: all 0.3s ease !important;
+  z-index: 100 !important;
+  animation: taskBarHighlight 0.5s ease-in-out;
+}
+
+/* Row synchronization highlighting */
+.rowHighlighted {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.08) 0%, rgba(147, 197, 253, 0.03) 100%) !important;
+  animation: rowSync 0.4s ease-in-out;
+}
+
+/* Timeline grid row highlighting */
+.ganttContainer :global(.gantt-grid-row-highlighted) {
+  fill: rgba(59, 130, 246, 0.08) !important;
+  stroke: rgba(59, 130, 246, 0.3) !important;
+  stroke-width: 1px !important;
+  animation: gridRowHighlight 0.4s ease-in-out;
+}
+
+/* Selected grid row with stronger highlight */
+.ganttContainer :global(.gantt-grid-row.row-selected) {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.12) 0%, rgba(147, 197, 253, 0.06) 100%) !important;
+  stroke: #3b82f6 !important;
+  stroke-width: 2px !important;
+  fill: rgba(59, 130, 246, 0.1) !important;
+  animation: selectedRowPulse 1s ease-in-out infinite alternate;
+}
+
+/* Animations */
+@keyframes highlightFadeIn {
+  0% {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 197, 253, 0.1) 100%);
+    border-left-color: #60a5fa;
+  }
+  100% {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.05) 100%);
+    border-left-color: #3b82f6;
+  }
+}
+
+@keyframes taskBarHighlight {
+  0% {
+    filter: brightness(1.5) drop-shadow(0 0 16px #60a5fa);
+    transform: scale(1.08);
+  }
+  100% {
+    filter: brightness(1.3) drop-shadow(0 0 12px #3b82f6);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes rowSync {
+  0% {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(147, 197, 253, 0.08) 100%);
+  }
+  100% {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.08) 0%, rgba(147, 197, 253, 0.03) 100%);
+  }
+}
+
+@keyframes gridRowHighlight {
+  0% {
+    fill: rgba(59, 130, 246, 0.15);
+    stroke: rgba(59, 130, 246, 0.5);
+  }
+  100% {
+    fill: rgba(59, 130, 246, 0.08);
+    stroke: rgba(59, 130, 246, 0.3);
+  }
+}
+
+@keyframes selectedRowPulse {
+  0% {
+    stroke-width: 2px;
+    fill: rgba(59, 130, 246, 0.1);
+  }
+  100% {
+    stroke-width: 3px;
+    fill: rgba(59, 130, 246, 0.15);
+  }
+}

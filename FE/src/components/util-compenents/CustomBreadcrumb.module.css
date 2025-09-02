@@ -1,0 +1,26 @@
+.custom-breadcrumb {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #d1d5db; /* border-gray-300 */
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 10;
+}
+
+.custom-breadcrumb .ant-breadcrumb {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.custom-breadcrumb .ant-breadcrumb-link {
+  color: #222;
+}
+
+.custom-breadcrumb .ant-breadcrumb-link:last-child,
+.custom-breadcrumb .ant-breadcrumb .ant-breadcrumb-link[style*="color: var(--color-primary)"] {
+  color: var(--color-primary) !important;
+  font-weight: 600;
+}

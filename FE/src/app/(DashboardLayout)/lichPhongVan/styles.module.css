@@ -1,0 +1,252 @@
+/* Styles cho trang lịch phỏng vấn */
+
+.interviewSchedulePage {
+  padding: 24px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.headerCard {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filterCard {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.timelineCard {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.interviewCard {
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.interviewCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.interviewCardScheduled {
+  border-left: 4px solid #1890ff;
+}
+
+.interviewCardInProgress {
+  border-left: 4px solid #faad14;
+}
+
+.interviewCardCompleted {
+  border-left: 4px solid #52c41a;
+}
+
+.interviewCardCancelled {
+  border-left: 4px solid #f5222d;
+}
+
+.timelineSection {
+  margin-bottom: 32px;
+}
+
+.dateHeader {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.timeLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #595959;
+}
+
+.candidateName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.positionTag {
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.statusTag {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 0;
+  color: #8c8c8c;
+}
+
+.loadingState {
+  text-align: center;
+  padding: 40px 0;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .interviewSchedulePage {
+    padding: 16px;
+  }
+  
+  .headerCard,
+  .filterCard,
+  .timelineCard {
+    margin-bottom: 16px;
+  }
+  
+  .timelineSection {
+    margin-bottom: 24px;
+  }
+  
+  .candidateName {
+    font-size: 14px;
+  }
+  
+  .timeLabel {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .interviewSchedulePage {
+    padding: 12px;
+  }
+  
+  .interviewCard {
+    margin-bottom: 12px;
+  }
+}
+
+/* Animation cho timeline */
+.timelineItem {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom timeline styles */
+.customTimeline .ant-timeline-item-content {
+  margin-left: 24px;
+}
+
+.customTimeline .ant-timeline-item-tail {
+  border-left: 2px solid #e8e8e8;
+}
+
+.customTimeline .ant-timeline-item-head {
+  border: 2px solid #e8e8e8;
+  background-color: #fff;
+}
+
+/* Card actions styles */
+.cardActions {
+  border-top: 1px solid #f0f0f0;
+  background-color: #fafafa;
+}
+
+.cardActions .ant-btn {
+  border: none;
+  box-shadow: none;
+}
+
+.cardActions .ant-btn:hover {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+/* Badge styles */
+.countBadge {
+  background-color: #52c41a;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.todayBadge {
+  background-color: #1890ff;
+}
+
+.tomorrowBadge {
+  background-color: #faad14;
+}
+
+/* Filter section styles */
+.filterSection {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+}
+
+.filterSection .ant-form-item-label > label {
+  color: white;
+  font-weight: 500;
+}
+
+/* Header styles */
+.pageHeader {
+  background: linear-gradient(135deg, #00519d 0%, #3e0095 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.pageHeader .ant-typography {
+  color: white !important;
+}
+
+/* Status indicator styles */
+.statusIndicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.statusIndicator.scheduled {
+  background-color: #1890ff;
+}
+
+.statusIndicator.inProgress {
+  background-color: #faad14;
+}
+
+.statusIndicator.completed {
+  background-color: #52c41a;
+}
+
+.statusIndicator.cancelled {
+  background-color: #f5222d;
+}
+
+/* Hover effects */
+.hoverEffect {
+  transition: all 0.3s ease;
+}
+
+.hoverEffect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}

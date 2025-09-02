@@ -1,0 +1,558 @@
+/* Modern Link Account Page Styles */
+
+/* Main Container */
+.linkAccountContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contentWrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.pageHeader {
+  text-align: center;
+  margin-bottom: 48px;
+  color: white;
+}
+
+.pageTitle {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: white !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pageSubtitle {
+  font-size: 18px;
+  opacity: 0.9;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Provider Selection */
+.providerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.providerCard {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  border: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.providerCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+.providerCard.available:hover {
+  border: 2px solid var(--provider-color, #1890ff);
+}
+
+.providerCard.unavailable {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.providerCard.unavailable:hover {
+  transform: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.providerIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-size: 32px;
+  color: var(--provider-color, #1890ff);
+  background: var(--provider-bg, #f0f7ff);
+}
+
+.providerName {
+  font-size: 24px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0 0 8px 0;
+}
+
+.providerDescription {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+.providerStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statusBadge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.statusBadge.available {
+  background: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #b7eb8f;
+}
+
+.statusBadge.comingSoon {
+  background: #fff7e6;
+  color: #faad14;
+  border: 1px solid #ffd666;
+}
+
+.comingSoonOverlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #faad14;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Telegram Linking Guide */
+.telegramGuide {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.guideHeader {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.guideTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #262626;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.guideTitleIcon {
+  width: 48px;
+  height: 48px;
+  background: #0088cc;
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.guideSubtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+/* Steps */
+.stepsContainer {
+  margin-bottom: 32px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.step.pending {
+  background: #fafafa;
+  border: 2px solid #f0f0f0;
+}
+
+.step.active {
+  background: #e6f7ff;
+  border: 2px solid #91d5ff;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.1);
+}
+
+.step.completed {
+  background: #f6ffed;
+  border: 2px solid #b7eb8f;
+}
+
+.step.error {
+  background: #fff2f0;
+  border: 2px solid #ffccc7;
+}
+
+.stepIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.step.pending .stepIcon {
+  background: #f0f0f0;
+  color: #999;
+}
+
+.step.active .stepIcon {
+  background: #1890ff;
+  color: white;
+}
+
+.step.completed .stepIcon {
+  background: #52c41a;
+  color: white;
+}
+
+.step.error .stepIcon {
+  background: #f5222d;
+  color: white;
+}
+
+.stepContent {
+  flex: 1;
+}
+
+.stepTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0 0 4px 0;
+}
+
+.stepDescription {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Token Section */
+.tokenSection {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+  text-align: center;
+}
+
+.tokenButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.tokenButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.tokenButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.tokenDisplay {
+  background: white;
+  border: 2px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tokenText {
+  flex: 1;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  color: #262626;
+  background: #f5f5f5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  word-break: break-all;
+}
+
+.copyButton {
+  background: #52c41a;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.copyButton:hover {
+  background: #73d13d;
+}
+
+.copyButton.copied {
+  background: #1890ff;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.backButton {
+  background: white;
+  border: 2px solid #d9d9d9;
+  color: #666;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.backButton:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+.retryButton {
+  background: #faad14;
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retryButton:hover {
+  background: #ffc53d;
+}
+
+/* Success/Error States */
+.statusAlert {
+  margin: 24px 0;
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+.successAlert {
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  color: #52c41a;
+}
+
+.errorAlert {
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: #f5222d;
+}
+
+/* Loading States */
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .linkAccountContainer {
+    padding: 20px 16px;
+  }
+  
+  .pageTitle {
+    font-size: 32px;
+  }
+  
+  .pageSubtitle {
+    font-size: 16px;
+  }
+  
+  .providerGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .providerCard {
+    padding: 24px;
+  }
+  
+  .telegramGuide {
+    padding: 24px;
+    margin: 0 16px;
+  }
+  
+  .guideTitle {
+    font-size: 24px;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .step {
+    padding: 16px;
+  }
+  
+  .actionButtons {
+    flex-direction: column;
+  }
+  
+  .tokenDisplay {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: 28px;
+  }
+  
+  .providerCard {
+    padding: 20px;
+  }
+  
+  .providerIcon {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+  
+  .providerName {
+    font-size: 20px;
+  }
+  
+  .telegramGuide {
+    padding: 20px;
+  }
+  
+  .tokenSection {
+    padding: 16px;
+  }
+}
+
+/* Animation Classes */
+.fadeIn {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.slideUp {
+  animation: slideUp 0.5s ease-out;
+}
+
+.scaleIn {
+  animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.linkedTeleCard {
+  position: relative;
+  transition: transform 0.2s cubic-bezier(.4,2,.6,1);
+}
+
+.removeBtnAnim {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%) translateX(120%);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(.4,2,.6,1), opacity 0.2s;
+  z-index: 2;
+}
+
+.linkedTeleCard:hover .removeBtnAnim {
+  transform: translateY(-50%) translateX(0);
+  opacity: 1;
+}

@@ -1,0 +1,51 @@
+.mg5 {
+  margin-bottom: 5px;
+}
+
+.mgButton10 {
+  margin-bottom: 10px;
+}
+
+.mgright5 {
+  margin-right: 5px;
+}
+
+.customCardShadow {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0;
+  height: 86%;
+
+  position: relative;
+  overflow: hidden;
+}
+
+.colorKetXuat {
+  background-color: green;
+}
+
+.searchInput {
+  width: 30%;
+  margin-right: 10px;
+}
+
+.treeNode {
+  display: flex;
+  width: 38em;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.borderLess {
+  border: none !important;
+}
+
+.borderLess:focus,
+.borderLess:focus-within,
+.borderLess.ant-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}

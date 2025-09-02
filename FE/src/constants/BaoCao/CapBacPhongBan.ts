@@ -1,0 +1,4 @@
+export const CAP_BAC_PHONG_BAN = {
+    CO_QUAN_NGANG_BO: "NGANG_BO",
+    CO_QUAN_TRUC_THUOC_BO: "TRUC_THUOC_BO",
+}

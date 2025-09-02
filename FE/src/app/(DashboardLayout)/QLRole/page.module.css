@@ -1,0 +1,86 @@
+.mg5 {
+    margin-bottom: 5px;
+}
+
+.mgButton10 {
+    margin-bottom: 10px;
+}
+
+.mgright5 {
+    margin-right: 5px;
+}
+
+.customCardShadow {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Màu và độ mờ */
+    border-radius: 8px;
+    /* Tùy chỉnh bo góc */
+}
+
+.colorKetXuat {
+    background-color: green;
+}
+
+/*CSS cho bảng edit RoleOperation*/
+.cssTable {
+    table-layout: fixed;
+}
+
+.cssTHead{
+    padding: 8px; 
+    border: 1px solid #ddd;
+}
+
+.cssTheadWidth {
+    width: 35%;
+}
+
+.cssChuTrongTable {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+.collapseAllSelected :global(.ant-collapse-header) {
+    background-color: rgba(82, 196, 26, 0.1);
+    border-left: 3px solid #52c41a;
+}
+
+.collapsePartialSelected :global(.ant-collapse-header) {
+    background-color: rgba(250, 173, 20, 0.1);
+    border-left: 3px solid #faad14;
+}
+
+.collapseNoneSelected :global(.ant-collapse-header) {
+    background-color: rgba(255, 77, 79, 0.05);
+    border-left: 3px solid #ff4d4f;
+}
+
+.fullHeightCollapse {
+    flex-grow: 1;
+}
+
+/*.fullHeightCollapse :global(.ant-collapse-content) {*/
+/*    height: calc(100% - 46px);*/
+/*    overflow: hidden;*/
+/*}*/
+
+/*.fullHeightCollapse :global(.ant-collapse-content-box) {*/
+/*    height: 100%;*/
+/*    padding: 10px;*/
+/*}*/
+
+.collapseAllSelected :global(.ant-collapse-header) {
+    background-color: rgba(82, 196, 26, 0.1);
+    border-left: 3px solid #52c41a;
+}
+
+.collapsePartialSelected :global(.ant-collapse-header) {
+    background-color: rgba(250, 173, 20, 0.1);
+    border-left: 3px solid #faad14;
+}
+
+.collapseNoneSelected :global(.ant-collapse-header) {
+    background-color: rgba(255, 77, 79, 0.05);
+    border-left: 3px solid #ff4d4f;
+}

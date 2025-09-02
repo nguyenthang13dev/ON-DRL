@@ -1,0 +1,56 @@
+.ant-upload-list-item-name {
+  white-space: unset !important;
+}
+.ant-upload-list-item:not(.ant-upload-list-item-error) .ant-upload-list-item-name,
+.ant-upload-list-item:not(.ant-upload-list-item-error) .ant-upload-list-item-name a {
+  color: #333333 !important; /* Changed to a prominent dark gray color */
+}
+
+
+.custom-upload-list-item .origin-node-container {
+  overflow: hidden;
+}
+
+.custom-upload-list-item .ant-upload-list-item-name {
+  display: block; /* Or inline-block, to make text-align effective */
+  width: 100%;    /* Ensure it uses the available width in its flex container */
+  padding-left: 5px; /* Adjust if AntD adds its own icons */
+  padding-right: 5px;/* Adjust for remove icon space */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ensure the overall AntD item info flex container behaves well */
+.custom-upload-list-item .ant-upload-list-item-info {
+  display: flex;
+  align-items: center;
+  width: 100%; /* Ensure it spans the width */
+}
+
+
+/* Always show the remove button (which is part of originNode) */
+.custom-upload-list-item .ant-upload-list-item-actions {
+  opacity: 1 !important;
+  visibility: visible !important;
+
+}
+
+.custom-upload-list-item .ant-upload-list-item-actions .ant-btn,
+.custom-upload-list-item .ant-upload-list-item-actions button {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-flex !important; /* Ant often uses inline-flex for icon buttons */
+  align-items: center;
+}
+
+
+.custom-upload-list-item .anticon svg {
+  display: inline !important;
+  vertical-align: middle !important;
+}
+
+/* Style for error items if needed */
+.custom-upload-list-item.item-error .ant-upload-list-item-name {
+  color: red;
+}

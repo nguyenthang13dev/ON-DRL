@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thư mời phỏng vấn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f3f4f6;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 60px auto;
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: #1e293b;
+      padding: 32px 24px;
+      text-align: center;
+      color: #ffffff;
+      border-bottom: 2px solid #334155;
+    }
+
+    .header img {
+      width: 56px;
+      margin-bottom: 12px;
+      filter: brightness(0) invert(1);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .content {
+      padding: 28px 32px;
+      font-size: 15px;
+      line-height: 1.7;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .content p {
+      margin: 16px 0;
+    }
+
+    .info-table {
+      width: 100%;
+      margin: 20px 0;
+      border-collapse: collapse;
+    }
+
+    .info-table td {
+      padding: 10px 0;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: top;
+    }
+
+    .info-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .info-table .label {
+      width: 140px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .info-table td:last-child {
+      color: #1f2937;
+    }
+
+    .document-list {
+      margin: 12px 0 0 0;
+      padding-left: 18px;
+    }
+
+    .document-list li {
+      margin-bottom: 6px;
+    }
+
+    .cta {
+      text-align: center;
+      padding: 24px 0;
+      background-color: #f9fafb;
+    }
+
+    .cta a {
+      display: inline-block;
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 4px;
+      border: 1px solid #0f172a;
+      transition: all 0.2s ease;
+    }
+
+    .cta a:hover {
+      background-color: #ffffff;
+      color: #0f172a;
+      border: 1px solid #0f172a;
+    }
+
+    .footer {
+      font-size: 13px;
+      text-align: center;
+      color: #6b7280;
+      padding: 18px 24px;
+      background-color: #f1f5f9;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="https://img.icons8.com/ios-filled/100/ffffff/handshake-heart.png" alt="icon" />
+      <h1>Thư mời phỏng vấn</h1>
+    </div>
+    <div class="content">
+      <p>Xin chào <strong>{{TenUngVien}}</strong>,</p>
+      <p>
+        Chúng tôi rất vui thông báo bạn đã vượt qua vòng hồ sơ và được mời tham gia buổi phỏng vấn cho vị trí <strong>{{ViTri}}</strong> tại <strong>CÔNG TY CỔ PHẦN CÔNG NGHỆ HINET VIỆT NAM</strong>.
+      </p>
+      <table class="info-table">
+        <tr>
+          <td class="label">Thời gian:</td>
+          <td>{{ThoiGian}}</td>
+        </tr>
+        <tr>
+          <td class="label">Địa điểm:</td>
+          <td>{{DiaDiem}}</td>
+        </tr>
+        <tr>
+          <td class="label">Giấy tờ cần chuẩn bị:</td>
+          <td>{{DanhSachGiayTo}}</td>
+        </tr>
+        <tr>
+          <td class="label">Ghi chú:</td>
+          <td>{{GhiChu}}</td>
+        </tr>
+      </table>
+      <p>Nếu bạn có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi qua email hoặc số điện thoại bên dưới.<br>Chúc bạn may mắn và hẹn gặp lại tại buổi phỏng vấn!</p>
+    </div>
+
+  <div class="footer">
+      CÔNG TY CỔ PHẦN CÔNG NGHỆ HINET VIỆT NAM &copy; {{NamHienTai}}<br />
+      Địa chỉ: Tầng 23 Khối A Tòa nhà Sông Đà, đường Phạm Hùng, phường Mỹ Đình 1, Quận Nam Từ Liêm, Thành phố Hà Nội<br />
+      Email: hr@hinet.com.vn | Điện thoại:  0986.248.065 - 024 85.873.555
+  </div>
+  </div>
+</body>
+</html>

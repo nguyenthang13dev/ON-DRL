@@ -1,0 +1,569 @@
+/* ===== PROFESSIONAL DESIGN SYSTEM ===== */
+
+/* ===== HEADER ACTIONS ===== */
+.headerActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.exportButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #b7eb8f;
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 4px 16px;
+  height: 36px;
+  transition: all 0.3s ease;
+  background-color: #52c41a;
+  border-color: #52c41a;
+  color: white;
+}
+
+.exportButton:hover {
+  background: #d9f7be;
+  color: #389e0d;
+  border-color: #52c41a;
+  background-color: #73d13d;
+  border-color: #73d13d;
+}
+
+.exportButton :global(.anticon) {
+  font-size: 16px;
+}
+
+.templateButton {
+  background-color: #1890ff;
+  border-color: #1890ff;
+  color: white;
+}
+
+.templateButton:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.cancelButton {
+  background-color: #f5f5f5;
+  border-color: #d9d9d9;
+}
+
+.cancelButton:hover {
+  background-color: #fafafa;
+  border-color: #d9d9d9;
+}
+
+/* ===== TABLE DESIGN ===== */
+.customTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  
+  overflow: hidden;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 14px;
+ 
+ 
+  border-inline-start: 1px solid #f0f0f0;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* Table Headers */
+.customTable thead {
+  display: table-header-group;
+  vertical-align: middle;
+  unicode-bidi: isolate;
+  background-color: rgb(69, 85, 96) !important;
+  border-bottom-color: rgb(69, 85, 96) !important;
+  border-left-color: rgb(69, 85, 96) !important;
+  border-right-color: rgb(69, 85, 96) !important;
+  border-top-color: rgb(69, 85, 96) !important;
+  border-bottom-color: rgb(69, 85, 96) !important;
+  border-inline-start: 1px solid #f0f0f0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+}
+
+.customTable th {
+  font-weight: 600;
+  color: rgb(69, 85, 96) !important;
+  padding: 16px;
+  text-align: left;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  /* border-bottom-color: rgb(69, 85, 96) !important;
+  border-left-color: rgb(69, 85, 96) !important;
+  border-right-color: rgb(69, 85, 96) !important;
+  border-top-color: rgb(69, 85, 96) !important;
+  border-bottom-color: rgb(69, 85, 96) !important; */
+  white-space: nowrap;
+  position: sticky;
+  font-weight: bold !important;
+  top: 0;
+  z-index: 10;
+
+  background: inherit;
+  background-color: rgb(240, 240, 240);
+  font-weight: 500;
+  text-align: left;
+}
+
+/* Table Cells */
+.customTable td {
+  padding: 14px 16px;
+  color: #262626;
+ 
+
+  transition: all 0.2s ease;
+  vertical-align: middle;
+  position: relative;
+}
+
+/* Row Hover Effect */
+.customTable tbody tr {
+  transition: all 0.2s ease;
+}
+
+.customTable tbody tr:hover td {
+  background: #fafafa;
+  box-shadow: inset 0 1px 0 #f0f0f0, inset 0 -1px 0 #f0f0f0;
+}
+
+/* Dragging State */
+.customTable tbody tr[data-dragging="true"] td {
+  background: #e6f4ff;
+  opacity: 0.8;
+}
+
+/* Column Widths */
+.customTable th:nth-child(1),
+.customTable td:nth-child(1) {
+  width: 48px;
+  text-align: center;
+  padding: 12px;
+}
+
+.customTable th:nth-child(2),
+.customTable td:nth-child(2) {
+  width: 80px;
+  text-align: center;
+}
+
+.customTable th:nth-child(3) {
+  min-width: 280px;
+}
+
+.customTable th:nth-child(4) {
+  width: 240px;
+}
+
+.customTable th:nth-child(5) {
+  width: 280px;
+}
+
+.customTable th:nth-child(6) {
+  width: 100px;
+  text-align: center;
+}
+
+.customTable th:nth-child(7) {
+  width: 140px;
+  text-align: center;
+}
+
+/* Group Row Styling */
+.customTable tr[data-is-group="true"] td {
+  background: linear-gradient(to right, #f8f9fa 0%, #f5f6f7 100%);
+  font-weight: 600;
+  color: #262626;
+  border-top: 1px solid #e8e8e8;
+}
+
+/* ===== FORM CONTROLS ===== */
+
+/* Input Fields */
+.customTable :global(.ant-input),
+.customTable :global(.ant-input-number) {
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  padding: 8px 12px;
+}
+
+.customTable :global(.ant-input:hover),
+.customTable :global(.ant-input-number:hover) {
+  border-color: #1677ff;
+}
+
+.customTable :global(.ant-input:focus),
+.customTable :global(.ant-input-number:focus) {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.08);
+  outline: none;
+}
+
+/* Date Picker */
+.customTable :global(.ant-picker) {
+  width: 100%;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.customTable :global(.ant-picker:hover) {
+  border-color: #1677ff;
+}
+
+.customTable :global(.ant-picker-focused) {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.08);
+}
+
+/* ===== MULTI-SELECT SPECIFIC STYLES ===== */
+.assignCell {
+  padding: 8px 12px !important;
+  vertical-align: middle;
+  min-width: 150px;
+}
+
+.inputAssign {
+  width: 100%;
+}
+
+/* Multi-select Container */
+.inputAssign :global(.ant-select-selector) {
+  border-radius: 8px !important;
+  border: 1px solid #d9d9d9 !important;
+  background: #fff !important;
+  transition: all 0.3s ease !important;
+  min-height: 36px !important;
+  padding: 4px 8px !important;
+}
+
+.inputAssign :global(.ant-select:hover .ant-select-selector) {
+  border-color: #1677ff !important;
+}
+
+.inputAssign :global(.ant-select-focused .ant-select-selector),
+.inputAssign :global(.ant-select-open .ant-select-selector) {
+  border-color: #1677ff !important;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.08) !important;
+}
+
+/* Multi-select Items Container - Fixed Height */
+.inputAssign :global(.ant-select-multiple .ant-select-selector) {
+  max-height: 72px !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.inputAssign :global(.ant-select-multiple .ant-select-selection-overflow) {
+  max-height: 64px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  padding-right: 20px !important;
+}
+
+/* Selected Tags */
+.inputAssign :global(.ant-select-multiple .ant-select-selection-item) {
+  height: 24px !important;
+  line-height: 22px !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  border-radius: 6px !important;
+  background: #f0f2f5 !important;
+  border: 1px solid #e8e8e8 !important;
+  color: #262626 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  max-width: 120px !important;
+  position: relative !important;
+}
+
+.inputAssign :global(.ant-select-multiple .ant-select-selection-item-content) {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  padding-right: 4px !important;
+}
+
+.inputAssign :global(.ant-select-multiple .ant-select-selection-item-remove) {
+  font-size: 12px !important;
+  margin-left: 4px !important;
+  color: #595959 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.inputAssign :global(.ant-select-multiple .ant-select-selection-item-remove:hover) {
+  color: #ff4d4f !important;
+}
+
+/* Scrollbar Styling */
+.inputAssign :global(.ant-select-selection-overflow)::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.inputAssign :global(.ant-select-selection-overflow)::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 3px;
+}
+
+.inputAssign :global(.ant-select-selection-overflow)::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 3px;
+  transition: background 0.3s;
+}
+
+.inputAssign :global(.ant-select-selection-overflow)::-webkit-scrollbar-thumb:hover {
+  background: #bfbfbf;
+}
+
+/* Clear Button */
+.inputAssign :global(.ant-select-clear) {
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: #fff !important;
+  font-size: 12px !important;
+}
+
+/* ===== BUTTONS ===== */
+
+/* Primary Button */
+.btnThem {
+  background: #74a7ee;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0 16px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  background-color: #1890ff;
+  color: white;
+}
+
+.btnThem:hover,
+.btnThem:focus {
+  background: #bcc8db !important;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background-color: #40a9ff;
+}
+
+/* Icon Buttons */
+.customTable :global(.ant-btn-link) {
+  padding: 6px;
+  height: 32px;
+  width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #595959;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+}
+
+.customTable :global(.ant-btn-link:hover) {
+  color: #1677ff;
+  background: rgba(24, 144, 255, 0.06);
+}
+
+.customTable :global(.ant-btn-link.ant-btn-dangerous:hover) {
+  color: #ff4d4f;
+  background: rgba(255, 77, 79, 0.06);
+}
+
+/* Checkbox */
+.customTable :global(.ant-checkbox-wrapper) {
+  font-size: 14px;
+}
+
+.customTable :global(.ant-checkbox) {
+  top: 0;
+}
+
+/* ===== LAYOUT COMPONENTS ===== */
+
+/* Table Wrapper */
+.tableWrapper {
+  overflow-x: auto;
+  overflow-y: visible;
+  margin: -24px;
+  padding: 24px;
+  min-height: calc(100vh - 200px);
+  margin-bottom: 16px;
+  
+}
+
+/* Loading State */
+.loadingWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  gap: 16px;
+  height: 200px;
+  background-color: #fff;
+}
+
+.loadingWrapper::after {
+  content: '';
+  width: 32px;
+  height: 32px;
+  border: 3px solid #1677ff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Action Buttons Footer */
+.actionButtons {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  position: sticky;
+  bottom: 20px;
+  z-index: 100;
+  margin-top: 24px;
+}
+
+.actionButtons button {
+  width: 80px;
+  height: 36px;
+  min-width: 80px;
+  border-radius: 6px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.actionButtons button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1200px) {
+  .customTable {
+    font-size: 13px;
+  }
+  
+  .customTable th,
+  .customTable td {
+    padding: 12px;
+  }
+  
+  .inputAssign :global(.ant-select-multiple .ant-select-selection-item) {
+    max-width: 100px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .tableWrapper {
+    margin: -16px;
+    padding: 16px;
+  }
+  
+  .customTable th,
+  .customTable td {
+    padding: 8px;
+  }
+  
+  .btnThem {
+    padding: 0 12px;
+    font-size: 13px;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+.customTable tbody tr {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Drag Handle */
+.customTable :global(.anticon-menu) {
+  cursor: grab;
+  color: #bfbfbf;
+  transition: color 0.2s ease;
+}
+
+.customTable tr:hover :global(.anticon-menu) {
+  color: #595959;
+}
+
+.customTable :global(.anticon-menu):active {
+  cursor: grabbing;
+}
+
+.keHoachTrienKhaiContainer {
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+/* Empty template message styling */
+.emptyTemplate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px dashed #d9d9d9;
+  margin: 24px 0;
+  text-align: center;
+  height: 200px;
+  background-color: #f9f9f9;
+  border: 1px dashed #d9d9d9;
+  border-radius: 4px;
+  padding: 24px;
+  text-align: center;
+}
+
+.emptyTemplate p {
+  font-size: 16px;
+  color: #595959;
+  margin-bottom: 24px;
+  margin-bottom: 16px;
+  color: #666;
+}

@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="CdsService\**" />
+    <Compile Remove="Common\ObjectService\**" />
+    <Compile Remove="GroupRoleService\**" />
+    <EmbeddedResource Remove="CdsService\**" />
+    <EmbeddedResource Remove="Common\ObjectService\**" />
+    <EmbeddedResource Remove="GroupRoleService\**" />
+    <None Remove="CdsService\**" />
+    <None Remove="Common\ObjectService\**" />
+    <None Remove="GroupRoleService\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ApiPermissionsService\Dto\ApiPermissionGroupData.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BarCode" Version="2023.6.1" />
+    <PackageReference Include="EPPlus" Version="7.5.2" />
+    <PackageReference Include="FuzzySharp" Version="2.0.2" />
+    <PackageReference Include="Hangfire" Version="1.8.20" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.20" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.74" />
+    <PackageReference Include="itext7" Version="9.2.0" />
+    <PackageReference Include="MailKit" Version="4.10.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.9.0" />
+    <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
+    <PackageReference Include="MimeKit" Version="4.10.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="PdfiumViewer" Version="2.13.0" />
+    <PackageReference Include="PdfPig" Version="0.1.10" />
+    <PackageReference Include="QRCoder" Version="1.4.1" />
+    <PackageReference Include="RestSharp" Version="112.1.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.9.0" />
+    <PackageReference Include="Tesseract" Version="5.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CommonHelper\CommonHelper.csproj" />
+    <ProjectReference Include="..\Hinet.Model\Hinet.Model.csproj" />
+    <ProjectReference Include="..\Hinet.Repository\Hinet.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
