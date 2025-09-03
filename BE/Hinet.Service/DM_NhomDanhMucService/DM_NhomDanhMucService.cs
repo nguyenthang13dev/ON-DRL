@@ -3,12 +3,14 @@ using Hinet.Repository.DM_NhomDanhMucRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.DM_NhomDanhMucService.Dto;
 using Hinet.Service.Common;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Repository.DM_DuLieuDanhMucRepository;
 using Hinet.Service.DM_DuLieuDanhMucService.Dto;
 using Hinet.Service.Dto;
 using Microsoft.Extensions.Logging;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.DM_NhomDanhMucService
 {
@@ -103,12 +105,12 @@ namespace Hinet.Service.DM_NhomDanhMucService
             {
                 var listDmDanhMuc = await _dM_DuLieuDanhMucRepository
                     .GetQueryable()
-                    .AsNoTracking()
+                    
                     .Select(dm => new { dm.Id, dm.GroupId, dm.Name, dm.Code, dm.Priority })
                     .ToListAsync();
 
                 var query = await GetQueryable()
-                    .AsNoTracking()
+                    
                     .ToListAsync();
 
                 return query.Select(q => new DanhMucDto
@@ -146,7 +148,7 @@ namespace Hinet.Service.DM_NhomDanhMucService
         {
             try
             {
-                var results =  await _dM_NhomDanhMucRepository.GetQueryableWithTracking().Where(x=>x.GroupCode.ToUpper() == groupCode.ToUpper()).FirstOrDefaultAsync();
+                var results =  await _dM_NhomDanhMucRepository.GetQueryable().Where(x=>x.GroupCode.ToUpper() == groupCode.ToUpper()).FirstOrDefaultAsync();
                 return results;
 
             }catch (Exception ex)

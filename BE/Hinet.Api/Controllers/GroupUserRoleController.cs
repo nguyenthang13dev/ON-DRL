@@ -5,7 +5,7 @@ using Hinet.Service.GroupUserRoleService;
 using Hinet.Service.GroupUserRoleService.Dto;
 using Hinet.Service.GroupUserRoleService.ViewModels;
 using Hinet.Service.Common;
-using Hinet.Api.Filter;
+
 using CommonHelper.Excel;
 using Hinet.Web.Common;
 using Hinet.Api.ViewModels.Import;
@@ -107,7 +107,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetData", Name = "Xem danh sách GroupUserRole hệ thống")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         public async Task<DataResponse<PagedList<GroupUserRoleDto>>> GetData([FromBody] GroupUserRoleSearch search)
         {
             var data = await _groupUserRoleService.GetData(search);

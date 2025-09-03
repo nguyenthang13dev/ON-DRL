@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model;
 using Hinet.Model.Entities;
 
 
@@ -6,7 +6,7 @@ namespace Hinet.Repository.NotificationRepository
 {
     public class NotificationRepository : Repository<Notification>, INotificationRepository
     {
-        public NotificationRepository(DbContext context) : base(context)
+        public NotificationRepository(HinetMongoContext context) : base(context)
         {
         }
     }

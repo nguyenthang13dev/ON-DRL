@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AspNetCore.Identity.MongoDbCore.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Hinet.Model.Entities
 {
-    public class AppRole : IdentityRole<Guid>, IEntity
+    public class AppRole : MongoIdentityRole<Guid>, IEntity
     {
     }
 }

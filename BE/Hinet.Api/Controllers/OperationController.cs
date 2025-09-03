@@ -6,7 +6,7 @@ using Hinet.Service.OperationService.Dto;
 using Hinet.Service.OperationService.ViewModels;
 using Hinet.Service.Common;
 using Hinet.Service.Dto;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Api.Dto;
 using Microsoft.EntityFrameworkCore.Internal;
 

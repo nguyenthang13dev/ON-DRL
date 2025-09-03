@@ -2,7 +2,6 @@ using Hinet.Model.Entities;
 using Hinet.Service.NotificationService.Dto;
 using Hinet.Service.Common;
 using Hinet.Service.Common.Service;
-using Hinet.Service.DA_PhanCongService.ViewModels;
 
 namespace Hinet.Service.NotificationService
 {
@@ -20,7 +19,6 @@ namespace Hinet.Service.NotificationService
 
         Task<PagedList<NotificationDto>> GetDataSanPham(NotificationSearch search);
 
-        Task<List<Notification>> CreateOrUpdateNotificationPhanCong(List<DA_PhanCongCreateVM> listPhanCong, Guid DuAnId, Guid FromUser);
 
     }
 }

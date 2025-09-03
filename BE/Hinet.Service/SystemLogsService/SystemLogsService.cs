@@ -4,9 +4,10 @@ using Hinet.Service.Common.Service;
 using Hinet.Service.SystemLogsService.Dto;
 using Hinet.Service.Common;
 using Hinet.Service.Dto;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Repository.AppUserRepository;
 using Hinet.Repository.DM_DuLieuDanhMucRepository;
+using MongoDB.Driver.Linq;
 
 
 
@@ -63,7 +64,7 @@ namespace Hinet.Service.SystemLogsService
             {
                 if(!string.IsNullOrEmpty(search.UserName))
 				{
-					query = query.Where(x => EF.Functions.Like(x.UserName, $"%{search.UserName}%"));
+					//query = query.Where(x => EF.Functions.Like(x.UserName, $"%{search.UserName}%"));
 				}
 				if(search.TimestampFrom.HasValue)
 				{
@@ -73,18 +74,18 @@ namespace Hinet.Service.SystemLogsService
 				{
 					query = query.Where(x => x.Timestamp <= search.TimestampTo);
 				}
-				if(!string.IsNullOrEmpty(search.IPAddress))
-				{
-					query = query.Where(x => EF.Functions.Like(x.IPAddress, $"%{search.IPAddress}%"));
-				}
-				if(!string.IsNullOrEmpty(search.Level))
-				{
-					query = query.Where(x => EF.Functions.Like(x.Level, $"%{search.Level}%"));
-				}
-				if(!string.IsNullOrEmpty(search.Message))
-				{
-					query = query.Where(x => EF.Functions.Like(x.Message, $"%{search.Message}%"));
-				}
+				//if(!string.IsNullOrEmpty(search.IPAddress))
+				//{
+				//	query = query.Where(x => EF.Functions.Like(x.IPAddress, $"%{search.IPAddress}%"));
+				//}
+				//if(!string.IsNullOrEmpty(search.Level))
+				//{
+				//	query = query.Where(x => EF.Functions.Like(x.Level, $"%{search.Level}%"));
+				//}
+				//if(!string.IsNullOrEmpty(search.Message))
+				//{
+				//	query = query.Where(x => EF.Functions.Like(x.Message, $"%{search.Message}%"));
+				//}
             }
             query = query.OrderByDescending(x=>x.CreatedDate);
             var result = await PagedList<SystemLogsDto>.CreateAsync(query, search);

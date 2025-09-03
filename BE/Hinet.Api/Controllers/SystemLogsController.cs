@@ -5,7 +5,7 @@ using Hinet.Service.SystemLogsService;
 using Hinet.Service.SystemLogsService.Dto;
 using Hinet.Service.SystemLogsService.ViewModels;
 using Hinet.Service.Common;
-using Hinet.Api.Filter;
+
 using CommonHelper.Excel;
 using CommonHelper.Extenions;
 using Hinet.Web.Common;
@@ -105,7 +105,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetData")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         public async Task<DataResponse<PagedList<SystemLogsDto>>> GetData([FromBody] SystemLogsSearch search)
         {
             var data = await _systemLogsService.GetData(search);
@@ -132,7 +132,7 @@ namespace Hinet.Controllers
         public async Task<DataResponse<Dictionary<string, List<DropdownOption>>>> GetDropdowns([FromQuery] string[] types)
         {
             var dropdowns = await (
-					_appUserService.GetDropdownOptions(x => x.Name, x => x.Id),
+					_appUserService.GetDropDown("Name", "Id"),
 					_dM_DuLieuDanhMucService.GetDropdownByGroupCode(MaDanhMucConstant.MaQuanLy)
 			);
 			var result = new Dictionary<string, List<DropdownOption>>()

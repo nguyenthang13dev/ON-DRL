@@ -8,8 +8,10 @@ using Hinet.Repository.UserRoleRepository;
 using Hinet.Service.Common;
 using Hinet.Service.Common.Service;
 using Hinet.Service.OperationService.Dto;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Microsoft.Extensions.Caching.Memory;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.OperationService
 {
@@ -148,13 +150,13 @@ namespace Hinet.Service.OperationService
                     .ToListAsync();
 
                 var listOperationId = await _roleOperationRepository.GetQueryable()
-                    .AsNoTracking()
+                    
                     .Where(x => x.IsAccess == 1 && listRoleIdOfUser.Contains(x.RoleId))
                     .Select(x => x.OperationId)
                     .ToListAsync();
 
-                var result = await (from moduleTbl in _moduleRepository.GetQueryable().AsNoTracking()
-                                    join operationTbl in GetQueryable().AsNoTracking()
+                var result = await (from moduleTbl in _moduleRepository.GetQueryable()
+                                    join operationTbl in GetQueryable()
                                         on moduleTbl.Id equals operationTbl.ModuleId
                                     select new
                                     {
@@ -343,7 +345,7 @@ namespace Hinet.Service.OperationService
             // Create a HashSet for faster lookups
             var userOperationIds = new HashSet<Guid>(
                 await _roleOperationRepository.GetQueryable()
-                    .AsNoTracking()
+                    
                     .Where(ro => roleIds.Contains(ro.RoleId))
                     .Select(ro => ro.OperationId)
                     .ToListAsync()
@@ -354,10 +356,10 @@ namespace Hinet.Service.OperationService
                     from module in _moduleRepository.GetQueryable()
                         .Where(m => m.IsShow)
                         .OrderBy(m => m.Order)
-                        .AsNoTracking()
+                        
                     join operation in GetQueryable()
                             .Where(o => o.IsShow)
-                            .AsNoTracking()
+                            
                         on module.Id equals operation.ModuleId
                     select new
                     {

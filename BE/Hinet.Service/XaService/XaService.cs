@@ -3,8 +3,9 @@ using Hinet.Repository.XaRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.XaService.Dto;
 using Hinet.Service.Common;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Service.Dto;
+using MongoDB.Driver.Linq;
 
 namespace Hinet.Service.XaService
 {

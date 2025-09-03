@@ -3,7 +3,7 @@ using Hinet.Repository.DM_DuLieuDanhMucRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.DM_DuLieuDanhMucService.Dto;
 using Hinet.Service.Common;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Repository.DM_NhomDanhMucRepository;
 using Hinet.Service.Dto;
 using Hinet.Repository.DepartmentRepository;
@@ -12,6 +12,8 @@ using Hinet.Service.Constant;
 using Microsoft.Extensions.Caching.Memory;
 using CommonHelper.Extenions;
 using Microsoft.EntityFrameworkCore.Update;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.DM_DuLieuDanhMucService
 {
@@ -281,12 +283,12 @@ namespace Hinet.Service.DM_DuLieuDanhMucService
                 {
                     return new DropdownOptionTree();
                 }
-                var rootEducationLevel = await _dM_NhomDanhMucRepository.Where(x => x.Id == idNhomDanhMuc).FirstOrDefaultAsync();
+                var rootEducationLevel = await _dM_NhomDanhMucRepository.GetQueryable().Where(x => x.Id == idNhomDanhMuc).FirstOrDefaultAsync();
                 if (rootEducationLevel == null) 
                 {
                     return new DropdownOptionTree();
                 }
-                var educationLevels = await _dM_DuLieuDanhMucRepository.Where(x=>x.GroupId == rootEducationLevel.Id && x.ParentId == null).ToListAsync();
+                var educationLevels = await _dM_DuLieuDanhMucRepository.GetQueryable().Where(x=>x.GroupId == rootEducationLevel.Id && x.ParentId == null).ToListAsync();
                 if(educationLevels == null)
                 {
                     return new DropdownOptionTree();

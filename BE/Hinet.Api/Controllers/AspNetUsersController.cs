@@ -18,7 +18,9 @@ using Hinet.Web.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Controllers
 {
@@ -215,7 +217,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetData", Name = "Xem danh sách tài khoản")]
-        //[ServiceFilter(typeof(LogActionFilter))]
+        //
         //[IpAddressAuthorized]
         public async Task<DataResponse<PagedList<UserDto>>> GetData([FromBody] AspNetUsersSearch search)
         {

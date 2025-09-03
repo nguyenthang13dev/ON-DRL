@@ -4,7 +4,8 @@ using Hinet.Service.Common.Service;
 using Hinet.Service.GroupUserRoleService.Dto;
 using Hinet.Service.Common;
 using Hinet.Service.Dto;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
+using MongoDB.Driver.Linq;
 
 namespace Hinet.Service.GroupUserRoleService
 {

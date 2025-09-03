@@ -5,7 +5,7 @@ using Hinet.Service.User_GroupUserService;
 using Hinet.Service.User_GroupUserService.Dto;
 using Hinet.Service.User_GroupUserService.ViewModels;
 using Hinet.Service.Common;
-using Hinet.Api.Filter;
+
 using CommonHelper.Excel;
 using Hinet.Web.Common;
 using Hinet.Api.ViewModels.Import;
@@ -109,7 +109,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetData", Name = "Xem danh sách User_GroupUser hệ thống")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         public async Task<DataResponse<PagedList<User_GroupUserDto>>> GetData([FromBody] User_GroupUserSearch search)
         {
             var data = await _user_GroupUserService.GetData(search);

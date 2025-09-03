@@ -1,5 +1,7 @@
 ﻿using Hinet.Service.Dto;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.Common
 {
@@ -19,7 +21,7 @@ namespace Hinet.Service.Common
         public int TotalCount { get; }
         public int TotalPage => (int)Math.Ceiling(TotalCount / (double)PageSize);
 
-        public static async Task<PagedList<T>> CreateAsync(IQueryable<T> query, SearchBase search)
+        public static async Task<PagedList<T>> CreateAsync(IMongoQueryable<T> query, SearchBase search)
         {
             var totalCount = await query.CountAsync();
             var items = await query.Skip((search.PageIndex - 1) * search.PageSize).Take(search.PageSize).ToListAsync();

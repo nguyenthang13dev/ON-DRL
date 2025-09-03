@@ -6,8 +6,6 @@ using Hinet.Service.ModuleService.Dto;
 using Hinet.Service.ModuleService.ViewModels;
 using Hinet.Service.Common;
 using Hinet.Service.Dto;
-using Hinet.Api.Filter;
-using Hinet.Api.Core.Attributes;
 using Hinet.Api.Hellper;
 using Hinet.Service.HuyenService.Dto;
 using Hinet.Api.Dto;
@@ -101,7 +99,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetData", Name = "Xem danh sách Chức năng")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         //[CustomRoleAuthorize("ModuleGetData")]
         public async Task<DataResponse<PagedList<ModuleDto>>> GetData([FromBody] ModuleSearch search)
         {

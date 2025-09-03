@@ -3,11 +3,13 @@ using Hinet.Repository.TaiLieuDinhKemRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.TaiLieuDinhKemService.Dto;
 using Hinet.Service.Common;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using CommonHelper.String;
 using Hinet.Service.Constant;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.TaiLieuDinhKemService
 {

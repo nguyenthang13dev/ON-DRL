@@ -5,7 +5,7 @@ using Hinet.Service.GroupUserService;
 using Hinet.Service.GroupUserService.Dto;
 using Hinet.Service.GroupUserService.ViewModels;
 using Hinet.Service.Common;
-using Hinet.Api.Filter;
+
 using CommonHelper.Excel;
 using Hinet.Web.Common;
 using Hinet.Api.ViewModels.Import;
@@ -13,6 +13,7 @@ using Hinet.Service.TaiLieuDinhKemService;
 using Hinet.Api.Dto;
 using Hinet.Service.Dto;
 using Hinet.Service.Constant;
+using MongoDB.Driver.Linq;
 
 namespace Hinet.Controllers
 {
@@ -44,7 +45,7 @@ namespace Hinet.Controllers
             {
                 if (!string.IsNullOrWhiteSpace(model.Code))
                 {
-                    if (await _groupUserService.AnyAsync(x => x.Code.Trim().ToLower().Equals(model.Code.Trim().ToLower())))
+                    if (await _groupUserService.Where(x => x.Code.Trim().ToLower().Equals(model.Code.Trim().ToLower())).AnyAsync())
                     {
                         return DataResponse<GroupUser>.False("Mã nhóm người sử dụng đã tồn tại");
                     }
@@ -74,7 +75,7 @@ namespace Hinet.Controllers
 
                 if (!string.IsNullOrWhiteSpace(model.Code))
                 {
-                    if (await _groupUserService.AnyAsync(x => x.Id != model.Id && x.Code.Trim().ToLower().Equals(model.Code.Trim().ToLower())))
+                    if (await _groupUserService.Where(x => x.Id != model.Id && x.Code.Trim().ToLower().Equals(model.Code.Trim().ToLower())).AnyAsync())
                     {
                         return DataResponse<GroupUser>.False("Mã nhóm người sử dụng đã tồn tại");
                     }
@@ -105,7 +106,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetData", Name = "Xem danh sách GroupUser hệ thống")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         public async Task<DataResponse<PagedList<GroupUserDto>>> GetData([FromBody] GroupUserSearch search)
         {
             if (search == null)
@@ -235,7 +236,7 @@ namespace Hinet.Controllers
         [HttpGet("GetDropdown")]
         public async Task<DataResponse<List<DropdownOption>>> GetDropdown()
         {
-            var data = await _groupUserService.GetDropdownOptions(x => x.Name, x => x.Id);
+            var data = await _groupUserService.GetDropDown("Name", "Id");
             return DataResponse<List<DropdownOption>>.Success(data);
         }
     }

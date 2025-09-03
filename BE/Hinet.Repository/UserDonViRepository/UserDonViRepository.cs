@@ -1,11 +1,11 @@
+using Hinet.Model;
 using Hinet.Model.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Hinet.Repository.UserRoleRepository
 {
     public class UserDonViRepository : Repository<UserDonVi>, IUserDonViRepository
     {
-        public UserDonViRepository(DbContext context) : base(context)
+        public UserDonViRepository(HinetMongoContext context) : base(context)
         {
         }
     }

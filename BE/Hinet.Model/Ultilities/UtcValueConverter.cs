@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hinet.Model.Entities;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Hinet.Model.Ultilities
@@ -20,26 +20,26 @@ namespace Hinet.Model.Ultilities
         {
         }
     }
-    public static class UtcDateTimeConvention
-    {
-        public static void ApplyUtcDateTimeConverter(this ModelBuilder modelBuilder)
-        {
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                var properties = entityType.ClrType.GetProperties()
-                    .Where(p => p.PropertyType == typeof(DateTime) || p.PropertyType == typeof(DateTime?));
+    //public static class UtcDateTimeConvention
+    //{
+    //    public static void ApplyUtcDateTimeConverter(this ModelBuilder modelBuilder)
+    //    {
+    //        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+    //        {
+    //            var properties = entityType.ClrType.GetProperties()
+    //                .Where(p => p.PropertyType == typeof(DateTime) || p.PropertyType == typeof(DateTime?));
 
-                foreach (var property in properties)
-                {
-                    var propertyBuilder = modelBuilder.Entity(entityType.ClrType).Property(property.Name);
+    //            foreach (var property in properties)
+    //            {
+    //                var propertyBuilder = modelBuilder.Entity(entityType.ClrType).Property(property.Name);
 
-                    if (property.PropertyType == typeof(DateTime))
-                        propertyBuilder.HasConversion(new UtcDateTimeConverter());
-                    else if (property.PropertyType == typeof(DateTime?))
-                        propertyBuilder.HasConversion(new NullableUtcDateTimeConverter());
-                }
-            }
-        }
-    }
+    //                if (property.PropertyType == typeof(DateTime))
+    //                    propertyBuilder.HasConversion(new UtcDateTimeConverter());
+    //                else if (property.PropertyType == typeof(DateTime?))
+    //                    propertyBuilder.HasConversion(new NullableUtcDateTimeConverter());
+    //            }
+    //        }
+    //    }
+    //}
 
 }

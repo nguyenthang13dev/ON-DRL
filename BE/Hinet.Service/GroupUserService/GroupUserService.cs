@@ -4,9 +4,10 @@ using Hinet.Service.Common.Service;
 using Hinet.Service.GroupUserService.Dto;
 using Hinet.Service.Common;
 using Hinet.Service.Dto;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Repository.RoleRepository;
 using Hinet.Repository.GroupUserRoleRepository;
+using MongoDB.Driver.Linq;
 
 namespace Hinet.Service.GroupUserService
 {
@@ -56,14 +57,14 @@ IGroupUserRoleRepository groupUserRoleRepository) : base(groupUserRepository)
 
             if (search != null)
             {
-                if (!string.IsNullOrEmpty(search.Name))
-                {
-                    query = query.Where(x => EF.Functions.Like(x.Name, $"%{search.Name}%"));
-                }
-                if (!string.IsNullOrEmpty(search.Code))
-                {
-                    query = query.Where(x => EF.Functions.Like(x.Code, $"%{search.Code}%"));
-                }
+                //if (!string.IsNullOrEmpty(search.Name))
+                //{
+                //    query = query.Where(x => EF.Functions.Like(x.Name, $"%{search.Name}%"));
+                //}
+                //if (!string.IsNullOrEmpty(search.Code))
+                //{
+                //    query = query.Where(x => EF.Functions.Like(x.Code, $"%{search.Code}%"));
+                //}
                 if (search.DepartmentId != null)
                 {
                     query = query.Where(x => x.DepartmentId == search.DepartmentId);

@@ -6,13 +6,16 @@ using System.ComponentModel;
 using System.Reflection;
 using System;
 using Hinet.Service.Common.Dtos;
+using Hinet.Service.Dto;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.Common.Service
 {
-    public class MongoService<T> : IMongoService<T> where T : IEntity
+    public class Service<T> : IService<T> where T : IEntity
     {
-        private readonly IMongoRepository<T> _repository;
-        public MongoService(IMongoRepository<T> repository)
+        private readonly IRepository<T> _repository;
+        public Service(IRepository<T> repository)
         {
             _repository = repository;
         }
@@ -68,22 +71,26 @@ namespace Hinet.Service.Common.Service
         {
             await _repository.UpdateAsync(entities);
         }
-        public async Task DeleteAsync(T entity)
+        public virtual async Task DeleteAsync(T entity)
         {
             await _repository.DeleteAsync(entity);
         }
-        public async Task DeleteAsync(IEnumerable<T> entities)
+        public virtual async Task DeleteAsync(IEnumerable<T> entities)
         {
             await _repository.DeleteAsync(entities);
         }
-        public IQueryable<T> GetQueryable()
+        public IMongoQueryable<T> GetQueryable()
         {
             return _repository.GetQueryable();
         }
 
-        public IQueryable<T> Where(Expression<Func<T, bool>> predicate)
+        public IMongoQueryable<T> Where(Expression<Func<T, bool>> predicate)
         {
             return _repository.GetQueryable().Where(predicate);
+        }
+        public IEnumerable<T> FindBy(Expression<Func<T, bool>> predicate)
+        {
+            return Where(predicate).AsEnumerable();
         }
         public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
@@ -94,7 +101,7 @@ namespace Hinet.Service.Common.Service
             return await _repository.GetQueryable().CountAsync(predicate);
         }
 
-        public async Task<List<SelectAntd>> GetDropDown(string labelField, string valueField)
+        public async Task<List<DropdownOption>> GetDropDown(string labelField, string valueField)
         {
             var query = _repository.GetQueryable();
             var param = Expression.Parameter(typeof(T), "t");
@@ -112,11 +119,11 @@ namespace Hinet.Service.Common.Service
             var valueConvert = Expression.Convert(valueProperty, typeof(object));
 
             // Biểu thức Lambda cho Select
-            var selectExpression = Expression.Lambda<Func<T, SelectAntd>>(
+            var selectExpression = Expression.Lambda<Func<T, DropdownOption>>(
                 Expression.MemberInit(
-                    Expression.New(typeof(SelectAntd)),
-                    Expression.Bind(typeof(SelectAntd).GetProperty("Label"), labelToString),
-                    Expression.Bind(typeof(SelectAntd).GetProperty("Value"), valueConvert) // Không dùng ToString()
+                    Expression.New(typeof(DropdownOption)),
+                    Expression.Bind(typeof(DropdownOption).GetProperty("Label"), labelToString),
+                    Expression.Bind(typeof(DropdownOption).GetProperty("Value"), valueConvert) // Không dùng ToString()
                 ),
                 param
             );

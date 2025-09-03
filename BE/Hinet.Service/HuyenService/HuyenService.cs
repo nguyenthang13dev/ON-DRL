@@ -3,10 +3,11 @@ using Hinet.Repository.HuyenRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.HuyenService.Dto;
 using Hinet.Service.Common;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using System.Net.WebSockets;
 using Microsoft.IdentityModel.Tokens;
 using Hinet.Service.Dto;
+using MongoDB.Driver.Linq;
 
 namespace Hinet.Service.HuyenService
 {

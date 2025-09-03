@@ -4,7 +4,7 @@ using Hinet.Service.Common.Service;
 using Hinet.Service.DepartmentService.Dto;
 using Hinet.Service.Common;
 using Hinet.Service.DepartmentService.ViewModels;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Repository.AppUserRepository;
 using Hinet.Repository.UserRoleRepository;
 using Hinet.Service.Constant;
@@ -17,6 +17,9 @@ using CommonHelper.String;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Hinet.Repository.DM_DuLieuDanhMucRepository;
 using Hinet.Service.DM_DuLieuDanhMucService;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.DepartmentService
 {
@@ -123,7 +126,7 @@ namespace Hinet.Service.DepartmentService
         public async Task<DepartmentDto> GetDto(Guid id)
         {
             string cacheKey = $"Department_Dto_{id}";
-            
+
             if (!_cache.TryGetValue(cacheKey, out DepartmentDto dto))
             {
                 dto = await (from q in GetQueryable().Where(x => x.Id == id)
@@ -160,7 +163,7 @@ namespace Hinet.Service.DepartmentService
         public async Task<DepartmentDto> GetDetail(Guid id)
         {
             string cacheKey = $"Department_Detail_{id}";
-            
+
             if (!_cache.TryGetValue(cacheKey, out DepartmentDto result))
             {
                 var currentDept = await GetByIdAsync(id) ?? throw new Exception("Department not found");
@@ -210,7 +213,7 @@ namespace Hinet.Service.DepartmentService
         public List<DepartmentHierarchy> GetDepartmentHierarchy()
         {
             string cacheKey = "Department_Hierarchy";
-            
+
             if (!_cache.TryGetValue(cacheKey, out List<DepartmentHierarchy> result))
             {
                 var departments = GetQueryable()
@@ -281,20 +284,20 @@ namespace Hinet.Service.DepartmentService
         public async Task<List<DropdownOption>> GetDropDown(string? selected)
         {
             string cacheKey = $"Department_Dropdown_{selected}";
-            
+
             if (!_cache.TryGetValue(cacheKey, out List<DropdownOption> result))
             {
 
                 try
                 {
                     result = await (from departmentTbl in GetQueryable()
-                                  select new DropdownOption
-                                  {
-                                      Label = departmentTbl.Name,
-                                      Value = departmentTbl.Code,
-                                      Selected = selected != null ? selected == departmentTbl.Id.ToString() : false
-                                  }).ToListAsync();
-                    
+                                    select new DropdownOption
+                                    {
+                                        Label = departmentTbl.Name,
+                                        Value = departmentTbl.Code,
+                                        Selected = selected != null ? selected == departmentTbl.Id.ToString() : false
+                                    }).ToListAsync();
+
                     _cache.Set(cacheKey, result, _defaultCacheDuration);
                 }
                 catch (Exception ex)
@@ -303,34 +306,34 @@ namespace Hinet.Service.DepartmentService
                 }
 
             }
-            
+
             return result;
         }
 
         public async Task<List<DropdownOption>> GetDropRolesInDepartment(Guid? departmentId, Guid? userId)
         {
-            if (!departmentId.HasValue || !userId.HasValue) 
+            if (!departmentId.HasValue || !userId.HasValue)
                 return new List<DropdownOption>();
-                
+
             string cacheKey = $"Department_Roles_{departmentId}_{userId}";
-            
+
             if (!_cache.TryGetValue(cacheKey, out List<DropdownOption> result))
             {
                 try
                 {
                     result = await (from departmentTbl in GetQueryable().Where(x => x.Id == departmentId)
-                                  join userRoleTbl in _userRoleRepository.GetQueryable().Where(x => x.UserId == userId)
-                                  on departmentTbl.Id equals userRoleTbl.DepartmentId
-                                  into userRoleGr
-                                  from userRoletData in userRoleGr.DefaultIfEmpty()
-                                  join roleTbl in _roleRepository.GetQueryable()
-                                  on userRoletData.RoleId equals roleTbl.Id
-                                  select new DropdownOption
-                                  {
-                                      Label = roleTbl.Name,
-                                      Value = roleTbl.Code,
-                                  }).ToListAsync();
-                    
+                                    join userRoleTbl in _userRoleRepository.GetQueryable().Where(x => x.UserId == userId)
+                                    on departmentTbl.Id equals userRoleTbl.DepartmentId
+                                    into userRoleGr
+                                    from userRoletData in userRoleGr.DefaultIfEmpty()
+                                    join roleTbl in _roleRepository.GetQueryable()
+                                    on userRoletData.RoleId equals roleTbl.Id
+                                    select new DropdownOption
+                                    {
+                                        Label = roleTbl.Name,
+                                        Value = roleTbl.Code,
+                                    }).ToListAsync();
+
                     _cache.Set(cacheKey, result, _defaultCacheDuration);
                 }
                 catch (Exception ex)
@@ -338,7 +341,7 @@ namespace Hinet.Service.DepartmentService
                     throw new Exception("Failed to retrieve roles in department: " + ex.Message);
                 }
             }
-            
+
             return result;
         }
 
@@ -347,7 +350,7 @@ namespace Hinet.Service.DepartmentService
         public async Task<List<DropdownOptionTree>> GetDropdownTreeOption(bool disabledParent = true)
         {
             string cacheKey = $"Department_TreeOption_{disabledParent}";
-            
+
             if (!_cache.TryGetValue(cacheKey, out List<DropdownOptionTree> result))
             {
                 var departments = await GetQueryable()
@@ -359,7 +362,7 @@ namespace Hinet.Service.DepartmentService
                 {
                     result.Add(BuildTree(dept, departments, disabledParent));
                 }
-                
+
                 _cache.Set(cacheKey, result, _defaultCacheDuration);
             }
 
@@ -387,7 +390,7 @@ namespace Hinet.Service.DepartmentService
         public async Task<List<DropdownOptionTree>> GetDropdownTreeOptionByUserDepartment(bool disabledParent = true, Guid? donViId = null)
         {
             string cacheKey = $"Department_TreeOptionByUser_{disabledParent}_{donViId}";
-            
+
             if (!_cache.TryGetValue(cacheKey, out List<DropdownOptionTree> result))
             {
                 result = new List<DropdownOptionTree>();
@@ -418,7 +421,7 @@ namespace Hinet.Service.DepartmentService
                         result.Add(BuildTree(dept, departments, disabledParent));
                     }
                 }
-                
+
                 _cache.Set(cacheKey, result, _defaultCacheDuration);
             }
 
@@ -428,22 +431,22 @@ namespace Hinet.Service.DepartmentService
         public async Task<List<DropdownOptionTree>> GetSubAndCurrentUnitDropdownTreeByUserDepartment(bool disabledParent = true, Guid? donViId = null)
         {
             string cacheKey = $"Department_SubAndCurrent_{disabledParent}_{donViId}";
-            
+
             if (!_cache.TryGetValue(cacheKey, out List<DropdownOptionTree> result))
             {
                 result = new List<DropdownOptionTree>();
                 var departments = await GetQueryable()
                     .Where(x => x.IsActive).ToListAsync() ?? new List<Department>();
                 var department = departments.Where(x => x.Id == donViId).FirstOrDefault();
-                
+
                 if (department != null)
                 {
                     result.Add(BuildTree(department, departments, disabledParent));
                 }
-                
+
                 _cache.Set(cacheKey, result, _defaultCacheDuration);
             }
-            
+
             return result;
         }
 
@@ -481,14 +484,14 @@ namespace Hinet.Service.DepartmentService
         public List<DepartmentVM> BuildDepartmentHierarchy()
         {
             string cacheKey = "Department_BuildHierarchy";
-            
+
             if (!_cache.TryGetValue(cacheKey, out List<DepartmentVM> result))
             {
                 var departments = GetQueryable().ToList();
                 result = GetDepartmentHierarchy(departments, null);
                 _cache.Set(cacheKey, result, _defaultCacheDuration);
             }
-            
+
             return result;
         }
 
@@ -525,7 +528,7 @@ namespace Hinet.Service.DepartmentService
                              CreatedDate = q.CreatedDate,
                          }).OrderByDescending(x => x.CreatedDate);
 
-            var departments = await query.AsNoTracking().ToListAsync();
+            var departments = await query.ToListAsync();
             return departments
                 .Select((item, index) => new DepartmentExport
                 {
@@ -541,13 +544,13 @@ namespace Hinet.Service.DepartmentService
         public List<Guid> GetChildIds(List<Guid> ids)
         {
             string cacheKey = $"Department_ChildIds_{string.Join("_", ids)}";
-            
+
             if (!_cache.TryGetValue(cacheKey, out List<Guid> result))
             {
                 result = new List<Guid>();
                 if (ids == null || !ids.Any()) return result;
-                
-                var childIds = FindBy(x => x.ParentId != null && ids.Contains(x.ParentId.Value))
+
+                var childIds = GetQueryable().Where(x => x.ParentId != null && ids.Contains(x.ParentId.Value))
                     .Select(x => x.Id)
                     .ToList();
 
@@ -556,14 +559,14 @@ namespace Hinet.Service.DepartmentService
                     result.AddRange(childIds);
                     result.AddRange(GetChildIds(childIds));
                 }
-                
+
                 _cache.Set(cacheKey, result, _defaultCacheDuration);
             }
-            
+
             return result;
         }
 
-// Thêm các phương thức để xóa cache khi dữ liệu thay đổi
+        // Thêm các phương thức để xóa cache khi dữ liệu thay đổi
         public override async Task CreateAsync(Department entity)
         {
             ClearDepartmentCaches();
@@ -591,7 +594,7 @@ namespace Hinet.Service.DepartmentService
             // Xóa cache chung
             _cache.Remove("Department_Hierarchy");
             _cache.Remove("Department_BuildHierarchy");
-            
+
             // Các cache khác sẽ hết hạn theo thời gian
         }
         //Lấy userId dựa vào phòng và vai trò
@@ -608,9 +611,9 @@ namespace Hinet.Service.DepartmentService
 
         public async Task<List<DropdownOption>> GetDropDownByShortName(string? shortName)
         {
-            shortName = shortName??"".Trim();  
+            shortName = shortName ?? "".Trim();
             var parentDeparment = await _departmentRepository.GetQueryable().FirstOrDefaultAsync(x => x.ParentId == null && x.ShortName.ToLower() == shortName.ToLower());
-            if(parentDeparment == null)
+            if (parentDeparment == null)
             {
                 return await (from departmentTbl in GetQueryable()
                               select new DropdownOption

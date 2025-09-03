@@ -6,13 +6,15 @@ using Hinet.Service.NotificationService.Dto;
 using Hinet.Service.Common;
 using Hinet.Service.Dto;
 using Hinet.Service.NotificationService.ViewModels;
-using Hinet.Api.Filter;
+
 using Hinet.Service.EmailService;
 using Hinet.Service.TaiLieuDinhKemService;
 using CommonHelper.CrawlProvider;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Service.ModuleService.Dto;
 using Hinet.Api.Dto;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Controllers
 {
@@ -140,7 +142,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetData", Name = "Xem danh sách thông báo")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         public async Task<DataResponse<PagedList<NotificationDto>>> GetData([FromBody] NotificationSearch search)
         {
             var data = await _notificationService.GetData(search);
@@ -157,7 +159,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetNotification", Name = "Xem danh sách thông báo chưa đọc")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         public async Task<DataResponse<PagedList<NotificationDto>>> GetNotification()
         {
             var data = await _notificationService.GetNotification(UserId, 5);
@@ -166,7 +168,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetDataDoanhNghiep", Name = "Xem danh sách thông báo doanh nghiệp")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         public async Task<DataResponse<PagedList<NotificationDto>>> GetDataDoanhNghiep([FromBody] NotificationSearch search)
         {
             var data = await _notificationService.GetDataDoanhNghiep(search);
@@ -175,7 +177,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetDataSanPham", Name = "Xem danh sách thông báo sản phẩm")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         public async Task<DataResponse<PagedList<NotificationDto>>> GetDataSanPham([FromBody] NotificationSearch search)
         {
             var data = await _notificationService.GetDataSanPham(search);

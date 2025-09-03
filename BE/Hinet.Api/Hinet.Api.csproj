@@ -7,15 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\Telegram\**" />
     <Compile Remove="Logs\**" />
     <Compile Remove="Root\**" />
     <Compile Remove="wwwroot\**" />
+    <Content Remove="Controllers\Telegram\**" />
     <Content Remove="Logs\**" />
     <Content Remove="Root\**" />
     <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="Controllers\Telegram\**" />
     <EmbeddedResource Remove="Logs\**" />
     <EmbeddedResource Remove="Root\**" />
     <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="Controllers\Telegram\**" />
     <None Remove="Logs\**" />
     <None Remove="Root\**" />
     <None Remove="wwwroot\**" />
@@ -86,7 +90,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Telegram\" />
+    <Folder Include="Core\Attributes\" />
     <Folder Include="Core\Common\" />
   </ItemGroup>
 

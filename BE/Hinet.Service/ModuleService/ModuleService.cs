@@ -3,7 +3,7 @@ using Hinet.Repository.ModuleRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.ModuleService.Dto;
 using Hinet.Service.Common;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Repository.OperationRepository;
 using ZstdSharp.Unsafe;
 using Hinet.Repository.RoleRepository;
@@ -12,6 +12,8 @@ using Hinet.Service.OperationService.Dto;
 using Hinet.Service.RoleOperationService.Dto;
 using Hinet.Service.Dto;
 using Microsoft.Extensions.Caching.Memory;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.ModuleService
 {

@@ -1,11 +1,12 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
-using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using MongoDbGenericRepository;
 using Hinet.Model.Entities;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using MongoDB.Driver;
 
 namespace Hinet.Model
 {
@@ -22,7 +23,7 @@ namespace Hinet.Model
             _httpContextAccessor = httpContextAccessor;
 
             // Set the GuidRepresentation to Standard
-            SetGuidRepresentation(GuidRepresentation.Standard);
+            //SetGuidRepresentation(GuidRepresentation.Standard);
         }
 
         public IMongoClient Client => _client;
@@ -110,6 +111,43 @@ namespace Hinet.Model
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public class AppDBContext : IMongoDbContext
+    {
+        public readonly IMongoDatabase Database;
+
+        public AppDBContext(IMongoClient client, string databaseName)
+        {
+            Database = client.GetDatabase(databaseName);
+            //SetGuidRepresentation(GuidRepresentation.Standard);
+        }
+
+        public IMongoClient Client => throw new NotImplementedException();
+
+        IMongoDatabase IMongoDbContext.Database => throw new NotImplementedException();
+
+        public void DropCollection<TDocument>(string? partitionKey = null)
+        {
+            Database.DropCollection(GetCollectionName<TDocument>());
+        }
+
+        public IMongoCollection<TDocument> GetCollection<TDocument>(string? partitionKey = null)
+        {
+            return Database.GetCollection<TDocument>(GetCollectionName<TDocument>());
+        }
+        private string GetCollectionName<TDocument>()
+        {
+            return typeof(TDocument).Name;
+        }
+        public void SetGuidRepresentation(GuidRepresentation guidRepresentation)
+        {
+            var existingSerializer = BsonSerializer.LookupSerializer<Guid>();
+            if (existingSerializer is not GuidSerializer)
+            {
+                BsonSerializer.RegisterSerializer(new GuidSerializer(guidRepresentation));
             }
         }
     }

@@ -22,13 +22,15 @@ using Hinet.Service.OperationService;
 using Hinet.Service.OperationService.Dto;
 using Hinet.Service.User_GroupUserService;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 
 //using MongoDB.Driver.Linq;
 using System.Security.Claims;
 using System.Text;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.AppUserService
 {

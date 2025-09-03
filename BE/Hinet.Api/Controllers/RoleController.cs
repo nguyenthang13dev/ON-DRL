@@ -9,10 +9,11 @@ using Hinet.Service.Dto;
 using Hinet.Service.UserRoleService.Dto;
 using Hinet.Service.RoleOperationService;
 using Role = Hinet.Model.Entities.Role;
-using Hinet.Api.Filter;
+
 using Hinet.Service.OperationService.Dto;
 using Hinet.Api.Dto;
 using Hinet.Service.Constant;
+using MongoDB.Driver.Linq;
 
 namespace Hinet.Controllers
 {
@@ -44,7 +45,7 @@ namespace Hinet.Controllers
 			{
 				try
 				{
-					var check = await _roleService.AnyAsync(x => x.Code == model.Code);
+					var check = await _roleService.Where(x => x.Code == model.Code).AnyAsync();
 					if (check)
 					{
 						return DataResponse<Role>.False("Mã nhóm quyền đã tồn tại");
@@ -73,7 +74,7 @@ namespace Hinet.Controllers
 					var entity = await _roleService.GetByIdAsync(model.Id);
 					if (entity == null)
 						return DataResponse<Role>.False("Role not found");
-                    var check = await _roleService.AnyAsync(x => x.Code == model.Code && x.Id != model.Id);
+                    var check = await _roleService.Where(x => x.Code == model.Code && x.Id != model.Id).AnyAsync();
                     if (check)
                     {
                         return DataResponse<Role>.False("Mã nhóm quyền đã tồn tại");
@@ -129,7 +130,7 @@ namespace Hinet.Controllers
 		}
 
 		[HttpPost("GetData", Name = "Xem danh sách Vai trò")]
-		[ServiceFilter(typeof(LogActionFilter))]
+		
 		public async Task<DataResponse<PagedList<RoleDto>>> GetData([FromBody] RoleSearch search)
 		{
 			if (search == null)

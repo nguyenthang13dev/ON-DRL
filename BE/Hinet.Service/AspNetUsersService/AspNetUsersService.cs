@@ -3,7 +3,7 @@ using Hinet.Repository.AspNetUsersRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.AspNetUsersService.Dto;
 using Hinet.Service.Common;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Repository.UserRoleRepository;
 using Hinet.Repository.RoleRepository;
 using Hinet.Repository.DepartmentRepository;
@@ -12,6 +12,8 @@ using Hinet.Repository.User_GroupUserRepository;
 using Hinet.Service.GroupUserService;
 using Hinet.Service.DepartmentService;
 using CommonHelper.Extenions;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.AspNetUsersService
 {

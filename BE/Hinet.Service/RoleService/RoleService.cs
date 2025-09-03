@@ -3,13 +3,15 @@ using Hinet.Repository.RoleRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.RoleService.Dto;
 using Hinet.Service.Common;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Microsoft.IdentityModel.Tokens;
 using Hinet.Repository.UserRoleRepository;
 using Hinet.Service.Constant;
 using Hinet.Service.Dto;
 using Hinet.Repository.DepartmentRepository;
 using CommonHelper.Extenions;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.RoleService
 {

@@ -1,158 +1,96 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hinet.Model;
 using Hinet.Model.Entities;
+using Microsoft.AspNetCore.Http;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using SharpCompress.Common;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Hinet.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class, IEntity
+    public class Repository<T> : IRepository<T>
+        where T : class, IEntity
     {
-        protected DbContext _entities;
-        protected readonly DbSet<T> _dbset;
+        protected readonly IMongoCollection<T> _collection;
+        private readonly HinetMongoContext _context;
 
-        public Repository(DbContext context)
+        public Repository(HinetMongoContext context)
         {
-            _entities = context;
-            _dbset = context.Set<T>();
+            var collectionName = typeof(T).Name;
+            _collection = context.Database.GetCollection<T>(collectionName);
+            this._context = context;
         }
 
-        public virtual DbSet<T> DBSet()
+        public virtual IMongoCollection<T> Collection()
         {
-            return _dbset;
+            return _collection;
         }
-        public async Task SaveChangesAsync()
+
+        public virtual IMongoQueryable<T> GetQueryable()
         {
-            await _entities.SaveChangesAsync();
+            return _collection.AsQueryable();
+        }
+
+        public async Task<IEnumerable<T>> FindBy(Expression<Func<T, bool>> predicate)
+        {
+            return await _collection.Find(predicate).ToListAsync();
+        }
+
+        public virtual async Task<T> CreateAsync(T entity)
+        {
+
+            _context.AuditFields(entity);
+
+            await _collection.InsertOneAsync(entity);
+            return entity;
+        }
+
+        public virtual async Task<IEnumerable<T>> CreateAsync(IEnumerable<T> entities)
+        {
+            _context.AuditFields(entities);
+            await _collection.InsertManyAsync(entities);
+            return entities;
+        }
+        public virtual async Task<T> DeleteAsync(T entity)
+        {
+            var filter = Builders<T>.Filter.Eq(e => e.Id, entity.Id);
+            return await _collection.FindOneAndDeleteAsync(filter);
+        }
+        public virtual async Task<T> UpdateAsync(T entity)
+        {
+            _context.AuditFields(entity);
+            var filter = Builders<T>.Filter.Eq(e => e.Id, entity.Id);
+            await _collection.ReplaceOneAsync(filter, entity);
+            return entity;
+        }
+        public virtual async Task<IEnumerable<T>> UpdateAsync(IEnumerable<T> entities)
+        {
+            _context.AuditFields(entities);
+
+            var bulkOps = new List<WriteModel<T>>();
+            foreach (var entity in entities)
+            {
+                var filter = Builders<T>.Filter.Eq(e => e.Id, entity.Id);
+                var updateOne = new ReplaceOneModel<T>(filter, entity);
+                bulkOps.Add(updateOne);
+            }
+            if (bulkOps.Count > 0)
+            {
+                await _collection.BulkWriteAsync(bulkOps);
+            }
+            return entities;
         }
         public async Task<T?> GetByIdAsync(Guid? id)
         {
-            return await _dbset.FindAsync(id);
+            var filter = Builders<T>.Filter.Eq(e => e.Id, id);
+            return await _collection.Find(filter).FirstOrDefaultAsync();
         }
-        public virtual IEnumerable<T> GetAll()
+        public async Task DeleteAsync(IEnumerable<T> entities)
         {
-            return _dbset.AsEnumerable<T>();
+            var ids = entities.Select(e => e.Id);
+            var filter = Builders<T>.Filter.In(e => e.Id, ids);
+            await _collection.DeleteManyAsync(filter);
         }
-        public void AddRange(IEnumerable<T> entities)
-        {
-            foreach (var entity in entities)
-            {
-                TrimStringProperties(entity);
-            }
-
-            _dbset.AddRange(entities);
-        }
-        public virtual IQueryable<T> GetQueryable()
-        {
-            return _dbset.AsNoTracking().AsQueryable();
-        }
-        public virtual IQueryable<T> GetQueryableWithTracking()
-        {
-            return _dbset.AsQueryable();
-        }
-        public IQueryable<T> Where(Expression<Func<T, bool>> predicate)
-        {
-            return GetQueryable().Where(predicate);
-        }
-
-        public virtual T Add(T entity)
-        {
-            return _dbset.Add(entity).Entity;
-        }
-
-        public virtual T Delete(T entity)
-        {
-            return _dbset.Remove(entity).Entity;
-        }
-
-        public virtual void Update(T entity)
-        {
-            var entry = _entities.Entry(entity);
-            entry.State = EntityState.Modified;
-            if (entry.Properties.Any(p => p.Metadata.Name == "CreatedDate"))
-            {
-                entry.Property("CreatedDate").IsModified = false;
-            }
-        }
-
-        public virtual void UpdateRange(IEnumerable<T> entities)
-        {
-            foreach (var entity in entities)
-            {
-                var entry = _entities.Entry(entity);
-                entry.State = EntityState.Modified;
-                if (entry.Properties.Any(p => p.Metadata.Name == "CreatedDate"))
-                {
-                    entry.Property("CreatedDate").IsModified = false;
-                }
-            }
-        }
-
-        public virtual async Task SaveAsync()
-        {
-            await _entities.SaveChangesAsync();
-        }
-
-
-
-        public void CreateRange(IEnumerable<T> entities)
-        {
-            _entities.Set<T>().AddRange(entities);
-        }
-
-        public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
-        {
-            return _dbset.AnyAsync(predicate);
-        }
-
-        public void Delete(Expression<Func<T, bool>> filter)
-        {
-            var entities = _dbset.Where(filter);
-            _dbset.RemoveRange(entities);
-        }
-
-        public void DeleteRange(IEnumerable<T> entities)
-        {
-            _dbset.RemoveRange(entities);
-        }
-
-
-        public IEnumerable<T> FindBy(Expression<Func<T, bool>> predicate)
-        {
-            IEnumerable<T> query = _dbset.Where(predicate).AsEnumerable();
-            return query;
-        }
-
-        public async Task InsertRange(List<T> entities)
-        {
-            if (entities != null && entities.Any())
-            {
-                await _entities.Set<T>().AddRangeAsync(entities);
-                await SaveAsync();
-            }
-        }
-
-
-        #region Private method
-        private void TrimStringProperties(T entity)
-        {
-            var properties = typeof(T).GetProperties()
-                .Where(p => p.PropertyType == typeof(string) &&
-                            p is { CanRead: true, CanWrite: true });
-
-            foreach (var prop in properties)
-            {
-                if (prop.GetValue(entity) is string value)
-                {
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        continue;
-                    }
-
-                    prop.SetValue(entity, value.Trim());
-                }
-            }
-        }
-        #endregion
-
     }
 }

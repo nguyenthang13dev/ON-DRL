@@ -7,7 +7,7 @@ using Hinet.Service.Common;
 using Hinet.Service.Dto;
 using Hinet.Api.Core.Permission;
 using Hinet.Service.TinhService.ViewModels;
-using Hinet.Api.Filter;
+
 using Hinet.Service.TaiLieuDinhKemService.Dto;
 using Hinet.Api.Dto;
 
@@ -87,7 +87,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetData", Name = "Xem danh sách tỉnh")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         public async Task<DataResponse<PagedList<TinhDto>>> GetData([FromBody] TinhSearch search)
         {
             var result = await _tinhService.GetData(search);

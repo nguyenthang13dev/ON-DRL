@@ -1,17 +1,17 @@
 ﻿using Azure;
 using Hinet.Api.Dto;
-using Hinet.Api.Filter;
+
 using Hinet.Api.Hellper;
 using Hinet.Model.Entities;
 using Hinet.Service.Common;
 using Hinet.Service.Constant;
 using Hinet.Service.Core.Mapper;
-using Hinet.Service.DA_DuAnService;
 using Hinet.Service.TaiLieuDinhKemService;
 using Hinet.Service.TaiLieuDinhKemService.Dto;
 using Hinet.Service.TaiLieuDinhKemService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace Hinet.Controllers
 {
@@ -22,21 +22,18 @@ namespace Hinet.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<TaiLieuDinhKemController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IDA_DuAnService _da_DuAnService;
 
         public TaiLieuDinhKemController(
             ITaiLieuDinhKemService taiLieuDinhKemService,
             IMapper mapper,
             ILogger<TaiLieuDinhKemController> logger
 ,
-            IWebHostEnvironment webHostEnvironment,
-            IDA_DuAnService da_DuAnService)
+            IWebHostEnvironment webHostEnvironment)
         {
             this._taiLieuDinhKemService = taiLieuDinhKemService;
             this._mapper = mapper;
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
-            _da_DuAnService = da_DuAnService;
         }
 
         [HttpPost("Create")]
@@ -124,7 +121,7 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("GetData", Name = "Xem danh sách tài liệu đính kèm")]
-        [ServiceFilter(typeof(LogActionFilter))]
+        
         public async Task<DataResponse<PagedList<TaiLieuDinhKemDto>>> GetData([FromBody] TaiLieuDinhKemSearch search)
         {
             if (search.IsDonVi.HasValue && search.IsDonVi.Value) search.Item_ID = DonViId.ToString();
@@ -254,7 +251,6 @@ namespace Hinet.Controllers
                     });
                 }
 
-                await UpdateStatusFileDuAn(itemId, loaiTaiLieu);
 
                 result.Data = listFile;
                 return result;
@@ -264,75 +260,6 @@ namespace Hinet.Controllers
                 return DataResponse<List<TaiLieuDinhKemDto>>.False("Some properties are not valid");
             }
          
-        }
-        private async Task UpdateStatusFileDuAn(string itemId, string loaiTaiLieu)
-        {
-            //cập nhật dự án
-            if (loaiTaiLieu == LoaiTaiLieuConstant.DA_KeHoachNoiBo)
-            {
-                var duAn = await _da_DuAnService.GetByIdAsync(Guid.Parse(itemId));
-                if (duAn != null)
-                {
-                    duAn.HasFileKeHoachTrienKhaiNoiBo = true;
-                        await _da_DuAnService.UpdateAsync(duAn);
-                }
-                return;
-            }
-            if (loaiTaiLieu == LoaiTaiLieuConstant.DA_KeHoachTrienKhai)
-            {
-                var duAn = await _da_DuAnService.GetByIdAsync(Guid.Parse(itemId));
-                if (duAn != null)
-                {
-                    duAn.HasFileKeHoachTrienKhaiKhachHang = true;
-                    await _da_DuAnService.UpdateAsync(duAn);
-                }
-            }
-            if (loaiTaiLieu == LoaiTaiLieuConstant.DA_PhieuKhaoSat)
-            {
-                var duAn = await _da_DuAnService.GetByIdAsync(Guid.Parse(itemId));
-                if (duAn != null)
-                {
-                    duAn.HasFileKhaoSat = true;
-                    await _da_DuAnService.UpdateAsync(duAn);
-                }
-            }
-            if (loaiTaiLieu == LoaiTaiLieuConstant.DA_CheckListNghiemThu)
-            {
-                var duAn = await _da_DuAnService.GetByIdAsync(Guid.Parse(itemId));
-                if (duAn != null)
-                {
-                    duAn.HasCheckListNghiemThuKyThuat = true;
-                    await _da_DuAnService.UpdateAsync(duAn);
-                }
-            }
-            if (loaiTaiLieu == LoaiTaiLieuConstant.DA_NoiDungKhaoSat)
-            {
-                var duAn = await _da_DuAnService.GetByIdAsync(Guid.Parse(itemId));
-                if (duAn != null)
-                {
-                    duAn.HasFileNoiDungKhaoSat = true;
-                    await _da_DuAnService.UpdateAsync(duAn);
-                }
-            }
-            if (loaiTaiLieu == LoaiTaiLieuConstant.DA_HoSoNghiemThuKyThuat)
-            {
-                var duAn = await _da_DuAnService.GetByIdAsync(Guid.Parse(itemId));
-                if (duAn != null)
-                {
-                    duAn.HasFileNghiemThuKyThuat = true;
-                    await _da_DuAnService.UpdateAsync(duAn);
-                }
-            }
-
-            if (loaiTaiLieu == LoaiTaiLieuConstant.DA_TaiLieuDuAn)
-            {
-                var duAn = await _da_DuAnService.GetByIdAsync(Guid.Parse(itemId));
-                if (duAn != null)
-                {
-                    duAn.HasFileTaiLieuDuAn = true;
-                    await _da_DuAnService.UpdateAsync(duAn);
-                }
-            }
         }
 
         [HttpGet("getByItemAndLoai")]

@@ -3,29 +3,20 @@ using Hinet.Repository.NotificationRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.NotificationService.Dto;
 using Hinet.Service.Common;
-using Microsoft.EntityFrameworkCore;
 using Hinet.Service.UserRoleService;
 using Hinet.Service.RoleService;
-using Hinet.Service.Constant;
 using Hinet.Repository.TaiLieuDinhKemRepository;
 using Hinet.Repository.AppUserRepository;
 using Hinet.Service.Dto;
-using Hinet.Service.DA_PhanCongService.ViewModels;
-using Hinet.Repository.DA_PhanCongRepository;
-using Hinet.Service.DA_PhanCongService;
 using Hinet.Repository.AspNetUsersRepository;
-using Hinet.Repository.DA_DuAnRepository;
 using Hinet.Repository.DM_DuLieuDanhMucRepository;
-using System.Linq;
+using MongoDB.Driver.Linq;
 
 namespace Hinet.Service.NotificationService
 {
     public class NotificationService : Service<Notification>, INotificationService
     {
         private readonly IUserRoleService _userRoleService;
-        private readonly IDA_PhanCongRepository _phanCongRepository;
-        private readonly IDA_PhanCongService _phanCongService;
-        private readonly IDA_DuAnRepository _duAnRepository;
         private readonly IAppUserRepository _appUserRepository;
         private readonly IDM_DuLieuDanhMucRepository _dmDuLieuDanhMucRepository;
         private readonly IAspNetUsersRepository _aspNetUsersRepository;
@@ -35,9 +26,6 @@ namespace Hinet.Service.NotificationService
         public NotificationService(
             INotificationRepository notificationRepository,
             IUserRoleService userRoleService,
-            IDA_PhanCongRepository phanCongRepository,
-            IDA_PhanCongService phanCongService,
-            IDA_DuAnRepository duAnRepository,
             IAppUserRepository appUserRepository,
             IDM_DuLieuDanhMucRepository dmDuLieuDanhMucRepository,
             IAspNetUsersRepository aspNetUsersRepository,
@@ -45,9 +33,6 @@ namespace Hinet.Service.NotificationService
             IRoleService roleService) : base(notificationRepository)
         {
             _userRoleService = userRoleService;
-            _phanCongRepository = phanCongRepository;
-            _phanCongService = phanCongService;
-            _duAnRepository = duAnRepository;
             _appUserRepository = appUserRepository;
             _dmDuLieuDanhMucRepository = dmDuLieuDanhMucRepository;
             _aspNetUsersRepository = aspNetUsersRepository;
@@ -396,127 +381,7 @@ namespace Hinet.Service.NotificationService
         }
 
 
-        public async Task<List<Notification>> CreateOrUpdateNotificationPhanCong(
-      List<DA_PhanCongCreateVM> listPhanCong, Guid duAnId, Guid fromUser)
-        {
-            
-                // Lấy tên người gửi và tên dự án
-                var fromUserName = await _aspNetUsersRepository.GetQueryable()
-                    .Where(x => x.Id == fromUser)
-                    .Select(x => x.Name)
-                    .SingleOrDefaultAsync();
-
-                var duAnName = await _duAnRepository.GetQueryable()
-                    .Where(x => x.Id == duAnId)
-                    .Select(x => x.TenDuAn)
-                    .SingleOrDefaultAsync();
-
-                // Lấy danh sách notification đã tạo cho dự án này
-                var existingNotifications = await GetQueryable()
-                    .Where(x => x.ItemId == duAnId)
-                    .ToListAsync();
-
-                var listNotification = new List<Notification>();
-
-                // Lấy danh sách UserId từ phân công
-                var assignedUserIds = listPhanCong.Select(x => x.UserId).ToHashSet();
-
-                // Lấy danh sách tất cả VaiTrò để tránh truy vấn nhiều lần
-                var allVaiTroIds = listPhanCong
-                    .SelectMany(p => (p.VaiTroId ?? "")
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries))
-                    .Select(id => Guid.TryParse(id.Trim(), out var g) ? g : Guid.Empty)
-                    .Where(g => g != Guid.Empty)
-                    .Distinct()
-                    .ToList();
-
-                var vaiTroDict = await _dmDuLieuDanhMucRepository.GetQueryable()
-                    .Where(x => allVaiTroIds.Contains(x.Id))
-                    .ToDictionaryAsync(x => x.Id, x => x.Name);
-
-                // Group các vai trò theo user để tiện sử dụng
-                var userVaiTroMap = listPhanCong.ToDictionary(
-                    pc => pc.UserId,
-                    pc =>
-                    {
-                        var ids = (pc.VaiTroId ?? "")
-                            .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                            .Select(s => Guid.TryParse(s.Trim(), out var g) ? g : Guid.Empty)
-                            .Where(g => g != Guid.Empty)
-                            .ToList();
-
-                        var names = ids
-                            .Where(id => vaiTroDict.ContainsKey(id))
-                            .Select(id => vaiTroDict[id])
-                            .ToList();
-
-                        return names;
-                    });
-
-                var existingUserIds = existingNotifications.Select(x => x.ToUser).ToHashSet();
-
-                // CASE 2: Người trong phân công nhưng chưa có thông báo → Gửi thông báo mới
-                foreach (var userId in assignedUserIds)
-                {
-                    if (!existingUserIds.Contains(userId))
-                    {
-                        var vaiTroNames = userVaiTroMap[userId];
-                        var noti = new Notification
-                        {
-                            FromUser = fromUser,
-                            ToUser = userId,
-                            Message = $"Bạn được phân công công việc vào dự án {duAnName} với vai trò: {string.Join(", ", vaiTroNames)}",
-                            Link = $"/DuAn/detail/{duAnId}",
-                            Type = "PHANCONG",
-                            ItemName = "PHANCONG",
-                            SendToFrontEndUser = true,
-                            IsRead = false,
-                            CreatedDate = DateTime.Now,
-                            ItemId = duAnId,
-                            LoaiThongBao = "Phân công",
-                            TieuDe = $"Thông báo phân công từ {fromUserName} vào dự án {duAnName}",
-                            NoiDung = $"Bạn đã được phân công với vai trò: {string.Join(", ", vaiTroNames)}",
-                            IsXuatBan = false
-                        };
-                        await CreateAsync(noti);
-                        listNotification.Add(noti);
-                    }
-                }
-
-                // CASE 3: Người đã có thông báo nhưng **không còn trong danh sách phân công**
-                foreach (var oldNoti in existingNotifications)
-                {
-                    if (!assignedUserIds.Contains(oldNoti.ToUser.Value))
-                    {
-                        oldNoti.Link = "";
-                        await UpdateAsync(oldNoti); // Gọi update nếu có hàm riêng
-
-                        var noti = new Notification
-                        {
-                            FromUser = fromUser,
-                            ToUser = oldNoti.ToUser,
-                            Message = $"Bạn không cần tham gia vào dự án {duAnName} nữa.",
-                            Link = $"/DuAn/detail/{duAnId}",
-                            Type = "PHANCONG",
-                            ItemName = "PHANCONG",
-                            SendToFrontEndUser = true,
-                            IsRead = false,
-                            CreatedDate = DateTime.Now,
-                            ItemId = duAnId,
-                            LoaiThongBao = "Phân công",
-                            TieuDe = $"Thông báo từ {fromUserName} - Rút khỏi dự án {duAnName}",
-                            NoiDung = $"Bạn không còn được phân công trong dự án này.",
-                            IsXuatBan = false
-                        };
-                        await CreateAsync(noti);
-                        listNotification.Add(noti);
-                    }
-                }
-
-                return listNotification;
-           
-  
-        }
+       
 
      
     }

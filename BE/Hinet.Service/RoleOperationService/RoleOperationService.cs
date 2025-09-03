@@ -3,9 +3,11 @@ using Hinet.Repository.RoleOperationRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.RoleOperationService.Dto;
 using Hinet.Service.Common;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Repository.RoleRepository;
 using Hinet.Repository.OperationRepository;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace Hinet.Service.RoleOperationService
 {

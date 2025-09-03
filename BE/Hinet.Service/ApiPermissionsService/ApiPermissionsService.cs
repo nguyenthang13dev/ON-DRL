@@ -4,12 +4,14 @@ using Hinet.Service.Common.Service;
 using Hinet.Service.ApiPermissionsService.Dto;
 using Hinet.Service.Common;
 using Hinet.Service.Dto;
-using Microsoft.EntityFrameworkCore;
+using Hinet.Model.Entities;
 using Hinet.Repository.RoleRepository;
 using Hinet.Repository.UserRoleRepository;
 using Hinet.Service.ApiPermissionsService.ViewModels;
 using Microsoft.Extensions.Caching.Memory;
 using Pipelines.Sockets.Unofficial;
+using MongoDB.Driver.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hinet.Service.ApiPermissionsService
 {
@@ -128,7 +130,7 @@ namespace Hinet.Service.ApiPermissionsService
 
             if (model.RoleId.HasValue)
             {
-                var items = GetQueryableWithTracking().Where(x => x.RoleId == model.RoleId).ToList();
+                var items = GetQueryable().Where(x => x.RoleId == model.RoleId).ToList();
 
                 var deletes = items.Where(x => !model.Paths.Contains(x.Path)).ToList();
                 if (deletes.Count > 0)
@@ -161,7 +163,7 @@ namespace Hinet.Service.ApiPermissionsService
             }
             if (model.UserId.HasValue)
             {
-                var items = GetQueryableWithTracking().Where(x => x.UserId == model.UserId).ToList();
+                var items = GetQueryable().Where(x => x.UserId == model.UserId).ToList();
 
                 var deletes = items.Where(x => !model.Paths.Contains(x.Path)).ToList();
                 if (deletes.Count > 0)
