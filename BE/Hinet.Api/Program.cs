@@ -26,7 +26,7 @@ internal class Program
 
 
         builder.Services.Configure<CompanyInfoDto>(
-    builder.Configuration.GetSection("CompanyInfo"));
+        builder.Configuration.GetSection("CompanyInfo"));
 
         builder.Services.AddSingleton(resolver =>
             resolver.GetRequiredService<IOptions<CompanyInfoDto>>().Value);

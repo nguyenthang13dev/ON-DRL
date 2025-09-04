@@ -1,61 +1,63 @@
 'use client';
 import Flex from '@/components/shared-components/Flex';
-import { searchUserData, tableUserDataType } from '@/types/auth/User';
-import {
-  DropdownOption,
-  ResponsePageInfo,
-  DropdownTreeOptionAntd,
-} from '@/types/general';
+import AutoBreadcrumb from '@/components/util-compenents/Breadcrumb';
+import withAuthorization from '@/libs/authentication';
+import { departmentService } from '@/services/department/department.service';
 import { userService } from '@/services/user/user.service';
 import { setIsLoading } from '@/store/general/GeneralSlice';
 import { useSelector } from '@/store/hooks';
 import { AppDispatch } from '@/store/store';
-import {
-  CloseOutlined,
-  DeleteOutlined,
-  DownOutlined,
-  EditOutlined,
-  EyeOutlined,
-  LockOutlined,
-  PlusCircleOutlined,
-  RedoOutlined,
-  SearchOutlined,
-  SignatureOutlined,
-  UnlockOutlined,
-  UserAddOutlined,
-  UsergroupAddOutlined,
-  VerticalAlignTopOutlined,
-} from '@ant-design/icons';
-import {
-  Button,
-  Card,
-  Dropdown,
-  FormProps,
-  MenuProps,
-  Pagination,
-  Popconfirm,
-  Space,
-  Table,
-  TableProps,
-  Tag,
-  UploadFile,
-} from 'antd';
+import { searchUserData, tableUserDataType } from '@/types/auth/User';
+import
+  {
+    DropdownOption,
+    DropdownTreeOptionAntd,
+    ResponsePageInfo,
+  } from '@/types/general';
+import formatDate from '@/utils/formatDate';
+import
+  {
+    CloseOutlined,
+    DeleteOutlined,
+    DownOutlined,
+    EditOutlined,
+    EyeOutlined,
+    LockOutlined,
+    PlusCircleOutlined,
+    RedoOutlined,
+    SearchOutlined,
+    SignatureOutlined,
+    UnlockOutlined,
+    UserAddOutlined,
+    UsergroupAddOutlined,
+    VerticalAlignTopOutlined,
+  } from '@ant-design/icons';
+import
+  {
+    Button,
+    Card,
+    Dropdown,
+    FormProps,
+    MenuProps,
+    Pagination,
+    Popconfirm,
+    Space,
+    Table,
+    TableProps,
+    Tag
+  } from 'antd';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import CreateOrUpdate from './createOrUpdate';
+import UserDetail from './Detail';
+import EditChuKySo from './editChuKySo';
+import EditUserGroupUser from './editUserGroupUser';
+import EditUserRole from './editUserRole';
 import classes from './page.module.css';
 import Search from './search';
-import CreateOrUpdate from './createOrUpdate';
-import { toast } from 'react-toastify';
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import EditUserRole from './editUserRole';
-import AutoBreadcrumb from '@/components/util-compenents/Breadcrumb';
-import { departmentService } from '@/services/department/department.service';
-import UserDetail from './Detail';
-import formatDate from '@/utils/formatDate';
-import EditUserGroupUser from './editUserGroupUser';
-import EditChuKySo from './editChuKySo';
-import withAuthorization from '@/libs/authentication';
 
 const QLNguoiDung: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -602,4 +604,4 @@ const QLNguoiDung: React.FC = () => {
   );
 };
 
-export default withAuthorization(QLNguoiDung, 'QLNguoiDung');
+export default withAuthorization(QLNguoiDung, '');

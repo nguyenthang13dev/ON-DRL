@@ -36,7 +36,6 @@ namespace Hinet.Service.AspNetUsersService.ViewModels
         public string? MatKhau { get; set; }
         public string? LoaiTaiKhoan { get; set; }
         public List<string>? VaiTro { get; set; }
-		[Required]
         public string? DepartmentId { get; set; }
     }
 }

@@ -21,8 +21,9 @@ namespace Hinet.Model.Entities
     public class Entity : BaseEntity, IEntity
     {
         [Key]
+        [BsonId]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [BsonRepresentation(BsonType.String)]
+        //[BsonRepresentation(BsonType.ObjectId)]
         public Guid Id { get; set; }
     }
 }

@@ -1,22 +1,22 @@
-import { createEditType, tableUserDataType } from "@/types/auth/User";
-import {
-  DatePicker,
-  Form,
-  FormProps,
-  Input,
-  Modal,
-  Radio,
-  TreeSelect,
-  UploadFile,
-} from "antd";
-import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
-import { userService } from "@/services/user/user.service";
-import { fetchDropdown } from "@/utils/fetchDropdown";
-import { DropdownOption, DropdownTreeOptionAntd } from "@/types/general";
 import { roleService } from "@/services/role/role.service";
-import { toast } from "react-toastify";
+import { userService } from "@/services/user/user.service";
+import { createEditType, tableUserDataType } from "@/types/auth/User";
+import { DropdownOption, DropdownTreeOptionAntd } from "@/types/general";
+import { fetchDropdown } from "@/utils/fetchDropdown";
+import
+  {
+    DatePicker,
+    Form,
+    FormProps,
+    Input,
+    Modal,
+    Radio,
+    Select
+  } from "antd";
+import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 dayjs.extend(utc);
 dayjs.locale("vi");
 
@@ -175,7 +175,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
           <Input />
         </Form.Item>
 
-        <Form.Item<createEditType>
+        {/* <Form.Item<createEditType>
           label="Phòng ban"
           name="departmentId"
           rules={
@@ -197,9 +197,9 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
             treeDefaultExpandAll
             treeData={props.departmentDropdown}
           />
-        </Form.Item>
+        </Form.Item> */}
 
-        {/* <Form.Item
+        <Form.Item
           label="Vai trò"
           name="vaiTro"
           rules={[{ required: true, message: "Vui lòng nhập thông tin này!" }]}
@@ -210,7 +210,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
             options={props.dropVaiTros}
             fieldNames={{ label: "label", value: "value" }}
           />
-        </Form.Item> */}
+        </Form.Item>
         <Form.Item<createEditType>
           label="Điện thoại"
           name="phoneNumber"
