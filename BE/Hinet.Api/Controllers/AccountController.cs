@@ -401,7 +401,6 @@ namespace Hinet.Controllers
                     Status = true
                 };
             }
-
             foreach (var item in result.MenuData.Where(item => !string.IsNullOrEmpty(item.Icon)))
             {
                 item.Icon = ConvertToBase64.GetContentFile(item.Icon, _webHostEnvironment);

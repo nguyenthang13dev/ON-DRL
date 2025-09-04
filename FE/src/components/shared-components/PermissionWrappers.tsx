@@ -1,5 +1,5 @@
+import { MenuProps } from "antd";
 import React from 'react';
-import { Menu, MenuProps } from "antd";
 import usePermissionHelper from "./PermissionHelper";
 
 interface ActionWrapperProps {
@@ -21,9 +21,15 @@ export const PermissionWrapper: React.FC<ActionWrapperProps> = ({
         isAuthenticated,
     } = usePermissionHelper();
 
+
+
     if (isAuthenticated()) {
         // Kiểm tra quyền truy cập theo moduleCode và operation
-        if (hasPermission(moduleCode, operation) && businessRule) {
+        console.log(operation);
+        
+    
+        if ( hasPermission( moduleCode, operation ) && businessRule )
+        {
             return <>{children}</>;
         } else if (fallback) {
             return <>{fallback}</>;

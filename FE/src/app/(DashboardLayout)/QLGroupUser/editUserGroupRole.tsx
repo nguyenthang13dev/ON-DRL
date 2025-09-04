@@ -1,20 +1,21 @@
-import { tableGroupUserDataType } from "@/types/groupUser/groupUser";
-import {
-  Form,
-  FormProps,
-  Input,
-  Modal,
-  Select,
-  Typography,
-} from "antd";
-import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
+import { groupUserRoleService } from "@/services/groupUserRole/groupUserRole.service";
+import { roleService } from "@/services/role/role.service";
 import { DropdownOption } from "@/types/general";
+import { tableGroupUserDataType } from "@/types/groupUser/groupUser";
+import { createEditType } from "@/types/groupUserRole/groupUserRole";
+import
+  {
+    Form,
+    FormProps,
+    Input,
+    Modal,
+    Select,
+    Typography,
+  } from "antd";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import classes from "./page.module.css";
-import { groupUserRoleService } from "@/services/groupUserRole/groupUserRole.service";
-import { createEditType } from "@/types/groupUserRole/groupUserRole";
-import { roleService } from "@/services/role/role.service";
 dayjs.locale("vi");
 
 interface Props {
@@ -29,6 +30,8 @@ const EditUserGroupRole: React.FC<Props> = (props: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(props.isOpen);
   const [role, setRole] = useState<DropdownOption[]>();
 
+  console.log(props);
+  
   const handleOnFinish: FormProps<createEditType>["onFinish"] = async (
     formData: createEditType
   ) => {

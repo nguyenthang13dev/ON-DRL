@@ -1,52 +1,47 @@
 "use client";
+import ErrorBoundary from "@/components/shared-components/ErrorBoundary";
 import Flex from "@/components/shared-components/Flex";
-import { ResponsePageInfo } from "@/types/general";
+import { usePermissionHelper } from "@/components/shared-components/PermissionHelper";
+import { PermissionWrapper, useBuildMenuItems } from "@/components/shared-components/PermissionWrappers";
+import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
+import { MODULE_QUANTRIHETHONG } from "@/constants/PermissionConstants";
 import withAuthorization from "@/libs/authentication";
+import { GroupUserService } from "@/services/groupUser/groupUser.service";
 import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  CloseOutlined,
-  DeleteOutlined,
-  DownOutlined,
-  EditOutlined,
-  EyeOutlined,
-  PlusCircleOutlined,
-  SearchOutlined,
-  SettingOutlined,
-  UserAddOutlined,
-  VerticalAlignTopOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Dropdown,
-  FormProps,
-  MenuProps,
-  Pagination,
-  Popconfirm,
-  Space,
-  Table,
-  TableProps,
-  Tag,
-} from "antd";
+import { ResponsePageInfo } from "@/types/general";
+import { searchGroupUserData, tableGroupUserDataType } from "@/types/groupUser/groupUser";
+import
+  {
+    CloseOutlined,
+    DeleteOutlined,
+    DownOutlined,
+    EditOutlined,
+    PlusCircleOutlined,
+    SearchOutlined,
+    UserAddOutlined
+  } from "@ant-design/icons";
+import
+  {
+    Button,
+    Card,
+    Dropdown,
+    FormProps,
+    Pagination,
+    Popconfirm,
+    Space,
+    Table,
+    TableProps,
+    Tag
+  } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import CreateOrUpdate from "./createOrUpdate";
+import EditUserGroupRole from "./editUserGroupRole";
 import classes from "./page.module.css";
 import Search from "./search";
-import CreateOrUpdate from "./createOrUpdate";
-import { toast } from "react-toastify";
-import { tableGroupUserDataType, searchGroupUserData } from "@/types/groupUser/groupUser";
-import { GroupUserService } from "@/services/groupUser/groupUser.service";
-import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
-import EditUserGroupRole from "./editUserGroupRole";
-import { useBuildMenuItems, PermissionWrapper } from "@/components/shared-components/PermissionWrappers"
-import ErrorBoundary from "@/components/shared-components/ErrorBoundary";
-import { Console } from "console";
-import { MODULE_QUANTRIHETHONG } from "@/constants/PermissionConstants";
-import { usePermissionHelper } from "@/components/shared-components/PermissionHelper";
 // import SafeTable from "@/components/shared-components/SafeTable";
 // import DebugStoreState from "@/components/shared-components/DebugStoreState";
 
@@ -65,7 +60,12 @@ const QLGroupUser: React.FC = () => {
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [isEditGroupUserRole, setIsEditGroupUserRole] =
     useState<boolean>(false);
-  const [openPopconfirmId, setOpenPopconfirmId] = useState<string | null>(null);
+  const [ openPopconfirmId, setOpenPopconfirmId ] = useState<string | null>( null );
+  
+
+  console.log(currentGroupUser);
+  
+
   const{getUserInfo}=usePermissionHelper();
   // Build menu items function
   const getMenuItems = useBuildMenuItems({
@@ -76,7 +76,9 @@ const QLGroupUser: React.FC = () => {
         label: "Phân nhóm quyền",
         key: "setting",
         icon: <UserAddOutlined />,
-        func: (record) => {
+        func: ( record ) =>
+        {
+          console.log( "Phân nhóm quyền cho nhóm người dùng:", record );
           setCurrentGroupUser(record);
           setIsEditGroupUserRole(true);
         },
@@ -147,6 +149,10 @@ const QLGroupUser: React.FC = () => {
       fixed: "right",
       render: (_: any, record: tableGroupUserDataType) => {
         const items = getMenuItems;
+
+        console.log(record);
+        
+
         return (
           <>
             <Dropdown menu={{ items }} trigger={["click"]}>
@@ -248,16 +254,13 @@ const QLGroupUser: React.FC = () => {
       setCurrentGroupUser(module);
     }
   };
-
   const handleClose = () => {
     setIsOpenModal(false);
     setCurrentGroupUser(null);
   };
-
   const handleCloseDetail = () => {
     setIsOpenDetail(false);
-  };
-
+  }; 
 
   useEffect(() => {
     handleGetListModule();
@@ -265,9 +268,7 @@ const QLGroupUser: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      {/* Debug component tạm thời bị comment */}
       {/* <DebugStoreState /> */}
-      
       <Flex
         alignItems="center"
         justifyContent="space-between"
@@ -284,7 +285,7 @@ const QLGroupUser: React.FC = () => {
           >
             {isPanelVisible ? "Ẩn tìm kiếm" : "Tìm kiếm"}
           </Button>
-          <PermissionWrapper moduleCode="QUANTRIHETHONG" operation="canGroupUserCreate">
+          <PermissionWrapper moduleCode="QUANTRIHETHONG" operation={MODULE_QUANTRIHETHONG.actions.qLGroupUser}>
             <Button
               onClick={() => {
                 handleShowModal();
@@ -302,6 +303,11 @@ const QLGroupUser: React.FC = () => {
               GroupUser={currentGroupUser}
             />
           </PermissionWrapper>
+
+
+
+
+          
         </div>
       </Flex>
       {isPanelVisible && <Search onFinish={onFinishSearch} />}
@@ -354,4 +360,4 @@ const QLGroupUser: React.FC = () => {
   );
 };
 
-export default withAuthorization(QLGroupUser, "QLGroupUser");
+export default withAuthorization(QLGroupUser, "");

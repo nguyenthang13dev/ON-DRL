@@ -1,9 +1,7 @@
 "use client";
-import React, { useState } from "react";
 import LoginForm from "@/components/auth-components/LoginForm";
-import { Col, Divider, Image, Modal, Row, Spin } from "antd";
-import SignaturePad from "@/components/signature/SignaturePad";
-import KySoInfo from "@/components/signature/SisnatureInfo";
+import { Col, Divider, Image, Row } from "antd";
+import React, { useState } from "react";
 
 const backgroundStyle = {
   backgroundImage: "url(/img/bg-login2.jpg)",
@@ -31,7 +29,7 @@ const Login: React.FC = () => {
               />
             </div>
             <div className="uppercase text-3xl font-bold text-primary">
-              Hệ thống quản lý nội bộ HINET - EMS
+              Hệ thống đánh giá điểm rèn luyện sinh viên - Đại học Thủy Lợi
             </div>
           </div>
           {/* <SignaturePad />

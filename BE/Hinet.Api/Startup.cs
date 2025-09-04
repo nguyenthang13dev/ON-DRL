@@ -44,7 +44,8 @@ namespace Hinet.Api
             services.AddIdentity<AppUser, AppRole>()
                     .AddMongoDbStores<AppUser, AppRole, Guid>(
                         AppSettings.Connections.MongoDBConnection.ConnectionString,
-                        AppSettings.Connections.MongoDBConnection.DatabaseName)
+                        AppSettings.Connections.MongoDBConnection.DatabaseName
+                        )
                     .AddDefaultTokenProviders();
 
 

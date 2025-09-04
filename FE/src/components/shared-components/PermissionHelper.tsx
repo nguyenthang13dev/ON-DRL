@@ -1,9 +1,9 @@
-import React from 'react';
 import { useSelector } from '@/store/hooks';
 import { RootState } from '@/store/store';
 import { UserType } from '@/types/auth/User';
 import { MenuDataType } from '@/types/menu/menu';
 import { PermissionType } from '@/types/role/role';
+import React from 'react';
 
 /**
  * Custom Hook để lấy thông tin user, roles, operations và permissions từ Redux store
@@ -89,6 +89,9 @@ const hasPermission = (moduleCode: string, permissionKey: string): boolean => {
     (permission) => permission?.moduleCode?.toUpperCase() === moduleCode.toUpperCase()
   );
 
+
+  console.log(modulePermission);
+  
   const result = modulePermission?.permissions?.[permissionKey] === true;
   console.log(`Permission check: module=${moduleCode}, key=${permissionKey}, result=${result}`);
   return result;

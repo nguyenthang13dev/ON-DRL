@@ -8,6 +8,7 @@ using Hinet.Model.Entities;
 using Hinet.Repository.RoleRepository;
 using Hinet.Repository.GroupUserRoleRepository;
 using MongoDB.Driver.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hinet.Service.GroupUserService
 {
@@ -26,13 +27,13 @@ IGroupUserRoleRepository groupUserRoleRepository) : base(groupUserRepository)
 
         public async Task<PagedList<GroupUserDto>> GetData(GroupUserSearch search)
         {
-            var groupUserRoles = _roleRepository.GetQueryable()
-                .Join(_groupUserRoleRepository.GetQueryable(),
+            var groupUserRoles = _roleRepository.GetInMemoryQueryable()
+                .Join(_groupUserRoleRepository.GetInMemoryQueryable(),
                 role => role.Id,
                 gur => gur.RoleId,
                 (role, gur) => new { roles = role, groupUserRoles = gur });
 
-            var query = GetQueryable()
+            var query = GetInMemoryQueryable()
                         .GroupJoin(groupUserRoles,
                         q => q.Id,
                         gur => gur.groupUserRoles.GroupUserId,
@@ -71,7 +72,7 @@ IGroupUserRoleRepository groupUserRoleRepository) : base(groupUserRepository)
                 }
             }
             query = query.OrderByDescending(x => x.CreatedDate);
-            var result = await PagedList<GroupUserDto>.CreateAsync(query, search);
+            var result = await PagedList<GroupUserDto>.CreateMemoryAsync(query, search);
 
 
 
@@ -80,7 +81,7 @@ IGroupUserRoleRepository groupUserRoleRepository) : base(groupUserRepository)
 
         public async Task<GroupUserDto?> GetDto(Guid id)
         {
-            var item = await (from q in GetQueryable().Where(x => x.Id == id)
+            var item = await (from q in GetInMemoryQueryable().Where(x => x.Id == id)
                               select new GroupUserDto()
                               {
                                   Name = q.Name,

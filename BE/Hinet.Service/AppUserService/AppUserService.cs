@@ -31,6 +31,7 @@ using System.Security.Claims;
 using System.Text;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hinet.Service.AppUserService
 {
@@ -336,41 +337,49 @@ namespace Hinet.Service.AppUserService
 
             var userId = user.Id;
 
-            //var roleFromGroupUser = await _user_GroupUserService.GetQueryable()
-            //  .Where(x => x.UserId == userId)
-            //  .Join(_groupUserService.GetQueryable(),
-            //      userGroupUser => userGroupUser.GroupUserId,
-            //      groupUser => groupUser.Id,
-            //      (userGroupUser, groupUser) => new { groupUser.Id })
-            //  .Join(_groupUserRoleService.GetQueryable(),
-            //      grouped => grouped.Id,
-            //      groupUserRole => groupUserRole.GroupUserId,
-            //      (grouped, groupUserRole) => groupUserRole.RoleId)
-            //  .Join(_roleRepository.GetQueryable(),
-            //      roleId => roleId,
-            //      role => role.Id,
-            //      (roleId, role) => role.Code)
-            //  .Distinct()
-            //  .ToListAsync();
-            var a = await _userRoleRepository.GetQueryable()
-               .Where(x => x.UserId == userId).ToListAsync();
-            var b = await _roleRepository.GetQueryable().ToListAsync();
-            var roleFromUser = await _userRoleRepository.GetQueryable()
-                .Where(x => x.UserId == userId)
-                .Join(_roleRepository.GetQueryable(),
-                    userRole => userRole.RoleId,
-                    role => role.Id,
-                    (userRole, role) => role.Code)
+            var groupIds = _user_GroupUserService.GetQueryable()
+                    .Where(x => x.UserId == userId)
+                    .ToList();
+
+            // Lấy roleId theo group
+            var roleIds = _groupUserRoleService.GetQueryable()
+                .Where(x => groupIds.Any(t => t.GroupUserId.Equals(x.GroupUserId)))
+                .ToList();
+
+            // Lấy code theo roleId
+            var roleCodes = _roleRepository.GetQueryable()
+                .Where(x => roleIds.Any(t => t.RoleId.Equals(x.Id)))
                 .Distinct()
-                .ToListAsync();
+                .ToList();
+
+            var roleFromGroupUser = groupIds
+             .Join(
+                 roleIds,
+                 userGroupUser => userGroupUser.GroupUserId,
+                 groupUser => groupUser.Id,
+                 (userGroupUser, groupUser) => groupUser.Id // chọn thẳng GroupUserId
+             )
+             .Join(
+                 roleIds,
+                 groupUserId => groupUserId,
+                 groupUserRole => groupUserRole.GroupUserId,
+                 (groupUserId, groupUserRole) => groupUserRole.RoleId
+             )
+             .Join(
+                 roleCodes,
+                 roleId => roleId,
+                 role => role.Id,
+                 (roleId, role) => role.Code
+             )
+             .Distinct()
+             .ToList();
 
             var donVi = await _departmentRepository.GetQueryable()
                 .Where(x => x.Id == user.DonViId)
                 .Select(d => new { d.Name, d.CapBac })
                 .FirstOrDefaultAsync();
 
-            //var sumRole = roleFromGroupUser.Concat(roleFromUser).Distinct().ToList();
-            var sumRole = new List<string>() { "Admin"};
+            var sumRole = roleFromGroupUser.Concat(roleFromGroupUser).Distinct().ToList();
             userDto.ListRole = sumRole;
             userDto.MenuData = await _operationService.GetListMenu(user.Id, sumRole).ConfigureAwait(false);
             userDto.Permissions = await _operationService.GetPermissionUser(user.Id);
@@ -421,8 +430,8 @@ namespace Hinet.Service.AppUserService
 
         public async Task<List<UserDto>?> GetUsersByRoleIds(List<Guid> idsVaiTroTiepNhan, Guid? donviId = null)
         {
-            return await (from user in GetQueryable()
-                          join userRole in _userRoleRepository.GetQueryable()
+            return await (from user in GetInMemoryQueryable()
+                          join userRole in _userRoleRepository.GetInMemoryQueryable()
                               on user.Id equals userRole.UserId
                           where idsVaiTroTiepNhan.Contains(userRole.RoleId)
                                 && (donviId == null || donviId == user.DonViId)
@@ -435,7 +444,7 @@ namespace Hinet.Service.AppUserService
         public async Task<List<DropdownOption>> GetDropDownUser(Guid? id)
         {
 
-            return await (from user in GetQueryable()
+            return await (from user in GetInMemoryQueryable()
                           where user.Id != id
                           select new DropdownOption()
                           {

@@ -118,7 +118,6 @@ namespace Hinet.Controllers
                 search.DepartmentId = DonViId;
             }
             var data = await _groupUserService.GetData(search);
-            var C= DataResponse<PagedList<GroupUserDto>>.Success(data);
             return DataResponse<PagedList<GroupUserDto>>.Success(data);
         }
 

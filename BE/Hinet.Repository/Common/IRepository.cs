@@ -1,6 +1,5 @@
 ﻿using Hinet.Model.Entities;
 using MongoDB.Driver.Linq;
-using MongoDB.Driver.Linq;
 using System.Linq.Expressions;
 
 namespace Hinet.Repository
@@ -8,6 +7,7 @@ namespace Hinet.Repository
     public interface IRepository<T> where T : IEntity
     {
         IMongoQueryable<T> GetQueryable();
+        IQueryable<T> GetInMemoryQueryable();
         Task<IEnumerable<T>> FindBy(Expression<Func<T, bool>> predicate);
         Task<T> CreateAsync(T entity);
         Task<IEnumerable<T>> CreateAsync(IEnumerable<T> entities);

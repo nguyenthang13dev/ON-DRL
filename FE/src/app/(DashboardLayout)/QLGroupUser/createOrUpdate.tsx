@@ -1,9 +1,9 @@
-import { Form, FormProps, Input, Modal } from "antd";
-import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
-import { toast } from "react-toastify";
-import { tableGroupUserDataType, createEditType } from "@/types/groupUser/groupUser";
 import { GroupUserService } from "@/services/groupUser/groupUser.service";
+import { createEditType, tableGroupUserDataType } from "@/types/groupUser/groupUser";
+import { Form, FormProps, Input, Modal } from "antd";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 dayjs.locale("vi");
 
 interface Props {

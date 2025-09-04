@@ -1,10 +1,12 @@
 ﻿using AspNetCore.Identity.MongoDbCore.Models;
 using Microsoft.AspNetCore.Identity;
+using MongoDbGenericRepository.Attributes;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hinet.Model.Entities
 {
+    [CollectionName("AppUser")]
     public class AppUser : MongoIdentityUser<Guid>, IEntity
     {
         [DisplayName("Tên đăng nhập")]

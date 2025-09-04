@@ -83,13 +83,12 @@ namespace Hinet.Service.ApiPermissionsService
 
         public async Task<List<ApiPermissions>> GetByUserId(Guid? userId)
         {
-            return await GetQueryable().Where(x => userId == x.UserId).ToListAsync();
+            return GetQueryable().Where(x => userId == x.UserId).ToList();
         }
-
 
         public async Task<List<ApiPermissions>> GetByRoleId(Guid? roleId)
         {
-            return await GetQueryable().Where(x => roleId == x.RoleId).ToListAsync();
+            return GetQueryable().Where(x => roleId == x.RoleId).ToList();
         }
 
         public async Task<List<string?>> GetApiPermistionOfUser(Guid? userId)

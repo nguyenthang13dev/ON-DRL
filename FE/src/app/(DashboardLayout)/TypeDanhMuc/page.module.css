@@ -1,0 +1,16 @@
+.customCardShadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mgright5 {
+  margin-right: 5px;
+}
+
+.mgButton10 {
+  margin-bottom: 10px;
+}
+
+.colorKetXuat {
+  background-color: #52c41a !important;
+  border-color: #52c41a !important;
+}

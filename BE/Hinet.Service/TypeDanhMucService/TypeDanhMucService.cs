@@ -3,54 +3,44 @@ using Hinet.Repository.TinhRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.TinhService.Dto;
 using Hinet.Service.Common;
-using Hinet.Model.Entities;
 using Hinet.Service.Dto;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver;
+using Hinet.Repository;
+using Hinet.Service.TypeDanhMucService.Dto;
 
-namespace Hinet.Service.TinhService
+namespace Hinet.Service.TypeDanhMucService
 {
-    public class TinhService : Service<Tinh>, ITinhService
+    public class TypeDanhMucService : Service<TypeDanhMuc>, ITypeDanhMucService
     {
-        public TinhService(
-             ITinhRepository tinhRepository
-            ) : base(tinhRepository)
+        public TypeDanhMucService(IRepository<TypeDanhMuc> repository) : base(repository)
         {
-        }
 
-        public async Task<PagedList<TinhDto>> GetData(TinhSearch search)
+        }
+        public async Task<PagedList<TypeDanhMucDto>> GetData(TypeDanhMucSearch search)
         {
             try
             {
                 var query = from q in GetQueryable()
-                            select new TinhDto()
+                            select new TypeDanhMucDto()
                             {
                                 Id = q.Id,
-                                TenTinh = q.TenTinh,
-                                MaTinh = q.MaTinh,
-                                Loai = q.Loai,
+                                Name = q.Name,
+                                Type = q.Type,
+                                CodeDm = q.CodeDm,
+                                Min = q.Min,
+                                Max = q.Max, 
                                 UpdatedDate = q.UpdatedDate,
                                 CreatedDate = q.CreatedDate
                             };
 
                 if (search != null)
                 {
-                    if (!string.IsNullOrEmpty(search.TenTinh))
-                    {
-                        query = query.Where(x => !string.IsNullOrEmpty(x.TenTinh) && x.TenTinh.Contains(search.TenTinh));
-                    }
-                    if (!string.IsNullOrEmpty(search.MaTinh))
-                    {
-                        query = query.Where(x => !string.IsNullOrEmpty(x.MaTinh) && x.MaTinh.Contains(search.MaTinh));
-                    }
-                    if (!string.IsNullOrEmpty(search.Loai))
-                    {
-                        query = query.Where(x => x.Loai == search.Loai);
-                    }
+                    
                 }
 
                 query = query.OrderByDescending(x => x.CreatedDate);
-                return await PagedList<TinhDto>.CreateAsync(query, search);
+                return await PagedList<TypeDanhMucDto>.CreateAsync(query, search);
             }
             catch (Exception ex)
             {
@@ -58,12 +48,12 @@ namespace Hinet.Service.TinhService
             }
         }
 
-        public async Task<TinhDto> GetDto(Guid id)
+        public async Task<TypeDanhMucDto> GetDto(Guid id)
         {
             try
             {
                 var item = await (from q in GetQueryable().Where(x => x.Id == id)
-                                  select new TinhDto()
+                                  select new TypeDanhMucDto()
                                   {
                                       Id = q.Id,
                                       CreatedDate = q.CreatedDate,
@@ -85,8 +75,8 @@ namespace Hinet.Service.TinhService
                 var datas = await (from q in GetQueryable()
                                    select new DropdownOption()
                                    {
-                                       Value = q.MaTinh,
-                                       Label = q.TenTinh,
+                                       Value = q.Type,
+                                       Label = q.Name,
                                    }).ToListAsync();
 
                 return datas;

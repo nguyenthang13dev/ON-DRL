@@ -2,7 +2,6 @@
 using Hinet.Service.Common.Dtos;
 using Hinet.Service.Dto;
 using MongoDB.Driver.Linq;
-using MongoDB.Driver.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -19,6 +18,7 @@ namespace Hinet.Service.Common.Service
         Task DeleteAsync(T entity);
         Task DeleteAsync(IEnumerable<T> entities);
         IMongoQueryable<T> GetQueryable();
+        IQueryable<T> GetInMemoryQueryable();
         IMongoQueryable<T> Where(Expression<Func<T, bool>> predicate);
         IEnumerable<T> FindBy(Expression<Func<T, bool>> predicate);
         Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);

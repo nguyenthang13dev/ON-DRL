@@ -7,7 +7,6 @@ using System.Reflection;
 using System;
 using Hinet.Service.Common.Dtos;
 using Hinet.Service.Dto;
-using MongoDB.Driver.Linq;
 using MongoDB.Driver;
 
 namespace Hinet.Service.Common.Service
@@ -83,6 +82,14 @@ namespace Hinet.Service.Common.Service
         {
             return _repository.GetQueryable();
         }
+
+
+        public IQueryable<T> GetInMemoryQueryable()
+        {
+            return _repository.GetInMemoryQueryable();
+        }
+
+
 
         public IMongoQueryable<T> Where(Expression<Func<T, bool>> predicate)
         {

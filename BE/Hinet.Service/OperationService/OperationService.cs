@@ -67,7 +67,6 @@ namespace Hinet.Service.OperationService
                                 DeleteTime = q.DeleteTime,
                                 TrangThaiHienThi = q.IsShow ? "Hiển thị" : "Không hiển thị"
                             };
-
                 if (search != null)
                 {
                     if (search.ModuleId != null)
@@ -322,7 +321,6 @@ namespace Hinet.Service.OperationService
 
                 // If not in cache, execute the original logic
                 var result = await GetMenuDataFromDatabase(roleCodes);
-
                 return result;
             }
             catch (Exception ex)
@@ -482,12 +480,12 @@ namespace Hinet.Service.OperationService
 
         public async Task<List<PermissionDto>> GetPermissionUser(Guid UserId)
         {
-            var listRoleIdOfUser = (from userRole in _userRoleRepository.GetQueryable().Where(x => x.UserId == UserId).ToList()
-                                    join role in _roleRepository.GetQueryable().Where(x => x.IsActive).ToList()
+            var listRoleIdOfUser = (from userRole in _userRoleRepository.GetInMemoryQueryable().Where(x => x.UserId == UserId)
+                                    join role in _roleRepository.GetInMemoryQueryable().Where(x => x.IsActive)
                                     on userRole.RoleId equals role.Id
                                     select role).Select(x => x.Id).ToList();
 
-            var listOperationId = _roleOperationRepository.GetQueryable()
+            var listOperationId = _roleOperationRepository.GetInMemoryQueryable()
                 .Where(x => listRoleIdOfUser.Contains(x.RoleId))
                 .Select(x => x.OperationId);
 

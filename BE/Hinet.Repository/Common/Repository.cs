@@ -31,7 +31,10 @@ namespace Hinet.Repository
         {
             return _collection.AsQueryable();
         }
-
+        public virtual IQueryable<T> GetInMemoryQueryable()
+        {
+            return _collection.AsQueryable().ToList().AsQueryable();
+        }
         public async Task<IEnumerable<T>> FindBy(Expression<Func<T, bool>> predicate)
         {
             return await _collection.Find(predicate).ToListAsync();
