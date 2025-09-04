@@ -96,7 +96,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonHelper\CommonHelper.csproj" />
-    <ProjectReference Include="..\Hinet.Encrypt\Hinet.Encrypt.csproj" />
     <ProjectReference Include="..\Hinet.Model\Hinet.Model.csproj" />
     <ProjectReference Include="..\Hinet.Repository\Hinet.Repository.csproj" />
     <ProjectReference Include="..\Hinet.Service\Hinet.Service.csproj" />

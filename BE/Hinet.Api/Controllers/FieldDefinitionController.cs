@@ -32,25 +32,25 @@ namespace Hinet.Controllers
             _fieldDefinitionService = fieldDefinitionService;
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> Update(string templateId, string fieldId, [FromBody] UpdateFieldRequest request)
-        {
-            var template = await _formTemplates.Find(t => t.Id == templateId).FirstOrDefaultAsync();
-            if (template == null) return NotFound();
+        //[HttpPut("update")]
+        //public async Task<IActionResult> Update(string templateId, string fieldId, [FromBody] UpdateFieldRequest request)
+        //{
+        //    var template = await _formTemplates.Find(t => t.Id == templateId).FirstOrDefaultAsync();
+        //    if (template == null) return NotFound();
 
-            var field = template.Fields.FirstOrDefault(f => f.FieldId == fieldId);
-            if (field == null) return NotFound();
+        //    var field = template.Fields.FirstOrDefault(f => f.FieldId == fieldId);
+        //    if (field == null) return NotFound();
 
-            field.Label = request.Label;
-            field.Type = request.Type;
-            field.Required = request.Required;
-            field.Options = string.IsNullOrWhiteSpace(request.Options)
-                ? new List<string>()
-                : request.Options.Split(',').Select(o => o.Trim()).ToList();
+        //    field.Label = request.Label;
+        //    field.Type = request.Type;
+        //    field.Required = request.Required;
+        //    field.Options = string.IsNullOrWhiteSpace(request.Options)
+        //        ? new List<string>()
+        //        : request.Options.Split(',').Select(o => o.Trim()).ToList();
 
-            await _formTemplates.ReplaceOneAsync(t => t.Id == templateId, template);
+        //    await _formTemplates.ReplaceOneAsync(t => t.Id == templateId, template);
 
-            return Ok(field);
-        }
+        //    return Ok(field);
+        //}
     }
 }

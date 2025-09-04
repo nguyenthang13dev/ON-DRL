@@ -18,8 +18,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hinet.Service", "Hinet.Serv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonHelper", "CommonHelper\CommonHelper.csproj", "{B97E6E54-5163-44D4-AF68-C120C53162EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinet.Encrypt", "Hinet.Encrypt\Hinet.Encrypt.csproj", "{853135EB-D7F8-4EE1-9F73-69A174B8FAD3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,10 +44,6 @@ Global
 		{B97E6E54-5163-44D4-AF68-C120C53162EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B97E6E54-5163-44D4-AF68-C120C53162EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B97E6E54-5163-44D4-AF68-C120C53162EB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{853135EB-D7F8-4EE1-9F73-69A174B8FAD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{853135EB-D7F8-4EE1-9F73-69A174B8FAD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{853135EB-D7F8-4EE1-9F73-69A174B8FAD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{853135EB-D7F8-4EE1-9F73-69A174B8FAD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
