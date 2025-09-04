@@ -336,6 +336,9 @@ namespace Hinet.Service.AppUserService
 
             var userId = user.Id;
 
+
+
+
             var roleFromGroupUser = await _user_GroupUserService.GetQueryable()
               .Where(x => x.UserId == userId)
               .Join(_groupUserService.GetQueryable(),
