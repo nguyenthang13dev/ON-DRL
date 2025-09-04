@@ -9,12 +9,12 @@ namespace Hinet.Service.DepartmentService
 {
     public interface IDepartmentService : IService<Department>
     {
-        Task<PagedList<DepartmentDto>> GetData(DepartmentSearch search);
-        Task<DepartmentDto> GetDtoByCode(string code);
-        Task<DepartmentDto> GetDto(Guid id);
+        Task<PagedList<FormTemplateDto>> GetData(DepartmentSearch search);
+        Task<FormTemplateDto> GetDtoByCode(string code);
+        Task<FormTemplateDto> GetDto(Guid id);
         List<DepartmentHierarchy> GetDepartmentHierarchy();
 
-        Task<DepartmentDto> GetDetail(Guid id);
+        Task<FormTemplateDto> GetDetail(Guid id);
 
         Task<List<DropdownOption>> GetDropDown(string? selected);
         Task<List<DropdownOption>> GetDropDownByShortName(string? shortName);

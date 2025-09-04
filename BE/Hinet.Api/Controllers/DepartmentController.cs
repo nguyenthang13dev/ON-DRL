@@ -112,34 +112,34 @@ namespace Hinet.Controllers
         }
 
         [HttpGet("Get/{id}")]
-        public async Task<DataResponse<DepartmentDto>> Get(Guid id)
+        public async Task<DataResponse<FormTemplateDto>> Get(Guid id)
         {
             var data = await _departmentService.GetDto(id);
-            return new DataResponse<DepartmentDto> { Data = data, Status = true };
+            return new DataResponse<FormTemplateDto> { Data = data, Status = true };
         }
         [HttpGet("GetByCode/{code}")]
-        public async Task<DataResponse<DepartmentDto>> GetByCode(string code)
+        public async Task<DataResponse<FormTemplateDto>> GetByCode(string code)
         {
             try
             {
                 var result = await _departmentService.GetDtoByCode(code);
                 if (result == null)
                 {
-                    return DataResponse<DepartmentDto>.False("Không tìm thấy phòng ban với mã code: " + code);
+                    return DataResponse<FormTemplateDto>.False("Không tìm thấy phòng ban với mã code: " + code);
                 }
-                return DataResponse<DepartmentDto>.Success(result, "Lấy dữ liệu thành công");
+                return DataResponse<FormTemplateDto>.Success(result, "Lấy dữ liệu thành công");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Lỗi khi lấy phòng ban theo mã code: {Code}", code);
-                return DataResponse<DepartmentDto>.False("Đã xảy ra lỗi khi lấy dữ liệu phòng ban.");
+                return DataResponse<FormTemplateDto>.False("Đã xảy ra lỗi khi lấy dữ liệu phòng ban.");
             }
         }
         [HttpPost("GetData")]
-        public async Task<DataResponse<PagedList<DepartmentDto>>> GetData([FromBody] DepartmentSearch search)
+        public async Task<DataResponse<PagedList<FormTemplateDto>>> GetData([FromBody] DepartmentSearch search)
         {
             var data = await _departmentService.GetData(search);
-            return new DataResponse<PagedList<DepartmentDto>> { Data = data, Status = true };
+            return new DataResponse<PagedList<FormTemplateDto>> { Data = data, Status = true };
         }
 
         [HttpDelete("Delete/{id}")]
