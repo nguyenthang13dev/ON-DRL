@@ -386,7 +386,6 @@ namespace Hinet.Controllers
             }
             return DataResponse<AppUserDto>.False("Some properties are not valid");
         }
-
         [HttpGet("GetInfo")]
         [Authorize]
         public async Task<DataResponse<UserInfoDto>> GetInfo()

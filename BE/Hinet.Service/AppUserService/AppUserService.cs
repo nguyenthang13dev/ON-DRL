@@ -374,12 +374,21 @@ namespace Hinet.Service.AppUserService
              .Distinct()
              .ToList();
 
+
+            var roleFromUser = _userRoleRepository.GetInMemoryQueryable()
+              .Where(x => x.UserId == userId)
+              .Join(_roleRepository.GetInMemoryQueryable(),
+                  userRole => userRole.RoleId,
+                  role => role.Id,
+                  (userRole, role) => role.Code)
+              .Distinct();
+
             var donVi = await _departmentRepository.GetQueryable()
                 .Where(x => x.Id == user.DonViId)
                 .Select(d => new { d.Name, d.CapBac })
                 .FirstOrDefaultAsync();
 
-            var sumRole = roleFromGroupUser.Concat(roleFromGroupUser).Distinct().ToList();
+            var sumRole = roleFromGroupUser.Concat(roleFromUser).Distinct().ToList();
             userDto.ListRole = sumRole;
             userDto.MenuData = await _operationService.GetListMenu(user.Id, sumRole).ConfigureAwait(false);
             userDto.Permissions = await _operationService.GetPermissionUser(user.Id);
