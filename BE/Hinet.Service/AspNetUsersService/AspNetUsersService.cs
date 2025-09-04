@@ -51,15 +51,12 @@ namespace Hinet.Service.AspNetUsersService
             //        .Where(x => x.ParentId == userDto.DonViId)
             //        .Select(x => x.Id)
             //        .ToListAsync() : new List<Guid>();
-
             //var lstIds = new List<Guid>();
             //if (userDto != null && userDto.DonViId != null)
             //{
             //    lstIds.Add(userDto.DonViId ?? new Guid());
             //}
-
             //var deparmentIds = _departmentService.GetChildIds(lstIds);
-
             try
             {
                 var query = from user in GetQueryable()

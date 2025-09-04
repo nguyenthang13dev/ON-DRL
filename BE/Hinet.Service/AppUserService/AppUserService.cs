@@ -336,26 +336,25 @@ namespace Hinet.Service.AppUserService
 
             var userId = user.Id;
 
-
-
-
-            var roleFromGroupUser = await _user_GroupUserService.GetQueryable()
-              .Where(x => x.UserId == userId)
-              .Join(_groupUserService.GetQueryable(),
-                  userGroupUser => userGroupUser.GroupUserId,
-                  groupUser => groupUser.Id,
-                  (userGroupUser, groupUser) => new { groupUser.Id })
-              .Join(_groupUserRoleService.GetQueryable(),
-                  grouped => grouped.Id,
-                  groupUserRole => groupUserRole.GroupUserId,
-                  (grouped, groupUserRole) => groupUserRole.RoleId)
-              .Join(_roleRepository.GetQueryable(),
-                  roleId => roleId,
-                  role => role.Id,
-                  (roleId, role) => role.Code)
-              .Distinct()
-              .ToListAsync();
-
+            //var roleFromGroupUser = await _user_GroupUserService.GetQueryable()
+            //  .Where(x => x.UserId == userId)
+            //  .Join(_groupUserService.GetQueryable(),
+            //      userGroupUser => userGroupUser.GroupUserId,
+            //      groupUser => groupUser.Id,
+            //      (userGroupUser, groupUser) => new { groupUser.Id })
+            //  .Join(_groupUserRoleService.GetQueryable(),
+            //      grouped => grouped.Id,
+            //      groupUserRole => groupUserRole.GroupUserId,
+            //      (grouped, groupUserRole) => groupUserRole.RoleId)
+            //  .Join(_roleRepository.GetQueryable(),
+            //      roleId => roleId,
+            //      role => role.Id,
+            //      (roleId, role) => role.Code)
+            //  .Distinct()
+            //  .ToListAsync();
+            var a = await _userRoleRepository.GetQueryable()
+               .Where(x => x.UserId == userId).ToListAsync();
+            var b = await _roleRepository.GetQueryable().ToListAsync();
             var roleFromUser = await _userRoleRepository.GetQueryable()
                 .Where(x => x.UserId == userId)
                 .Join(_roleRepository.GetQueryable(),
@@ -370,7 +369,8 @@ namespace Hinet.Service.AppUserService
                 .Select(d => new { d.Name, d.CapBac })
                 .FirstOrDefaultAsync();
 
-            var sumRole = roleFromGroupUser.Concat(roleFromUser).Distinct().ToList();
+            //var sumRole = roleFromGroupUser.Concat(roleFromUser).Distinct().ToList();
+            var sumRole = new List<string>() { "Admin"};
             userDto.ListRole = sumRole;
             userDto.MenuData = await _operationService.GetListMenu(user.Id, sumRole).ConfigureAwait(false);
             userDto.Permissions = await _operationService.GetPermissionUser(user.Id);

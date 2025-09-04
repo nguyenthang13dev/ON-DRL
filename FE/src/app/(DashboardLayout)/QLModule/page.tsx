@@ -1,47 +1,47 @@
 "use client";
 import Flex from "@/components/shared-components/Flex";
-import { DropdownOption, ResponsePageInfo } from "@/types/general";
+import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import withAuthorization from "@/libs/authentication";
+import { moduleService } from "@/services/module/module.service";
 import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
-import {
-  CloseOutlined,
-  DeleteOutlined,
-  DownOutlined,
-  EditOutlined,
-  EyeOutlined,
-  PlusCircleOutlined,
-  SearchOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Dropdown,
-  FormProps,
-  MenuProps,
-  Pagination,
-  Popconfirm,
-  Space,
-  Table,
-  TableProps,
-  Tag,
-  Image,
-} from "antd";
+import { DropdownOption, ResponsePageInfo } from "@/types/general";
+import { searchModule, tableModuleType } from "@/types/menu/menu";
+import
+  {
+    CloseOutlined,
+    DeleteOutlined,
+    DownOutlined,
+    EditOutlined,
+    EyeOutlined,
+    PlusCircleOutlined,
+    SearchOutlined,
+    SettingOutlined,
+  } from "@ant-design/icons";
+import
+  {
+    Button,
+    Card,
+    Dropdown,
+    FormProps,
+    Image,
+    MenuProps,
+    Pagination,
+    Popconfirm,
+    Space,
+    Table,
+    TableProps,
+    Tag,
+  } from "antd";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import CreateOrUpdate from "./createOrUpdate";
+import QLModuleDetail from "./detail";
 import classes from "./page.module.css";
 import Search from "./search";
-import CreateOrUpdate from "./createOrUpdate";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { searchModule, tableModuleType } from "@/types/menu/menu";
-import { moduleService } from "@/services/module/module.service";
-import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
-import QLModuleDetail from "./detail";
-import { debug } from "console";
 
 const QLModule: React.FC = () => {
   const router = useRouter();
@@ -392,4 +392,4 @@ const QLModule: React.FC = () => {
   );
 };
 
-export default withAuthorization(QLModule, "QLModule");
+export default withAuthorization(QLModule, "");

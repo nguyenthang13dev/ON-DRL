@@ -46,10 +46,10 @@ namespace Hinet.Service.DepartmentService
             _departmentRepository = departmentRepository;
         }
 
-        public async Task<PagedList<DepartmentDto>> GetData(DepartmentSearch search)
+        public async Task<PagedList<FormTemplateDto>> GetData(DepartmentSearch search)
         {
             var query = from q in GetQueryable()
-                        select new DepartmentDto
+                        select new FormTemplateDto
                         {
                             CreatedId = q.CreatedId,
                             UpdatedId = q.UpdatedId,
@@ -92,15 +92,15 @@ namespace Hinet.Service.DepartmentService
             }
 
             query = query.OrderByDescending(x => x.CreatedDate);
-            return await PagedList<DepartmentDto>.CreateAsync(query, search);
+            return await PagedList<FormTemplateDto>.CreateAsync(query, search);
         }
-        public async Task<DepartmentDto> GetDtoByCode(string code)
+        public async Task<FormTemplateDto> GetDtoByCode(string code)
         {
             var q = await GetQueryable()
                          .FirstOrDefaultAsync(x => x.Code.Trim().ToLower() == code.Trim().ToLower());
 
             if (q == null) return null;
-            var result = new DepartmentDto
+            var result = new FormTemplateDto
             {
                 CreatedId = q.CreatedId,
                 UpdatedId = q.UpdatedId,
@@ -123,14 +123,14 @@ namespace Hinet.Service.DepartmentService
 
             return result;
         }
-        public async Task<DepartmentDto> GetDto(Guid id)
+        public async Task<FormTemplateDto> GetDto(Guid id)
         {
             string cacheKey = $"Department_Dto_{id}";
 
-            if (!_cache.TryGetValue(cacheKey, out DepartmentDto dto))
+            if (!_cache.TryGetValue(cacheKey, out FormTemplateDto dto))
             {
                 dto = await (from q in GetQueryable().Where(x => x.Id == id)
-                             select new DepartmentDto
+                             select new FormTemplateDto
                              {
                                  CreatedId = q.CreatedId,
                                  UpdatedId = q.UpdatedId,
@@ -160,11 +160,11 @@ namespace Hinet.Service.DepartmentService
             return dto ?? throw new Exception("Department not found");
         }
 
-        public async Task<DepartmentDto> GetDetail(Guid id)
+        public async Task<FormTemplateDto> GetDetail(Guid id)
         {
             string cacheKey = $"Department_Detail_{id}";
 
-            if (!_cache.TryGetValue(cacheKey, out DepartmentDto result))
+            if (!_cache.TryGetValue(cacheKey, out FormTemplateDto result))
             {
                 var currentDept = await GetByIdAsync(id) ?? throw new Exception("Department not found");
 
@@ -182,7 +182,7 @@ namespace Hinet.Service.DepartmentService
                         }).ToList();
                 }
 
-                result = new DepartmentDto
+                result = new FormTemplateDto
                 {
                     CreatedId = currentDept.CreatedId,
                     UpdatedId = currentDept.UpdatedId,

@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Hinet.Service.DepartmentService.Dto
 {
-    public class DepartmentDto : Department
+    public class FormTemplateDto : Department
     {
         public List<DepartmentUser> Users { get; set; } = new List<DepartmentUser>();
     }

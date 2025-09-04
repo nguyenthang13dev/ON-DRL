@@ -104,32 +104,32 @@ namespace Hinet.Service.Common.Service
         public async Task<List<DropdownOption>> GetDropDown(string labelField, string valueField)
         {
             var query = _repository.GetQueryable();
+
             var param = Expression.Parameter(typeof(T), "t");
 
-            // Lấy thuộc tính cho Label
+            // label property
             var labelProperty = Expression.PropertyOrField(param, labelField);
-            var labelToString = Expression.Condition(
-                Expression.Equal(labelProperty, Expression.Constant(null)), // Nếu null
-                Expression.Constant(""), // Gán chuỗi rỗng
-                Expression.Call(labelProperty, typeof(object).GetMethod("ToString") ?? throw new InvalidOperationException())
-            );
+            var labelToString = Expression.Call(labelProperty, "ToString", Type.EmptyTypes);
 
-            // Lấy thuộc tính cho Value (giữ nguyên kiểu dữ liệu gốc)
+            // value property
             var valueProperty = Expression.PropertyOrField(param, valueField);
-            var valueConvert = Expression.Convert(valueProperty, typeof(object));
+            var valueToString = Expression.Call(valueProperty, "ToString", Type.EmptyTypes);
 
-            // Biểu thức Lambda cho Select
+            // build select expression
             var selectExpression = Expression.Lambda<Func<T, DropdownOption>>(
                 Expression.MemberInit(
                     Expression.New(typeof(DropdownOption)),
-                    Expression.Bind(typeof(DropdownOption).GetProperty("Label"), labelToString),
-                    Expression.Bind(typeof(DropdownOption).GetProperty("Value"), valueConvert) // Không dùng ToString()
+                    Expression.Bind(typeof(DropdownOption).GetProperty(nameof(DropdownOption.Label)), labelToString),
+                    Expression.Bind(typeof(DropdownOption).GetProperty(nameof(DropdownOption.Value)), valueToString)
                 ),
                 param
             );
 
             return await query.Select(selectExpression).ToListAsync();
         }
+
+
+
 
 
     }

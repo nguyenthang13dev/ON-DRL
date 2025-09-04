@@ -26,18 +26,45 @@ internal class Program
 
 
         builder.Services.Configure<CompanyInfoDto>(
-    builder.Configuration.GetSection("CompanyInfo"));
+        builder.Configuration.GetSection("CompanyInfo"));
 
         builder.Services.AddSingleton(resolver =>
             resolver.GetRequiredService<IOptions<CompanyInfoDto>>().Value);
 
         builder.Services.AddTransient<ExceptionHandlingMiddleware>();
-        builder.Services.AddSwaggerGen(c =>
+        //builder.Services.AddSwaggerGen(c =>
+        //{
+        //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ONDRL", Version = "v1" });
+        //    c.CustomSchemaIds(type => type.FullName);
+        //});
+        builder.Services.AddSwaggerGen(option =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "ONDRL", Version = "v1" });
-            c.CustomSchemaIds(type => type.FullName);
+            option.SwaggerDoc("v1", new OpenApiInfo { Title = "ONDRL", Version = "v1" });
+            option.CustomSchemaIds(type => type.FullName);
+            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter a valid token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+            option.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
+                }
+            });
         });
-
         var app = builder.Build();
 
         app.UseCors(builder =>

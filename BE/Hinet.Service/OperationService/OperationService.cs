@@ -150,7 +150,7 @@ namespace Hinet.Service.OperationService
                     .ToListAsync();
 
                 var listOperationId = await _roleOperationRepository.GetQueryable()
-                    
+
                     .Where(x => x.IsAccess == 1 && listRoleIdOfUser.Contains(x.RoleId))
                     .Select(x => x.OperationId)
                     .ToListAsync();
@@ -345,40 +345,69 @@ namespace Hinet.Service.OperationService
             // Create a HashSet for faster lookups
             var userOperationIds = new HashSet<Guid>(
                 await _roleOperationRepository.GetQueryable()
-                    
+
                     .Where(ro => roleIds.Contains(ro.RoleId))
                     .Select(ro => ro.OperationId)
                     .ToListAsync()
             );
 
             // Join modules and operations in a single query
-            var moduleWithOperations = await (
-                    from module in _moduleRepository.GetQueryable()
-                        .Where(m => m.IsShow)
-                        .OrderBy(m => m.Order)
-                        
-                    join operation in GetQueryable()
-                            .Where(o => o.IsShow)
-                            
-                        on module.Id equals operation.ModuleId
-                    select new
-                    {
-                        ModuleId = module.Id,
-                        ModuleName = module.Name,
-                        ModuleCode = module.Code,
-                        ModuleIcon = module.Icon,
-                        ModuleClassCss = module.ClassCss,
-                        ModuleIsShow = module.IsShow,
-                        ModuleLink = module.Link,
-                        ModuleOrder = module.Order,
-                        OperationId = operation.Id,
-                        OperationName = operation.Name,
-                        OperationUrl = operation.URL,
-                        OperationCode = operation.Code,
-                        OperationOrder = operation.Order,
-                        OperationIsShow = operation.IsShow
-                    })
+            //var moduleWithOperations = await (
+            //        from module in _moduleRepository.GetQueryable()
+            //            .Where(m => m.IsShow)
+            //            .OrderBy(m => m.Order)
+
+            //        join operation in GetQueryable()
+            //                .Where(o => o.IsShow)
+
+            //            on module.Id equals operation.ModuleId
+            //        select new
+            //        {
+            //            ModuleId = module.Id,
+            //            ModuleName = module.Name,
+            //            ModuleCode = module.Code,
+            //            ModuleIcon = module.Icon,
+            //            ModuleClassCss = module.ClassCss,
+            //            ModuleIsShow = module.IsShow,
+            //            ModuleLink = module.Link,
+            //            ModuleOrder = module.Order,
+            //            OperationId = operation.Id,
+            //            OperationName = operation.Name,
+            //            OperationUrl = operation.URL,
+            //            OperationCode = operation.Code,
+            //            OperationOrder = operation.Order,
+            //            OperationIsShow = operation.IsShow
+            //        })
+            //    .ToListAsync();
+            var modules = await _moduleRepository.GetQueryable()
+                .Where(m => m.IsShow)
+                .OrderBy(m => m.Order)
                 .ToListAsync();
+
+            var operations = await _operationRepository.GetQueryable()
+                .Where(o => o.IsShow)
+                .ToListAsync();
+
+            var moduleWithOperations = (
+                from m in modules
+                join o in operations on m.Id equals o.ModuleId
+                select new
+                {
+                    ModuleId = m.Id,
+                    ModuleName = m.Name,
+                    ModuleCode = m.Code,
+                    ModuleIcon = m.Icon,
+                    ModuleClassCss = m.ClassCss,
+                    ModuleIsShow = m.IsShow,
+                    ModuleLink = m.Link,
+                    ModuleOrder = m.Order,
+                    OperationId = o.Id,
+                    OperationName = o.Name,
+                    OperationUrl = o.URL,
+                    OperationCode = o.Code,
+                    OperationOrder = o.Order,
+                    OperationIsShow = o.IsShow
+                }).ToList();
 
             // Process the data in memory which is more efficient
             return moduleWithOperations
@@ -453,8 +482,8 @@ namespace Hinet.Service.OperationService
 
         public async Task<List<PermissionDto>> GetPermissionUser(Guid UserId)
         {
-            var listRoleIdOfUser = (from userRole in _userRoleRepository.GetQueryable().Where(x => x.UserId == UserId)
-                                    join role in _roleRepository.GetQueryable().Where(x => x.IsActive)
+            var listRoleIdOfUser = (from userRole in _userRoleRepository.GetQueryable().Where(x => x.UserId == UserId).ToList()
+                                    join role in _roleRepository.GetQueryable().Where(x => x.IsActive).ToList()
                                     on userRole.RoleId equals role.Id
                                     select role).Select(x => x.Id).ToList();
 
@@ -510,7 +539,7 @@ namespace Hinet.Service.OperationService
                         ModuleName = op.Name,
                     })
                     .ToListAsync();
-        
+
             return allOperations;
         }
 
