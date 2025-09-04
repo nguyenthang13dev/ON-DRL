@@ -1,12 +1,14 @@
-'use client';
-import React, { useState } from 'react';
-import LoginForm from '@/components/auth-components/LoginForm';
-import { Col, Divider, Image, Row, Spin } from 'antd';
+"use client";
+import React, { useState } from "react";
+import LoginForm from "@/components/auth-components/LoginForm";
+import { Col, Divider, Image, Modal, Row, Spin } from "antd";
+import SignaturePad from "@/components/signature/SignaturePad";
+import KySoInfo from "@/components/signature/SisnatureInfo";
 
 const backgroundStyle = {
-  backgroundImage: 'url(/img/bg-login2.jpg)',
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: 'cover',
+  backgroundImage: "url(/img/bg-login2.jpg)",
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "cover",
 };
 
 const Login: React.FC = () => {
@@ -20,7 +22,7 @@ const Login: React.FC = () => {
       <div className="container d-flex flex-column justify-content-center h-100">
         <div className="h-100 d-flex flex-column justify-content-center">
           <div className="text-center mb-4">
-            <div style={{ width: '100px' }} className="m-auto mb-3">
+            <div style={{ width: "100px" }} className="m-auto mb-3">
               <Image
                 className="img-fluid"
                 src="/img/hinet.png"
@@ -32,6 +34,8 @@ const Login: React.FC = () => {
               Hệ thống quản lý nội bộ HINET - EMS
             </div>
           </div>
+          {/* <SignaturePad />
+          <KySoInfo idBieuMau={""} idDTTienTrinhXuLy={""}></KySoInfo> */}
           <Row justify="center">
             <Col
               xs={20}
@@ -45,7 +49,7 @@ const Login: React.FC = () => {
               </div>
               <Divider
                 className="my-2"
-                style={{ borderBlockStart: '2px solid var(--color-primary)' }}
+                style={{ borderBlockStart: "2px solid var(--color-primary)" }}
               />
               <div className="py-3 px-16 pb-4">
                 <LoginForm />
@@ -54,10 +58,16 @@ const Login: React.FC = () => {
           </Row>
         </div>
         <div className="flex items-center gap-6 justify-center p-1">
-          <div className="text-md font-semibold" style={{ width: "250px", textAlign: "center" }}>Công ty Cổ phần Công nghệ HiNET Việt Nam</div>
+          <div
+            className="text-md font-semibold"
+            style={{ width: "250px", textAlign: "center" }}
+          >
+            Công ty Cổ phần Công nghệ HiNET Việt Nam
+          </div>
           <div>
             <div className="p-1">
-              P1101, Đơn nguyên 1, Tòa nhà CT4, KĐT Mỹ Đình - Mễ Trì, Nam Từ Liêm, Hà Nội
+              P1101, Đơn nguyên 1, Tòa nhà CT4, KĐT Mỹ Đình - Mễ Trì, Nam Từ
+              Liêm, Hà Nội
             </div>
             <div className="flex gap-6 p-1">
               <div>Điện thoại: 024 858 735 55</div>
