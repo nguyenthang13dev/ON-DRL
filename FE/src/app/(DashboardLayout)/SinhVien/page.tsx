@@ -2,12 +2,12 @@
 import Flex from "@/components/shared-components/Flex";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import withAuthorization from "@/libs/authentication";
-import { moduleService } from "@/services/module/module.service";
+import { sinhVienService } from "@/services/sinhVien/sinhVien.service";
 import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
-import { DropdownOption, ResponsePageInfo } from "@/types/general";
-import { searchModule, tableModuleType } from "@/types/menu/menu";
+import { ResponsePageInfo } from "@/types/general";
+import { searchSinhVien, SinhVien } from "@/types/sinhVien/sinhVien";
 import {
   CloseOutlined,
   DeleteOutlined,
@@ -16,14 +16,12 @@ import {
   EyeOutlined,
   PlusCircleOutlined,
   SearchOutlined,
-  SettingOutlined,
 } from "@ant-design/icons";
 import {
   Button,
   Card,
   Dropdown,
   FormProps,
-  Image,
   MenuProps,
   Pagination,
   Popconfirm,
@@ -32,35 +30,32 @@ import {
   TableProps,
   Tag,
 } from "antd";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import CreateOrUpdate from "./createOrUpdate";
-import QLModuleDetail from "./detail";
+import SinhVienDetail from "./detail";
 import classes from "./page.module.css";
 import Search from "./search";
 
-const QLModule: React.FC = () => {
-  const router = useRouter();
+const QLSinhVien: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [listModule, setListModule] = useState<tableModuleType[]>([]);
+  const [listSinhVien, setListSinhVien] = useState<SinhVien[]>([]);
   const [dataPage, setDataPage] = useState<ResponsePageInfo>();
   const [pageSize, setPageSize] = useState<number>(20);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
-  const [searchValues, setSearchValues] = useState<searchModule | null>(null);
-  const [dropVaiTros, setDropVaiTros] = useState<DropdownOption[]>([]);
+  const [searchValues, setSearchValues] = useState<searchSinhVien | null>(null);
   const loading = useSelector((state) => state.general.isLoading);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
-  const [currentModule, setCurrentModule] = useState<tableModuleType | null>();
-  const [currentDetailModule, setCurrentDetailModule] =
-    useState<tableModuleType>();
+  const [currentSinhVien, setCurrentSinhVien] = useState<SinhVien | null>();
+  const [currentDetailSinhVien, setCurrentDetailSinhVien] =
+    useState<SinhVien>();
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [openPopconfirmId, setOpenPopconfirmId] = useState<string | null>(null);
 
-  const tableColumns: TableProps<tableModuleType>["columns"] = [
+  const tableColumns: TableProps<SinhVien>["columns"] = [
     {
       title: "STT",
       dataIndex: "index",
@@ -68,109 +63,64 @@ const QLModule: React.FC = () => {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Mã chức năng",
-      dataIndex: "code",
-      render: (_: any, record: tableModuleType) => <span>{record.code}</span>,
+      title: "Mã sinh viên",
+      dataIndex: "maSV",
+      render: (_: any, record: SinhVien) => <span>{record.maSV}</span>,
     },
     {
-      title: "Tên chức năng",
-      dataIndex: "name",
-
-      render: (_: any, record: tableModuleType) => <span>{record.name}</span>,
+      title: "Họ tên",
+      dataIndex: "hoTen",
+      render: (_: any, record: SinhVien) => <span>{record.hoTen}</span>,
     },
     {
-      title: "Thứ tự",
-      dataIndex: "order",
-      width: "100px",
-      render: (_: any, record: tableModuleType) => <span>{record.order}</span>,
+      title: "Email",
+      dataIndex: "email",
+      render: (_: any, record: SinhVien) => <span>{record.email}</span>,
+    },
+    {
+      title: "Giới tính",
+      dataIndex: "gioiTinh",
+      render: (_: any, record: SinhVien) => (
+        <Tag
+          bordered={false}
+          color={record.gioiTinh ? "blue" : "pink"}
+          style={{ fontSize: "12px" }}
+        >
+          {record.gioiTinh ? "Nam" : "Nữ"}
+        </Tag>
+      ),
     },
     {
       title: "Trạng thái",
-      dataIndex: "isShow",
-      render: (_: any, record: tableModuleType) => (
+      dataIndex: "trangThai",
+      render: (_: any, record: SinhVien) => (
         <Tag
           bordered={false}
-          color={record.isShow ? "green" : "red"}
+          color={record.trangThai === "active" ? "green" : "red"}
           style={{ fontSize: "12px" }}
         >
-          {record.isShow ? "Hiển thị" : "Không hiển thị"}
+          {record.trangThai === "active" ? "Hoạt động" : "Không hoạt động"}
         </Tag>
-      ),
-    },
-    {
-      title: "Phạm vi",
-      dataIndex: "allowFilterScope",
-      render: (_: any, record: tableModuleType) => (
-        // <span style={{ color: record.allowFilterScope ? "" : "red" }}>
-        //   {record.allowFilterScope ?? "Không"}
-        // </span>
-        <Tag
-          bordered={false}
-          color={record.allowFilterScope ? "green" : "red"}
-          style={{ fontSize: "12px" }}
-        >
-          {record.allowFilterScope ?? "Không"}
-        </Tag>
-      ),
-    },
-    {
-      title: "Icon",
-      dataIndex: "icon",
-      render: (_: any, record: tableModuleType) => {
-        return (
-          <div>
-            <Image
-              style={{ width: "50px" }}
-              className="img-fluid"
-              src={`${record.icon ? record.icon : "/img/others/settings.png"} `}
-              alt=""
-              preview={false}
-            />
-          </div>
-        );
-      },
-    },
-    {
-      title: "Class Css",
-      dataIndex: "classCss",
-      render: (_: any, record: tableModuleType) => (
-        <span>{record.classCss}</span>
-      ),
-    },
-    {
-      title: "Style Css",
-      dataIndex: "styleCss",
-      render: (_: any, record: tableModuleType) => (
-        <span>{record.styleCss}</span>
       ),
     },
     {
       title: "",
       dataIndex: "actions",
       fixed: "right",
-      render: (_: any, record: tableModuleType) => {
+      render: (_: any, record: SinhVien) => {
         const items: MenuProps["items"] = [
           {
-            label: "Quản lý chức năng",
-            key: "1",
-            icon: <SettingOutlined />,
-            onClick: () => {
-              sessionStorage.setItem("moduleId", record.id ?? "");
-              router.push(`/QLOperation/`);
-            },
-          },
-          {
             label: "Chi tiết",
-            key: "2",
+            key: "1",
             icon: <EyeOutlined />,
             onClick: () => {
-              setCurrentDetailModule(record);
+              setCurrentDetailSinhVien(record);
               setIsOpenDetail(true);
             },
           },
           {
             label: "Chỉnh sửa",
-            key: "3",
+            key: "2",
             icon: <EditOutlined />,
             onClick: () => {
               handleShowModal(true, record);
@@ -181,7 +131,7 @@ const QLModule: React.FC = () => {
           },
           {
             label: "Xóa",
-            key: "4",
+            key: "3",
             danger: true,
             icon: <DeleteOutlined />,
             onClick: () => setOpenPopconfirmId(record.id ?? ""),
@@ -203,12 +153,12 @@ const QLModule: React.FC = () => {
             </Dropdown>
             <Popconfirm
               title="Xác nhận xóa"
-              description="Bạn có muốn xóa chức năng này?"
+              description="Bạn có muốn xóa sinh viên này?"
               okText="Xóa"
               cancelText="Hủy"
               open={openPopconfirmId === record.id}
               onConfirm={() => {
-                handleDeleteModule(record.id || "");
+                handleDeleteSinhVien(record.id || "");
                 setOpenPopconfirmId(null);
               }}
               onCancel={() => setOpenPopconfirmId(null)}
@@ -220,20 +170,20 @@ const QLModule: React.FC = () => {
   ];
 
   const hanleCreateEditSuccess = () => {
-    handleGetListModule();
+    handleGetListSinhVien();
   };
 
-  const handleDeleteModule = async (id: string) => {
+  const handleDeleteSinhVien = async (id: string) => {
     try {
-      const response = await moduleService.Delete(id);
+      const response = await sinhVienService.Delete(id);
       if (response.status) {
-        toast.success("Xóa chức năng thành công");
-        handleGetListModule();
+        toast.success("Xóa sinh viên thành công");
+        handleGetListSinhVien();
       } else {
-        toast.error("Xóa chức năng thất bại");
+        toast.error("Xóa sinh viên thất bại");
       }
     } catch (error) {
-      toast.error("Xóa chức năng thất bại");
+      toast.error("Xóa sinh viên thất bại");
     }
   };
 
@@ -241,19 +191,19 @@ const QLModule: React.FC = () => {
     setIsPanelVisible(!isPanelVisible);
   };
 
-  const onFinishSearch: FormProps<searchModule>["onFinish"] = async (
+  const onFinishSearch: FormProps<searchSinhVien>["onFinish"] = async (
     values
   ) => {
     try {
       setSearchValues(values);
-      await handleGetListModule(values);
+      await handleGetListSinhVien(values);
     } catch (error) {
       console.error("Lỗi khi lưu dữ liệu:", error);
     }
   };
 
-  const handleGetListModule = useCallback(
-    async (searchDataOverride?: searchModule) => {
+  const handleGetListSinhVien = useCallback(
+    async (searchDataOverride?: searchSinhVien) => {
       dispatch(setIsLoading(true));
       try {
         const searchData = searchDataOverride || {
@@ -261,11 +211,11 @@ const QLModule: React.FC = () => {
           pageSize,
           ...(searchValues || {}),
         };
-        const response = await moduleService.getDataByPage(searchData);
+        const response = await sinhVienService.getDataByPage(searchData);
         if (response != null && response.data != null) {
           const data = response.data;
           const items = data.items;
-          setListModule(items);
+          setListSinhVien(items);
           setDataPage({
             pageIndex: data.pageIndex,
             pageSize: data.pageSize,
@@ -278,19 +228,19 @@ const QLModule: React.FC = () => {
         dispatch(setIsLoading(false));
       }
     },
-    [pageIndex, pageSize]
+    [pageIndex, pageSize, searchValues, dispatch]
   );
 
-  const handleShowModal = (isEdit?: boolean, module?: tableModuleType) => {
+  const handleShowModal = (isEdit?: boolean, sinhVien?: SinhVien) => {
     setIsOpenModal(true);
     if (isEdit) {
-      setCurrentModule(module);
+      setCurrentSinhVien(sinhVien);
     }
   };
 
   const handleClose = () => {
     setIsOpenModal(false);
-    setCurrentModule(null);
+    setCurrentSinhVien(null);
   };
 
   const handleCloseDetail = () => {
@@ -298,8 +248,8 @@ const QLModule: React.FC = () => {
   };
 
   useEffect(() => {
-    handleGetListModule();
-  }, [handleGetListModule]);
+    handleGetListSinhVien();
+  }, [handleGetListSinhVien]);
 
   return (
     <>
@@ -319,17 +269,6 @@ const QLModule: React.FC = () => {
           >
             {isPanelVisible ? "Ẩn tìm kiếm" : "Tìm kiếm"}
           </Button>
-          {/* <Link href="/QLModule/Import">
-            <Button
-              color="pink"
-              variant="solid"
-              icon={<VerticalAlignTopOutlined />}
-              size="small"
-              className={`${classes.mgright5} ${classes.colorKetXuat}`}
-            >
-              Import
-            </Button>
-          </Link> */}
 
           <Button
             onClick={() => {
@@ -345,13 +284,13 @@ const QLModule: React.FC = () => {
             isOpen={isOpenModal}
             onSuccess={hanleCreateEditSuccess}
             onClose={handleClose}
-            module={currentModule}
+            sinhVien={currentSinhVien}
           />
         </div>
       </Flex>
       {isPanelVisible && <Search onFinish={onFinishSearch} />}
-      <QLModuleDetail
-        module={currentDetailModule}
+      <SinhVienDetail
+        sinhVien={currentDetailSinhVien}
         isOpen={isOpenDetail}
         onClose={handleCloseDetail}
       />
@@ -360,7 +299,7 @@ const QLModule: React.FC = () => {
           <Table
             columns={tableColumns}
             bordered
-            dataSource={listModule}
+            dataSource={listSinhVien}
             rowKey="id"
             scroll={{ x: "max-content" }}
             pagination={false}
@@ -390,4 +329,4 @@ const QLModule: React.FC = () => {
   );
 };
 
-export default withAuthorization(QLModule, "");
+export default withAuthorization(QLSinhVien, "");
