@@ -15,7 +15,6 @@ import {
   EyeOutlined,
   PlusCircleOutlined,
   SearchOutlined,
-  PrinterOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -31,31 +30,33 @@ import {
 } from "antd";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import EmailThongBaoDetail from "./detail";
+import ActivitiesDetail from "./detail";
 import Search from "./search";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import {
-  EmailThongBaoSearchType,
-  EmailThongBaoType,
-} from "@/types/emailThongBao/emailThongBao";
-import emailThongBaoService from "@/services/emailThongBao/emailThongBaoService";
-import EmailThongBaoCreateOrUpdate from "./createOrUpdate";
+  ActivitiesSearchType,
+  ActivitiesType,
+} from "@/types/activities/activities";
+import activitiesService from "@/services/activities/activitiesService";
+import ActivitiesCreateOrUpdate from "./createOrUpdate";
 
-const EmailThongBaoPage: React.FC = () => {
+
+const ActivitiesPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [data, setData] = useState<ResponsePageList<EmailThongBaoType[]>>();
+  const [data, setData] = useState<ResponsePageList<ActivitiesType[]>>();
   const [pageSize, setPageSize] = useState<number>(20);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
-  const [searchValues, setSearchValues] =
-    useState<EmailThongBaoSearchType | null>(null);
+  const [searchValues, setSearchValues] = useState<ActivitiesSearchType | null>(
+    null
+  );
   const loading = useSelector((state) => state.general.isLoading);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const [currentItem, setCurentItem] = useState<EmailThongBaoType | null>(null);
+  const [currentItem, setCurentItem] = useState<ActivitiesType | null>(null);
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  const tableColumns: TableProps<EmailThongBaoType>["columns"] = [
+  const tableColumns: TableProps<ActivitiesType>["columns"] = [
     {
       title: "STT",
       dataIndex: "index",
@@ -64,23 +65,46 @@ const EmailThongBaoPage: React.FC = () => {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Mã",
-      dataIndex: "ma",
-      render: (_: any, record: EmailThongBaoType) => <span>{record.ma}</span>,
-    },
-    {
-      title: "Nội dung",
-      dataIndex: "noiDung",
-      render: (_: any, record: EmailThongBaoType) => (
-        <div dangerouslySetInnerHTML={{ __html: record.noiDung ?? "" }} />
-      ),
-    },
+			title: "Thời gian bắt đầu",
+			dataIndex: "startDate",
+			render: (_: any, record: ActivitiesType) => (
+				<span>{record.startDate}</span>
+			),
+		},
+		{
+			title: "Thời gian kết thúc",
+			dataIndex: "endDate",
+			render: (_: any, record: ActivitiesType) => (
+				<span>{record.endDate}</span>
+			),
+		},
+		{
+			title: "Tên hoạt động",
+			dataIndex: "name",
+			render: (_: any, record: ActivitiesType) => (
+				<span>{record.name}</span>
+			),
+		},
+		{
+			title: "Mô tả",
+			dataIndex: "description",
+			render: (_: any, record: ActivitiesType) => (
+				<span>{record.description}</span>
+			),
+		},
+		{
+			title: "QR tham gia",
+			dataIndex: "qRPath",
+			render: (_: any, record: ActivitiesType) => (
+				<span>{record.qRPath}</span>
+			),
+		},
     {
       title: "Thao tác",
       dataIndex: "actions",
       fixed: "right",
       align: "center",
-      render: (_: any, record: EmailThongBaoType) => {
+      render: (_: any, record: ActivitiesType) => {
         const items: MenuProps["items"] = [
           {
             label: "Chi tiết",
@@ -97,14 +121,6 @@ const EmailThongBaoPage: React.FC = () => {
             icon: <EditOutlined />,
             onClick: () => {
               handleShowModal(true, record);
-            },
-          },
-          {
-            label: "Gửi email",
-            key: "5",
-            icon: <PrinterOutlined />,
-            onClick: () => {
-              handleSendEmail(record);
             },
           },
           {
@@ -144,7 +160,7 @@ const EmailThongBaoPage: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    const response = await emailThongBaoService.delete(confirmDeleteId ?? "");
+    const response = await activitiesService.delete(confirmDeleteId ?? "");
     if (response.status) {
       toast.success("Xóa thành công");
       handleLoadData();
@@ -156,7 +172,7 @@ const EmailThongBaoPage: React.FC = () => {
     setIsPanelVisible(!isPanelVisible);
   };
 
-  const onFinishSearch: FormProps<EmailThongBaoSearchType>["onFinish"] = async (
+  const onFinishSearch: FormProps<ActivitiesSearchType>["onFinish"] = async (
     values
   ) => {
     try {
@@ -168,7 +184,7 @@ const EmailThongBaoPage: React.FC = () => {
   };
 
   const handleLoadData = useCallback(
-    async (searchDataOverride?: EmailThongBaoSearchType) => {
+    async (searchDataOverride?: ActivitiesSearchType) => {
       dispatch(setIsLoading(true));
 
       const searchData = searchDataOverride || {
@@ -176,7 +192,7 @@ const EmailThongBaoPage: React.FC = () => {
         pageSize,
         ...(searchValues || {}),
       };
-      const response = await emailThongBaoService.getData(searchData);
+      const response = await activitiesService.getData(searchData);
       if (response != null && response.data != null) {
         const data = response.data;
         setData(data);
@@ -186,7 +202,7 @@ const EmailThongBaoPage: React.FC = () => {
     [dispatch, pageIndex, pageSize, searchValues]
   );
 
-  const handleShowModal = (isEdit?: boolean, item?: EmailThongBaoType) => {
+  const handleShowModal = (isEdit?: boolean, item?: ActivitiesType) => {
     setIsOpenModal(true);
     if (isEdit) {
       setCurentItem(item ?? null);
@@ -206,34 +222,12 @@ const EmailThongBaoPage: React.FC = () => {
     handleLoadData();
   }, [handleLoadData]);
 
-  const handleSendEmail = async (record: EmailThongBaoType) => {
-    try {
-      const content = `${record.noiDung}`;
-      const subject = "Email thông bao";
-      const toAddress = "tienthanh.18112k2@gmail.com";
-      const response = await emailThongBaoService.SendEmail(
-        subject,
-        content,
-        toAddress
-        // record.id
-      );
-      if (response.status) {
-        toast.success("Gửi email thành công");
-        handleLoadData();
-      } else {
-        toast.error("Gửi email thất bại");
-      }
-    } catch (error) {
-      toast.error("Gửi email thất bại");
-    }
-  };
-
   return (
     <>
       <Flex
         alignItems="center"
         justifyContent="space-between"
-        className="mb-2 flex-wrap justify-content-end"
+        className="mb-2 "
       >
         <AutoBreadcrumb />
         <div className="btn-group">
@@ -256,7 +250,7 @@ const EmailThongBaoPage: React.FC = () => {
             Thêm mới
           </Button>
           {isOpenModal && (
-            <EmailThongBaoCreateOrUpdate
+            <ActivitiesCreateOrUpdate
               onSuccess={hanleCreateEditSuccess}
               onClose={handleClose}
               item={currentItem}
@@ -272,7 +266,7 @@ const EmailThongBaoPage: React.FC = () => {
         />
       )}
       {isOpenDetail && (
-        <EmailThongBaoDetail item={currentItem} onClose={handleCloseDetail} />
+        <ActivitiesDetail item={currentItem} onClose={handleCloseDetail} />
       )}
 
       {confirmDeleteId && (
@@ -294,7 +288,7 @@ const EmailThongBaoPage: React.FC = () => {
             bordered
             dataSource={data?.items}
             rowKey="id"
-            // scroll={{ x: "max-content" }}
+            scroll={{ x: "max-content" }}
             pagination={false}
             loading={loading}
           />
@@ -322,4 +316,4 @@ const EmailThongBaoPage: React.FC = () => {
   );
 };
 
-export default withAuthorization(EmailThongBaoPage, "");
+export default withAuthorization(ActivitiesPage, "");

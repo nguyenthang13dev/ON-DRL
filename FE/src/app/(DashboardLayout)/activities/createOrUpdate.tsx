@@ -1,4 +1,4 @@
-import React, { ForwardedRef, useState, useRef, useMemo } from "react";
+import React, { ForwardedRef, useMemo, useRef, useState } from "react";
 import {
   Form,
   FormProps,
@@ -6,27 +6,22 @@ import {
   Select,
   DatePicker,
   Modal,
-  Row,
-  Col,
+  UploadFile,
 } from "antd";
+import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import {
-  EmailThongBaoCreateOrUpdateType,
-  EmailThongBaoType,
-} from "@/types/emailThongBao/emailThongBao";
+  ActivitiesCreateOrUpdateType,
+  ActivitiesType,
+} from "@/types/activities/activities";
 import * as extensions from "@/utils/extensions";
-import emailThongBaoService from "@/services/emailThongBao/emailThongBaoService";
-const StaticFileUrl = process.env.NEXT_PUBLIC_STATIC_FILE_BASE_URL;
-
-interface Props {
-  item?: EmailThongBaoType | null;
-  onClose: () => void;
-  onSuccess: () => void;
-}
-
+import activitiesService from "@/services/activities/activitiesService";
 import dynamic from "next/dynamic";
 import type { ReactQuillProps } from "react-quill";
 import { uploadFileService } from "@/services/File/uploadFile.service";
+import UploadFiler from "@/libs/UploadFilter";
+const StaticFileUrl = process.env.NEXT_PUBLIC_STATIC_FILE_BASE_URL;
+
 const QuillEditor = dynamic(
   async () => {
     const { default: RQ } = await import("react-quill");
@@ -47,11 +42,18 @@ const QuillEditor = dynamic(
   }
 );
 
-const EmailThongBaoCreateOrUpdate: React.FC<Props> = (props: Props) => {
-  const [form] = Form.useForm<EmailThongBaoCreateOrUpdateType>();
+interface Props {
+  item?: ActivitiesType | null;
+  onClose: () => void;
+  onSuccess: () => void;
+}
 
-  const [editorValue, setEditorValue] = useState<string>("");
+const ActivitiesCreateOrUpdate: React.FC<Props> = (props: Props) => {
+  const [form] = Form.useForm<ActivitiesCreateOrUpdateType>();
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [uploadedData, setUploadedData] = useState<string[]>([]);
   const quillRef = useRef<any>();
+  const [editorValue, setEditorValue] = useState<string>("");
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"], // toggled buttons
     ["blockquote", "code-block"],
@@ -119,20 +121,17 @@ const EmailThongBaoCreateOrUpdate: React.FC<Props> = (props: Props) => {
   const handleChangeEditor = (value: string) => {
     setEditorValue(value); // Update editor value on change
   };
+  const handleOnFinish: FormProps<ActivitiesCreateOrUpdateType>["onFinish"] =
+    async (formData: ActivitiesCreateOrUpdateType) => {
+      if (uploadedData && uploadedData.length > 0) {
+        formData.image = uploadedData[0];
+      }
 
-  const handleOnFinish: FormProps<EmailThongBaoCreateOrUpdateType>["onFinish"] =
-    async (formData: EmailThongBaoCreateOrUpdateType) => {
-      const trimmedData: EmailThongBaoCreateOrUpdateType = Object.fromEntries(
-        Object.entries(formData).map(([key, value]) => [
-          key,
-          typeof value === "string" ? value.trim() : value,
-        ])
-      ) as EmailThongBaoCreateOrUpdateType;
       if (props.item) {
         console.log(props);
-        const response = await emailThongBaoService.update(trimmedData);
+        const response = await activitiesService.update(formData);
         if (response.status) {
-          toast.success("Chỉnh sửa thành công");
+          toast.success("Chỉnh sửa  thành công");
           form.resetFields();
           props.onSuccess();
           props.onClose();
@@ -140,9 +139,9 @@ const EmailThongBaoCreateOrUpdate: React.FC<Props> = (props: Props) => {
           toast.error(response.message);
         }
       } else {
-        const response = await emailThongBaoService.create(trimmedData);
+        const response = await activitiesService.create(formData);
         if (response.status) {
-          toast.success("Thêm mới thành công");
+          toast.success("Thêm mới  thành công");
           form.resetFields();
           props.onSuccess();
           props.onClose();
@@ -161,6 +160,10 @@ const EmailThongBaoCreateOrUpdate: React.FC<Props> = (props: Props) => {
     if (props.item) {
       form.setFieldsValue({
         ...props.item,
+        startDate: props.item.startDate
+          ? dayjs(props.item.startDate)
+          : undefined,
+        endDate: props.item.endDate ? dayjs(props.item.endDate) : undefined,
       });
     }
   }, [form, props.item]);
@@ -173,7 +176,7 @@ const EmailThongBaoCreateOrUpdate: React.FC<Props> = (props: Props) => {
       onCancel={handleCancel}
       okText="Xác nhận"
       cancelText="Đóng"
-      width="60%"
+      style={{ minWidth: "70%" }}
     >
       <Form
         layout="vertical"
@@ -184,60 +187,65 @@ const EmailThongBaoCreateOrUpdate: React.FC<Props> = (props: Props) => {
         autoComplete="off"
       >
         {props.item && (
-          <Form.Item<EmailThongBaoCreateOrUpdateType> name="id" hidden>
+          <Form.Item<ActivitiesCreateOrUpdateType> name="id" hidden>
             <Input />
           </Form.Item>
         )}
         {
           <>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item<EmailThongBaoCreateOrUpdateType>
-                  label="Mã"
-                  name="ma"
-                  rules={[
-                    { required: true, message: "Vui lòng nhập thông tin này!" },
-                    { max: 255, message: "Không được nhập quá 255 ký tự!" },
-                    {
-                      pattern: /^[a-zA-Z0-9_-]+$/,
-                      message: "Mã chỉ được chứa chữ cái, số, dấu - và _",
-                    },
-                  ]}
-                >
-                  <Input placeholder="Mã" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item<EmailThongBaoCreateOrUpdateType>
-                  label="Nội dung"
-                  name="noiDung"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng nhập thông tin này!",
-                    },
-                  ]}
-                >
-                  <QuillEditor
-                    forwardedRef={quillRef}
-                    modules={modules}
-                    value={editorValue}
-                    onChange={handleChangeEditor}
-                    theme="snow"
-                    placeholder="Nhập nội dung..."
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
+            <Form.Item<ActivitiesCreateOrUpdateType>
+              label="Tên hoạt động"
+              name="name"
+              rules={[
+                { required: true, message: "Vui lòng nhập thông tin này!" },
+              ]}
+            >
+              <Input placeholder="Tên hoạt động" />
+            </Form.Item>
+
+            <Form.Item<ActivitiesCreateOrUpdateType>
+              label="Thời gian"
+              name="startDate"
+              rules={[
+                { required: true, message: "Vui lòng nhập thông tin này!" },
+              ]}
+            >
+              <DatePicker
+                showTime
+                format="DD/MM/YYYY HH:mm"
+                className="w-100"
+                placeholder="Thời gian"
+              />
+            </Form.Item>
+            <Form.Item<ActivitiesCreateOrUpdateType> label="File đính kèm">
+              <UploadFiler
+                maxFiles={1}
+                fileList={fileList}
+                setFileList={setFileList}
+                type="ImageActivities"
+                setUploadedData={setUploadedData}
+              />
+            </Form.Item>
+            <Form.Item<ActivitiesCreateOrUpdateType>
+              label="Mô tả"
+              name="description"
+              rules={[
+                { required: true, message: "Vui lòng nhập thông tin này!" },
+              ]}
+            >
+              <QuillEditor
+                forwardedRef={quillRef}
+                modules={modules}
+                value={editorValue}
+                onChange={handleChangeEditor}
+                theme="snow"
+                placeholder="Nhập nội dung..."
+              />
+            </Form.Item>
           </>
         }
-        <Form.Item style={{ display: "none" }}>
-          <button type="submit" />
-        </Form.Item>
       </Form>
     </Modal>
   );
 };
-export default EmailThongBaoCreateOrUpdate;
+export default ActivitiesCreateOrUpdate;

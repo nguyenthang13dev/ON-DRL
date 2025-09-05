@@ -7,17 +7,17 @@ import { useForm } from "antd/es/form/Form";
 import { toast } from "react-toastify";
 import * as extensions from "@/utils/extensions";
 
-import { EmailThongBaoSearchType } from "@/types/emailThongBao/emailThongBao";
-import emailThongBaoService from "@/services/emailThongBao/emailThongBaoService";
+import { ActivitiesSearchType } from "@/types/activities/activities";
+import activitiesService from "@/services/activities/activitiesService";
 
 interface SearchProps {
-  onFinish: ((values: EmailThongBaoSearchType) => void) | undefined;
+  onFinish: ((values: ActivitiesSearchType) => void) | undefined;
   pageIndex: number;
   pageSize: number;
 }
 const Search: React.FC<SearchProps> = ({ onFinish, pageIndex, pageSize }) => {
-  const [form] = useForm<EmailThongBaoSearchType>();
-
+  const [form] = useForm<ActivitiesSearchType>();
+   
   const Export = async () => {
     const formValues = form.getFieldsValue();
 
@@ -27,14 +27,14 @@ const Search: React.FC<SearchProps> = ({ onFinish, pageIndex, pageSize }) => {
       pageSize,
     };
 
-    const response = await emailThongBaoService.exportExcel(exportData);
+    const response = await activitiesService.exportExcel(exportData);
     if (response.status) {
-      downloadFileFromBase64(response.data, "Danh sách email thông báo.xlsx");
+      downloadFileFromBase64(response.data, "Danh sách .xlsx");
     } else {
       toast.error(response.message);
     }
   };
-
+  
   return (
     <>
       <Card className="customCardShadow mb-3">
@@ -49,19 +49,46 @@ const Search: React.FC<SearchProps> = ({ onFinish, pageIndex, pageSize }) => {
           autoComplete="off"
         >
           <Row gutter={24}>
-            <Col xl={12} lg={12} md={12} xs={24}>
-              <Form.Item<EmailThongBaoSearchType> key="ma" label="Mã" name="ma">
-                <Input placeholder="Mã" />
-              </Form.Item>
-            </Col>
-            {/* <Col xl={6} lg={8} md={12} xs={24}>
-							<Form.Item<EmailThongBaoSearchType>
-								key="noiDung"
-								label="Nội dung"
-								name="noiDung">
-								<Input placeholder="Nội dung"/>
+            <Col xl={6} lg={8} md={12} xs={24}>
+							<Form.Item<ActivitiesSearchType>
+								key="startDate"
+								label="Thời gian bắt đầu"
+								name="startDate">
+								<Input placeholder="Thời gian bắt đầu"/>
 							</Form.Item>
-						</Col> */}
+						</Col>
+						<Col xl={6} lg={8} md={12} xs={24}>
+							<Form.Item<ActivitiesSearchType>
+								key="endDate"
+								label="Thời gian kết thúc"
+								name="endDate">
+								<Input placeholder="Thời gian kết thúc"/>
+							</Form.Item>
+						</Col>
+						<Col xl={6} lg={8} md={12} xs={24}>
+							<Form.Item<ActivitiesSearchType>
+								key="name"
+								label="Tên hoạt động"
+								name="name">
+								<Input placeholder="Tên hoạt động"/>
+							</Form.Item>
+						</Col>
+						<Col xl={6} lg={8} md={12} xs={24}>
+							<Form.Item<ActivitiesSearchType>
+								key="description"
+								label="Mô tả"
+								name="description">
+								<Input placeholder="Mô tả"/>
+							</Form.Item>
+						</Col>
+						<Col xl={6} lg={8} md={12} xs={24}>
+							<Form.Item<ActivitiesSearchType>
+								key="qRPath"
+								label="QR tham gia"
+								name="qRPath">
+								<Input placeholder="QR tham gia"/>
+							</Form.Item>
+						</Col>
           </Row>
 
           <Flex
@@ -77,7 +104,7 @@ const Search: React.FC<SearchProps> = ({ onFinish, pageIndex, pageSize }) => {
             >
               Tìm kiếm
             </Button>
-            {/* <Button
+            <Button
               onClick={Export}
               type="primary"
               icon={<DownloadOutlined />}
@@ -85,7 +112,7 @@ const Search: React.FC<SearchProps> = ({ onFinish, pageIndex, pageSize }) => {
               size="small"
             >
               Kết xuất
-            </Button> */}
+            </Button>
           </Flex>
         </Form>
       </Card>
