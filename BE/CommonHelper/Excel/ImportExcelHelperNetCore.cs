@@ -85,7 +85,7 @@ namespace CommonHelper.Excel
                 return result;
             }
 
-            if (!File.Exists(PathTemplate))
+            if (!System.IO.File.Exists(PathTemplate))
             {
                 result.Status = false;
                 result.Message = "Không tìm thấy File.";

@@ -21,7 +21,10 @@ import {
   SyncOutlined,
   UploadOutlined,
   WarningOutlined,
+  EditOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
+import SignaturePad from "react-signature-canvas";
 import { PdfJs, Viewer, Worker } from "@react-pdf-viewer/core";
 import {
   Button,
@@ -38,7 +41,7 @@ import {
   Upload,
 } from "antd";
 import { MenuProps } from "antd/lib";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import { v4 as uuidv4 } from "uuid";
 import { addImageAndTextToPdf, extractFilePath } from "./utils/KySoHelper";
@@ -46,6 +49,7 @@ import {
   DEFAULT_CAU_HINH_IMAGE,
   DEFAULT_CAU_HINH_TEXT,
 } from "@/types/kySoCauHinh/kySoCauHinh.constant";
+import { ChuKyType } from "@/types/kySoCauHinh/chuKy";
 const StaticFileUrl = process.env.NEXT_PUBLIC_STATIC_FILE_BASE_URL;
 const workerUrl = "/pdf.worker.min.js";
 const primaryColor = "#CE1127";
@@ -56,6 +60,26 @@ type KySoInfoProps = {
 };
 
 const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
+  const [showSignaturePad, setShowSignaturePad] = useState(false);
+
+  useEffect(() => {
+    function updatePadWidth() {
+      if (signaturePadContainerRef.current) {
+        setSignaturePadWidth(signaturePadContainerRef.current.offsetWidth);
+        if (signaturePadRef) {
+          signaturePadRef.clear();
+        }
+      }
+    }
+    if (showSignaturePad) {
+      updatePadWidth();
+      window.addEventListener("resize", updatePadWidth);
+    }
+    return () => {
+      window.removeEventListener("resize", updatePadWidth);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showSignaturePad]);
   //1.Biến và trạng thái
   // Redux
   const user = useSelector((state) => state.auth.User);
@@ -99,6 +123,18 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
   // Kết nối SignalR
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
+  // Chữ ký
+  const [signatureList, setSignatureList] = useState<ChuKyType[]>([]);
+  const [selectedSignature, setSelectedSignature] = useState<string | null>(
+    null
+  );
+
+  const [signaturePadRef, setSignaturePadRef] = useState<SignaturePad | null>(
+    null
+  );
+  const [signaturePadWidth, setSignaturePadWidth] = useState<number>(400);
+  const signaturePadContainerRef = useRef<HTMLDivElement | null>(null);
+
   //2. Hàm tiện ích
   const getFileName = (path: string) => path?.split("/").pop() ?? "";
 
@@ -117,6 +153,21 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
       imageFile: undefined,
       type: cauHinhType,
     });
+    setSelectedSignature(null);
+    setShowSignaturePad(false);
+  };
+
+  const fetchSignatureList = async () => {
+    try {
+      const response = await kySoCauHinhService.getChuKy();
+      if (response?.status) {
+        setSignatureList(response.data || []);
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách chữ ký:", error);
+      // Fallback về dữ liệu giả lập nếu API chưa sẵn sàng
+      setSignatureList([]);
+    }
   };
 
   const cleanUp = () => {
@@ -156,9 +207,7 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
       // if (responseDuLieuBieuMau?.status && responseDuLieuBieuMau.data?.path) {
       //   setPdfTempLink(extractFilePath(responseDuLieuBieuMau.data.path));
       // }
-      setPdfTempLink(
-        extractFilePath("VANBAN_DI/22877/314%20VTNLHK-KHTH_0001.pdf")
-      );
+      setPdfTempLink(extractFilePath("0001.pdf"));
       const responseKySoInfo = await kySoInfoService.GetByThongTin(
         idBieuMau,
         "DTHoSoXuLy",
@@ -191,42 +240,42 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
       };
       fetchCauHinhKySo();
     }
-  }, [pdfDisplay, idBieuMau, idDTTienTrinhXuLy]);
+  }, [pdfDisplay, idBieuMau, idDTTienTrinhXuLy, open]);
 
   const items = useMemo<MenuProps["items"]>(
     () => [
+      // {
+      //   label: (
+      //     <>
+      //       <FileTextOutlined /> Thêm text
+      //     </>
+      //   ),
+      //   key: "addText",
+      // },
+      // {
+      //   label: (
+      //     <>
+      //       <FileTextOutlined /> Thêm nhanh thông tin
+      //     </>
+      //   ),
+      //   key: "addTextDefault",
+      // },
       {
         label: (
           <>
-            <FileTextOutlined /> Thêm text
-          </>
-        ),
-        key: "addText",
-      },
-      {
-        label: (
-          <>
-            <FileTextOutlined /> Thêm nhanh thông tin
-          </>
-        ),
-        key: "addTextDefault",
-      },
-      {
-        label: (
-          <>
-            <PictureOutlined /> Thêm ảnh
+            <PictureOutlined /> Chọn chữ ký
           </>
         ),
         key: "addImage",
       },
-      {
-        label: (
-          <>
-            <PictureOutlined /> Thêm nhanh chữ ký
-          </>
-        ),
-        key: "addImageDefault",
-      },
+      // {
+      //   label: (
+      //     <>
+      //       <PictureOutlined /> Thêm nhanh chữ ký
+      //     </>
+      //   ),
+      //   key: "addImageDefault",
+      // },
     ],
     []
   );
@@ -254,6 +303,9 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
     setCauHinhType(type);
     form.setFieldValue("type", type);
     setIsModalCauHinhOpen(true);
+    if (type === "IMAGE") {
+      fetchSignatureList();
+    }
     if (contextMenuPos) {
       const posX = contextMenuPos.x - pdfDisplay.marginLeft;
       const posY = contextMenuPos.y - pdfDisplay.marginTop;
@@ -356,23 +408,32 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
   const handleAddCauHinhOk = async () => {
     const values = form.getFieldsValue();
     if (cauHinhType === "IMAGE") {
-      // Giả sử bạn đã có file ảnh được chọn từ input hoặc Upload
-      const values = await form.validateFields();
-      const file = values.imageFile; // file: File
-      if (!file) {
-        message.error("Vui lòng chọn ảnh để thêm");
+      let imageSrc = "";
+
+      // Kiểm tra xem có chọn chữ ký có sẵn không
+      if (selectedSignature) {
+        const selectedSig = signatureList.find(
+          (sig) => sig.id === selectedSignature
+        );
+        if (selectedSig) {
+          imageSrc = selectedSig.duongDanFile;
+        }
+      } else if (values.imageFile) {
+        // Upload file mới
+        const formData = new FormData();
+        formData.append("file", values.imageFile);
+        const response = await kySoCauHinhService.upload(formData);
+        if (response && response.status) {
+          imageSrc = response.data;
+        }
+      } else {
+        message.error("Vui lòng chọn chữ ký hoặc upload ảnh mới");
         return;
       }
 
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await kySoCauHinhService.upload(formData);
-      if (response && response.status) {
-        const uploadedPath = response?.data;
-        const uploadedUrl = `${StaticFileUrl}/${uploadedPath}`;
+      if (imageSrc) {
         const img = new window.Image();
-        img.src = uploadedUrl;
+        img.src = `${StaticFileUrl}/${imageSrc}`;
         img.onload = () => {
           const naturalWidth = img.naturalWidth;
           const naturalHeight = img.naturalHeight;
@@ -384,7 +445,7 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
           const newCauHinh: KySoCauHinhType = {
             ...DEFAULT_CAU_HINH_IMAGE,
             id: uuidv4(),
-            imageSrc: uploadedPath,
+            imageSrc: imageSrc,
             width: Math.floor(scaledWidth),
             height: Math.floor(scaledHeight),
             posX: values.posX || 0,
@@ -489,6 +550,42 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
     let newFileList = [...info.fileList];
     newFileList = newFileList.slice(-1); // chỉ 1 file
     setFileList(newFileList);
+    // Reset selected signature khi upload file mới
+    if (newFileList.length > 0) {
+      setSelectedSignature(null);
+    }
+  };
+
+  const handleSaveSignature = async () => {
+    if (!signaturePadRef || signaturePadRef.isEmpty()) {
+      message.error("Vui lòng vẽ chữ ký trước khi lưu");
+      return;
+    }
+
+    try {
+      const dataUrl = signaturePadRef.toDataURL();
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      const formData = new FormData();
+      formData.append("File", blob, "signature.png");
+      const apiResponse = await kySoCauHinhService.saveChuKy(formData);
+      if (apiResponse?.status) {
+        message.success("Lưu chữ ký thành công!");
+        setShowSignaturePad(false);
+        fetchSignatureList();
+      } else {
+        message.error("Lưu chữ ký thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi lưu chữ ký:", error);
+      message.error("Lưu chữ ký thất bại!");
+    }
+  };
+
+  const handleClearSignature = () => {
+    if (signaturePadRef) {
+      signaturePadRef.clear();
+    }
   };
 
   return (
@@ -738,6 +835,7 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
         closable={{ "aria-label": "Custom Close Button" }}
         open={isModalCauHinhOpen}
         onOk={handleAddCauHinhOk}
+        width={"50%"}
         onCancel={() => {
           setIsModalCauHinhOpen(false);
           resetForm();
@@ -784,39 +882,225 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
                 </Col>
               </>
             ) : (
-              <Col span={24}>
-                <Form.Item<KySoCauHinhType>
-                  name="imageFile"
-                  label="Ảnh"
-                  valuePropName="file"
-                  getValueFromEvent={(info) => {
-                    // Lấy file gốc từ fileList
-                    return info.fileList[0]?.originFileObj || null;
-                  }}
-                  rules={[
-                    { required: true, message: "Vui lòng chọn ảnh" },
-                    {
-                      validator: (_, value) => {
-                        if (value && value.type !== "image/png") {
-                          return Promise.reject("Chỉ được tải lên file PNG!");
-                        }
-                        return Promise.resolve();
-                      },
-                    },
-                  ]}
-                >
-                  <Upload
-                    beforeUpload={() => false}
-                    listType="picture"
-                    maxCount={1}
-                    onChange={handleUploadChange}
-                    accept="image/png"
-                    fileList={fileList}
+              <>
+                {/* Danh sách chữ ký có sẵn */}
+                {signatureList && signatureList.length > 0 && (
+                  <Col span={24} style={{ marginBottom: 16 }}>
+                    <div style={{ fontWeight: "bold", marginBottom: 8 }}>
+                      Chọn chữ ký có sẵn:
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 8,
+                        maxHeight: 200,
+                        overflowY: "auto",
+                      }}
+                    >
+                      {signatureList.map((sig) => (
+                        <div
+                          key={sig.id}
+                          style={{
+                            position: "relative",
+                            border:
+                              selectedSignature === sig.id
+                                ? "2px solid #CE1127"
+                                : "1px solid #ccc",
+                            borderRadius: 4,
+                            cursor: "pointer",
+                            padding: 4,
+                            transition: "box-shadow 0.2s",
+                          }}
+                          className="signature-item"
+                          onClick={() => {
+                            setSelectedSignature(sig.id);
+                            form.setFieldsValue({ imageFile: undefined });
+                            setFileList([]);
+                          }}
+                        >
+                          <img
+                            src={`${StaticFileUrl}/${sig.duongDanFile}`}
+                            alt="Chữ ký"
+                            style={{
+                              width: 120,
+                              height: 60,
+                              objectFit: "contain",
+                            }}
+                          />
+                          <div
+                            className="signature-delete-icon"
+                            style={{
+                              position: "absolute",
+                              top: 2,
+                              right: 2,
+                              display: "none",
+                              zIndex: 2,
+                              background: "rgba(255,255,255,0.8)",
+                              borderRadius: "50%",
+                              padding: 2,
+                              cursor: "pointer",
+                            }}
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              try {
+                                const res =
+                                  await kySoCauHinhService.deleteChuKy(sig.id);
+                                if (res?.status) {
+                                  message.success("Xóa chữ ký thành công!");
+                                  fetchSignatureList();
+                                } else {
+                                  message.error("Xóa chữ ký thất bại!");
+                                }
+                              } catch (err) {
+                                message.error("Lỗi khi xóa chữ ký!");
+                              }
+                            }}
+                          >
+                            <DeleteOutlined
+                              style={{ color: "#CE1127", fontSize: 16 }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Col>
+                )}
+
+                {/* Upload ảnh mới */}
+                <Col span={24}>
+                  <Form.Item<KySoCauHinhType>
+                    name="imageFile"
+                    label="Hoặc upload ảnh chữ ký mới"
+                    valuePropName="file"
+                    getValueFromEvent={(info) => {
+                      return info.fileList[0]?.originFileObj || null;
+                    }}
+                    rules={
+                      selectedSignature
+                        ? []
+                        : [
+                            {
+                              required: true,
+                              message: "Vui lòng chọn chữ ký hoặc upload ảnh",
+                            },
+                            {
+                              validator: (_, value) => {
+                                if (value && !value.type.startsWith("image/")) {
+                                  return Promise.reject(
+                                    "Chỉ được tải lên file ảnh!"
+                                  );
+                                }
+                                return Promise.resolve();
+                              },
+                            },
+                          ]
+                    }
                   >
-                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                  </Upload>
-                </Form.Item>
-              </Col>
+                    <Upload
+                      beforeUpload={async (file) => {
+                        // Gọi API saveChuKy với file upload
+                        const formData = new FormData();
+                        formData.append("File", file);
+                        const response = await kySoCauHinhService.saveChuKy(
+                          formData
+                        );
+                        if (response?.status && response.data?.id) {
+                          message.success("Lưu chữ ký thành công!");
+                          await fetchSignatureList();
+                          setSelectedSignature(response.data.id);
+                          setFileList([]); // Không hiển thị lại ảnh trong Upload
+                        } else {
+                          message.error("Lưu chữ ký thất bại!");
+                        }
+                        return false;
+                      }}
+                      listType="picture"
+                      maxCount={1}
+                      onChange={handleUploadChange}
+                      accept="image/*"
+                      // fileList={fileList}
+                    >
+                      <Button icon={<UploadOutlined />}>Upload ảnh</Button>
+                    </Upload>
+                  </Form.Item>
+                </Col>
+
+                {/* Vẽ chữ ký */}
+                <Col span={24}>
+                  <div style={{ marginBottom: 8 }}>
+                    <Button
+                      type="dashed"
+                      icon={<EditOutlined />}
+                      onClick={() => {
+                        setShowSignaturePad(!showSignaturePad);
+                        if (!showSignaturePad) {
+                          setSelectedSignature(null);
+                          form.setFieldsValue({ imageFile: undefined });
+                          setFileList([]);
+                        }
+                      }}
+                    >
+                      {showSignaturePad ? "Ẩn bảng vẽ" : "Vẽ chữ ký mới"}
+                    </Button>
+                  </div>
+
+                  {showSignaturePad && (
+                    <div
+                      ref={signaturePadContainerRef}
+                      style={{
+                        border: "1px solid #ccc",
+                        borderRadius: 4,
+                        padding: 8,
+                        backgroundColor: "#f9f9f9",
+                      }}
+                    >
+                      <div style={{ marginBottom: 8, fontWeight: "bold" }}>
+                        Vẽ chữ ký của bạn:
+                      </div>
+                      <div
+                        style={{
+                          border: "1px solid #ddd",
+                          backgroundColor: "white",
+                        }}
+                      >
+                        <SignaturePad
+                          ref={(ref: SignaturePad) => setSignaturePadRef(ref)}
+                          canvasProps={{
+                            width: signaturePadWidth,
+                            height: 150,
+                            className: "signature-canvas",
+                            style: { width: "100%", height: "150px" },
+                          }}
+                        />
+                      </div>
+                      <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
+                        <Button
+                          type="primary"
+                          icon={<CheckCircleOutlined />}
+                          onClick={handleSaveSignature}
+                          size="small"
+                        >
+                          Lưu chữ ký
+                        </Button>
+                        <Button
+                          icon={<DeleteOutlined />}
+                          onClick={handleClearSignature}
+                          size="small"
+                        >
+                          Xóa
+                        </Button>
+                        <Button
+                          onClick={() => setShowSignaturePad(false)}
+                          size="small"
+                        >
+                          Hủy
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </Col>
+              </>
             )}
           </Row>
           <Form.Item<KySoCauHinhType> name="type" label="Loại cấu hình" hidden>

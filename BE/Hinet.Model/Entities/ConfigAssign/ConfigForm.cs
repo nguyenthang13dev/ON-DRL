@@ -13,7 +13,8 @@ namespace Hinet.Model.Entities.ConfigAssign
     {
         public string Name { get; set; }
         public string Description { get; set; }
-
+        public bool IsActive { get; set; }
+        public Subject Subject { get; set; }
         public TaiLieuDinhKem FileDinhKems { get; set; }
     }
 }

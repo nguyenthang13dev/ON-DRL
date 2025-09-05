@@ -1,6 +1,7 @@
 ﻿using Hinet.Service.Dto;
-using MongoDB.Driver.Linq;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver.Linq;
 
 namespace Hinet.Service.Common
 {
