@@ -6,6 +6,8 @@ import { formTemplateService } from '@/services/formTemplate/formTemplate.servic
 import { FormTemplate } from '@/types/formTemplate/formTemplate'
 import Loader from '@/components/fileManager-components/Loader/Loader'
 import './formTemplateConfig.css'
+import { FieldDefinition } from '@/types/fieldDefinition/fieldDefinition'
+import FieldConfig from './fieldConfig'
 interface Props {
   isOpen: boolean
   formTemplate?: FormTemplate | null
@@ -16,23 +18,11 @@ const FormTemplateConfig: React.FC<Props> = ({
   formTemplate,
   onClose,
 }: Props) => {
-  const [editingField, setEditingField] = useState<any>(null)
+  const [editingField, setEditingField] = useState<
+    FieldDefinition | undefined
+  >()
   const [form] = Form.useForm()
   const [isOpenModal, setIsOpenModal] = useState<boolean>(isOpen)
-  // const handleGetTemplateById = async () => {
-  //   try {
-  //     const response = await formTemplateService.GetById('')
-  //     if (response != null && response.data != null) {
-  //       console.log('response', response)
-  //       setTemplate(response.data)
-  //     }
-  //   } catch (error) {}
-  // }
-
-  // // Fetch template từ backend
-  // useEffect(() => {
-  //   handleGetTemplateById()
-  // }, [templateId])
 
   const handleCancel = () => {
     setIsOpenModal(false)
@@ -64,27 +54,7 @@ const FormTemplateConfig: React.FC<Props> = ({
     return () => container.removeEventListener('click', handler)
   }, [formTemplate])
 
-  const handleSave = async () => {
-    // const values = await form.validateFields()
-    // await fetch(
-    //   `https://localhost:7130/api/FormTemplate/${templateId}/fields/${editingField.fieldId}`,
-    //   {
-    //     method: 'PUT',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify(values),
-    //   }
-    // )
-    // // update UI
-    // setTemplate({
-    //   ...template,
-    //   fields: template.fields.map((f: any) =>
-    //     f.fieldId === editingField.fieldId
-    //       ? { ...f, ...values, options: values.options.split(',') }
-    //       : f
-    //   ),
-    // })
-    // setEditingField(null)
-  }
+  const handleSave = async () => {}
 
   if (!formTemplate) return <Loader />
 
@@ -104,7 +74,15 @@ const FormTemplateConfig: React.FC<Props> = ({
           dangerouslySetInnerHTML={{ __html: formTemplate.htmlPreview }}
         />
         {/* Modal cấu hình field */}
-        <Modal
+        <FieldConfig
+          isOpen={!!editingField}
+          editingField={editingField}
+          onSuccess={(formValues: FieldDefinition) => {
+            console.log('formValues:', formValues)
+          }}
+          onClose={() => setEditingField(undefined)}
+        />
+        {/* <Modal
           title={`Cấu hình: ${editingField?.label}`}
           open={!!editingField}
           onCancel={() => setEditingField(null)}
@@ -137,7 +115,7 @@ const FormTemplateConfig: React.FC<Props> = ({
               Lưu
             </Button>
           </Form>
-        </Modal>
+        </Modal> */}
       </div>
     </Modal>
   )

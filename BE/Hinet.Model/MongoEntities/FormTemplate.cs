@@ -17,6 +17,10 @@ namespace Hinet.Model.MongoEntities
         // cached HTML preview from docx
         [BsonElement("htmlPreview")]
         public string HtmlPreview { get; set; } = "";
+
+        [BsonElement("isClassMonitorHandled")]
+        public bool IsClassMonitorHandled { get; set; } = false;
+
         [BsonElement("fields")]
         public List<FieldDefinition> Fields { get; set; } = new();
     }

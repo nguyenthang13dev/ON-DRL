@@ -44,7 +44,7 @@
     "src/app/(DashboardLayout)/fileManager/FileList/FileItem.jsx",
     "src/hooks/useDetectOutsideClicktjs",
     "src/app/(DashboardLayout)/fileManager/Actions/CreateFolder/CreateFolder.action.jsx"
-, "src/app/(DashboardLayout)/DuAn/DetailKeHoachTrienKhaitsx"  ],
+, "src/app/(DashboardLayout)/DuAn/DetailKeHoachTrienKhaitsx", "src/services/fieldDefinition"  ],
   "exclude": [
     "node_modules"
   ]

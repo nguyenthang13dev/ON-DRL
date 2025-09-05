@@ -1,12 +1,8 @@
 'use client'
 import Flex from '@/components/shared-components/Flex'
-import {
-  searchNhomDanhMucData,
-  tableNhomDanhMucDataType,
-} from '@/types/nhomDanhMuc/nhomDanhMuc'
+import { tableNhomDanhMucDataType } from '@/types/nhomDanhMuc/nhomDanhMuc'
 import { Response, ResponsePageInfo, ResponsePageList } from '@/types/general'
 import withAuthorization from '@/libs/authentication'
-import { nhomDanhMucService } from '@/services/nhomDanhMuc/nhomDanhMuc.service'
 import { setIsLoading } from '@/store/general/GeneralSlice'
 import { useSelector } from '@/store/hooks'
 import { AppDispatch } from '@/store/store'
@@ -35,19 +31,15 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import classes from './page.module.css'
-import { toast } from 'react-toastify'
-import CreateOrUpdate from './createOrUpdate'
-import NhomDanhMucDetail from './detail'
-import Search from './search'
 import { useRouter } from 'next/navigation'
 import AutoBreadcrumb from '@/components/util-compenents/Breadcrumb'
-import TemplatePreviewPage from './config'
 import {
   FormTemplate,
   FormTemplateSearch,
 } from '@/types/formTemplate/formTemplate'
 import { formTemplateService } from '@/services/formTemplate/formTemplate.service'
 import FormTemplateConfig from './formTemplateConfig'
+import CreateOrUpdate from './createOrUpdate'
 
 const NhomDanhMuc: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -62,6 +54,7 @@ const NhomDanhMuc: React.FC = () => {
     null
   )
   const loading = useSelector((state) => state.general.isLoading)
+  const [isOpenCreateUpdate, setIsOpenCreateUpdate] = useState<boolean>(false)
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
   const [isOpenConfigModal, setIsOpenConfigModal] = useState<boolean>(false)
 
@@ -101,20 +94,11 @@ const NhomDanhMuc: React.FC = () => {
             },
           },
           {
-            label: 'Chi tiết',
-            key: '2',
-            icon: <EyeOutlined />,
-            onClick: () => {
-              // setCurrentDetailNhomDanhMuc(record)
-              // setIsOpenDetail(true)
-            },
-          },
-          {
             label: 'Chỉnh sửa',
-            key: '3',
+            key: '2',
             icon: <EditOutlined />,
             onClick: () => {
-              // handleShowModal(true, record)
+              handleShowCreateUpdateModal(true, record)
             },
           },
           {
@@ -225,15 +209,15 @@ const NhomDanhMuc: React.FC = () => {
     [pageIndex, pageSize]
   )
 
-  // const handleShowModal = (
-  //   isEdit?: boolean,
-  //   NhomDanhMuc?: tableNhomDanhMucDataType
-  // ) => {
-  //   setIsOpenModal(true)
-  //   if (isEdit) {
-  //     setCurrentNhomDanhMuc(NhomDanhMuc ?? null)
-  //   }
-  // }
+  const handleShowCreateUpdateModal = (
+    isEdit?: boolean,
+    currentFormTemplate?: FormTemplate
+  ) => {
+    setIsOpenCreateUpdate(true)
+    if (isEdit) {
+      setCurrentFormTemplate(currentFormTemplate ?? null)
+    }
+  }
 
   // const handleClose = () => {
   //   setIsOpenModal(false)
@@ -273,7 +257,7 @@ const NhomDanhMuc: React.FC = () => {
           </Button>
           <Button
             onClick={() => {
-              // handleShowModal()
+              handleShowCreateUpdateModal()
             }}
             type="primary"
             icon={<PlusCircleOutlined />}
@@ -281,13 +265,16 @@ const NhomDanhMuc: React.FC = () => {
           >
             Thêm mới
           </Button>
-          {/* <CreateOrUpdate
-            isOpen={isOpenModal}
+          <CreateOrUpdate
+            isOpen={isOpenCreateUpdate}
             onSuccess={hanleCreateEditSuccess}
-            onClose={handleClose}
-            NhomDanhMuc={currentNhomDanhMuc} 
+            onClose={() => {
+              setIsOpenCreateUpdate(false)
+              setCurrentFormTemplate(null)
+            }}
+            currentFormTemplate={currentFormTemplate}
           />
-            */}
+
           {/* {isOpenModal && <TemplatePreviewPage />} */}
           <FormTemplateConfig
             isOpen={isOpenConfigModal}

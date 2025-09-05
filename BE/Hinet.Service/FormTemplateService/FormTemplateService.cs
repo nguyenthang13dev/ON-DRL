@@ -1,4 +1,5 @@
-﻿using Hinet.Model.Entities;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Hinet.Model.Entities;
 using Hinet.Model.MongoEntities;
 using Hinet.Repository.AppUserRepository;
 using Hinet.Repository.FormTemplateRepository;
@@ -14,6 +15,7 @@ using Hinet.Service.FormTemplateService.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Office.Interop.Word;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Text.RegularExpressions;
@@ -55,6 +57,7 @@ namespace Hinet.Service.FormTemplateService
                                 Description = q.Description,
                                 OriginalFilePath = q.OriginalFilePath,
                                 HtmlPreview = q.HtmlPreview,
+                                IsClassMonitorHandled = q.IsClassMonitorHandled,
                                 Fields = q.Fields,
                                 CreatedId = q.CreatedId,
                                 UpdatedId = q.UpdatedId,
@@ -142,6 +145,85 @@ namespace Hinet.Service.FormTemplateService
             };
 
             await CreateAsync(formTemplate);
+
+            return formTemplate;
+        }
+
+        public async Task<FormTemplate> CreateOrUpdateAsync(FormTemplateCreateUpdateDto dto)
+        {
+            var file = dto.OriginalFile;
+            if (file == null || file.Length == 0)
+                throw new Exception("File không hợp lệ");
+
+            // 1. Lưu file vào local
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads/Forms");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var filePath = Path.Combine(uploadsFolder, file.FileName);
+            var relativePath = Path.Combine("Uploads\\Forms", file.FileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // 2. Convert Word -> HTML
+            string htmlPreview;
+            using (var docStream = System.IO.File.OpenRead(filePath))
+            {
+                var result = new Mammoth.DocumentConverter().ConvertToHtml(docStream);
+                htmlPreview = result.Value;
+            }
+
+            // 3. Detect placeholder [[fieldId]]
+            var fieldMatches = Regex.Matches(htmlPreview, @"\[\[(.*?)\]\]");
+            foreach (Match m in fieldMatches)
+            {
+                var fieldId = m.Groups[1].Value;
+                var placeholder = $"[[{fieldId}]]";
+                var replacement = $"<span class='form-field' data-field-id='{fieldId}'>"
+                                + $"<span class='field-label'>...</span>"
+                                + $"<span class='field-config' data-id='{fieldId}'>⚙️</span>"
+                                + $"</span>";
+                htmlPreview = htmlPreview.Replace(placeholder, replacement);
+            }
+            var fields = fieldMatches.Cast<Match>().Select(m => new FieldDefinition
+            {
+                //FieldId = m.Groups[1].Value,
+                Label = m.Groups[1].Value,
+                Type = "text",
+                Required = false,
+                Options = new List<string>()
+            }).ToList();
+
+            // 4. Tạo template
+            var formTemplate = new FormTemplate();
+            if (dto.Id.HasValue)
+            {
+                formTemplate = await _formTemplateRepository.GetByIdAsync(dto.Id.Value);
+                if (formTemplate == null) throw new Exception("form template not found");
+                formTemplate.Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : Path.GetFileNameWithoutExtension(file.FileName);
+                formTemplate.OriginalFilePath = relativePath;
+                formTemplate.HtmlPreview = htmlPreview;
+                formTemplate.Fields = fields;
+                formTemplate.Description = dto.Description;
+                formTemplate.IsClassMonitorHandled = dto.IsClassMonitorHandled;
+                await UpdateAsync(formTemplate);
+
+            }
+            else
+            {
+                formTemplate = new FormTemplate
+                {
+                    Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : Path.GetFileNameWithoutExtension(file.FileName),
+                    OriginalFilePath = relativePath,
+                    HtmlPreview = htmlPreview,
+                    Fields = fields,
+                    Description = dto.Description,
+                    IsClassMonitorHandled = dto.IsClassMonitorHandled
+                };
+                await CreateAsync(formTemplate);
+            }
 
             return formTemplate;
         }

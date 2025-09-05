@@ -32,8 +32,15 @@ namespace Hinet.Controllers
             _fieldDefinitionService = fieldDefinitionService;
         }
 
-        //[HttpPut("update")]
-        //public async Task<IActionResult> Update(string templateId, string fieldId, [FromBody] UpdateFieldRequest request)
+        [HttpPut("GetByLabelAndTemplateId")]
+        public async Task<IActionResult> GetByLabelAndTemplateId(Guid templateId, string label)
+        {
+            var template = await _fieldDefinitionService.FindBy(t => t. == templateId).FirstOrDefaultAsync();
+            
+        }
+
+        //[HttpPut("GetByLabelAndTemplateId")]
+        //public async Task<IActionResult> GetByLabelAndTemplateId(string templateId, string fieldId, [FromBody] UpdateFieldRequest request)
         //{
         //    var template = await _formTemplates.Find(t => t.Id == templateId).FirstOrDefaultAsync();
         //    if (template == null) return NotFound();

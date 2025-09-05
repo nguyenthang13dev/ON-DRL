@@ -10,5 +10,6 @@ namespace Hinet.Service.FormTemplateService
     {
         Task<PagedList<FormTemplateDto>> GetData(FormTemplateSearchDto search);
         Task<FormTemplate> UploadFormAsync(IFormFile file);
+        Task<FormTemplate> CreateOrUpdateAsync(FormTemplateCreateUpdateDto dto);
     }
 }

@@ -31,6 +31,17 @@ class FormTemplateService {
     }
   }
 
+  public async CreatOrUpdate(formData: FormData): Promise<Response> {
+    try {
+      const response = await apiService.post<Response>(
+        '/FormTemplate/CreateOrUpdate',
+        formData
+      )
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  }
   public async Create(formData: createEditType): Promise<Response> {
     try {
       const response = await apiService.post<Response>(

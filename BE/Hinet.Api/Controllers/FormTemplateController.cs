@@ -44,6 +44,21 @@ namespace Hinet.Controllers
         }
 
 
+        [HttpPost("CreateOrUpdate")]
+        public async Task<DataResponse<FormTemplate>> CreateOrUpdate([FromForm] FormTemplateCreateUpdateDto dto)
+        {
+            try
+            {
+                var uploadResult = await _formTemplateService.CreateOrUpdateAsync(dto);
+                return new DataResponse<FormTemplate>() { Data = uploadResult, Status = true };
+            }
+            catch (Exception ex)
+            {
+                return DataResponse<FormTemplate>.False("Error", new string[] { ex.Message });
+            }
+        }
+
+
         [HttpPost("upload")]
         public async Task<DataResponse<FormTemplate>> UploadForm(IFormFile file)
         {
