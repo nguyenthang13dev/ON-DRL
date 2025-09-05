@@ -1,7 +1,6 @@
 // Hinet.Api/Controllers/DiemRenLuyenController.cs
 using Hinet.Api.Dto;
 using Hinet.Model.MongoEntities;
-using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
 using Hinet.Service.DiemRenLuyenService;
 using Microsoft.AspNetCore.Authorization;

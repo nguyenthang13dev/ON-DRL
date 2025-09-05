@@ -14,4 +14,4 @@ namespace Hinet.Service.SinhVienService
         // Example: Task<List<LopHocPhan>> GetLopHocPhanByHocKy(string hocKy);
     }
 }
-}
+
