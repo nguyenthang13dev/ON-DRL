@@ -2,12 +2,12 @@
 import Flex from "@/components/shared-components/Flex";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import withAuthorization from "@/libs/authentication";
-import { moduleService } from "@/services/module/module.service";
+import { khoaService } from "@/services/khoa/khoa.service";
 import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
-import { DropdownOption, ResponsePageInfo } from "@/types/general";
-import { searchModule, tableModuleType } from "@/types/menu/menu";
+import { ResponsePageInfo } from "@/types/general";
+import { searchKhoa, Khoa } from "@/types/khoa/khoa";
 import {
   CloseOutlined,
   DeleteOutlined,
@@ -16,51 +16,44 @@ import {
   EyeOutlined,
   PlusCircleOutlined,
   SearchOutlined,
-  SettingOutlined,
 } from "@ant-design/icons";
 import {
   Button,
   Card,
   Dropdown,
   FormProps,
-  Image,
   MenuProps,
   Pagination,
   Popconfirm,
   Space,
   Table,
   TableProps,
-  Tag,
 } from "antd";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import CreateOrUpdate from "./createOrUpdate";
-import QLModuleDetail from "./detail";
+import KhoaDetail from "./detail";
 import classes from "./page.module.css";
 import Search from "./search";
 
-const QLModule: React.FC = () => {
-  const router = useRouter();
+const QLKhoa: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [listModule, setListModule] = useState<tableModuleType[]>([]);
+  const [listKhoa, setListKhoa] = useState<Khoa[]>([]);
   const [dataPage, setDataPage] = useState<ResponsePageInfo>();
   const [pageSize, setPageSize] = useState<number>(20);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
-  const [searchValues, setSearchValues] = useState<searchModule | null>(null);
-  const [dropVaiTros, setDropVaiTros] = useState<DropdownOption[]>([]);
+  const [searchValues, setSearchValues] = useState<searchKhoa | null>(null);
   const loading = useSelector((state) => state.general.isLoading);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
-  const [currentModule, setCurrentModule] = useState<tableModuleType | null>();
-  const [currentDetailModule, setCurrentDetailModule] =
-    useState<tableModuleType>();
+  const [currentKhoa, setCurrentKhoa] = useState<Khoa | null>();
+  const [currentDetailKhoa, setCurrentDetailKhoa] = useState<Khoa>();
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [openPopconfirmId, setOpenPopconfirmId] = useState<string | null>(null);
 
-  const tableColumns: TableProps<tableModuleType>["columns"] = [
+  const tableColumns: TableProps<Khoa>["columns"] = [
     {
       title: "STT",
       dataIndex: "index",
@@ -68,109 +61,33 @@ const QLModule: React.FC = () => {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Mã chức năng",
-      dataIndex: "code",
-      render: (_: any, record: tableModuleType) => <span>{record.code}</span>,
+      title: "Mã khoa",
+      dataIndex: "maKhoa",
+      render: (_: any, record: Khoa) => <span>{record.maKhoa}</span>,
     },
     {
-      title: "Tên chức năng",
-      dataIndex: "name",
-
-      render: (_: any, record: tableModuleType) => <span>{record.name}</span>,
-    },
-    {
-      title: "Thứ tự",
-      dataIndex: "order",
-      width: "100px",
-      render: (_: any, record: tableModuleType) => <span>{record.order}</span>,
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "isShow",
-      render: (_: any, record: tableModuleType) => (
-        <Tag
-          bordered={false}
-          color={record.isShow ? "green" : "red"}
-          style={{ fontSize: "12px" }}
-        >
-          {record.isShow ? "Hiển thị" : "Không hiển thị"}
-        </Tag>
-      ),
-    },
-    {
-      title: "Phạm vi",
-      dataIndex: "allowFilterScope",
-      render: (_: any, record: tableModuleType) => (
-        // <span style={{ color: record.allowFilterScope ? "" : "red" }}>
-        //   {record.allowFilterScope ?? "Không"}
-        // </span>
-        <Tag
-          bordered={false}
-          color={record.allowFilterScope ? "green" : "red"}
-          style={{ fontSize: "12px" }}
-        >
-          {record.allowFilterScope ?? "Không"}
-        </Tag>
-      ),
-    },
-    {
-      title: "Icon",
-      dataIndex: "icon",
-      render: (_: any, record: tableModuleType) => {
-        return (
-          <div>
-            <Image
-              style={{ width: "50px" }}
-              className="img-fluid"
-              src={`${record.icon ? record.icon : "/img/others/settings.png"} `}
-              alt=""
-              preview={false}
-            />
-          </div>
-        );
-      },
-    },
-    {
-      title: "Class Css",
-      dataIndex: "classCss",
-      render: (_: any, record: tableModuleType) => (
-        <span>{record.classCss}</span>
-      ),
-    },
-    {
-      title: "Style Css",
-      dataIndex: "styleCss",
-      render: (_: any, record: tableModuleType) => (
-        <span>{record.styleCss}</span>
-      ),
+      title: "Tên khoa",
+      dataIndex: "tenKhoa",
+      render: (_: any, record: Khoa) => <span>{record.tenKhoa}</span>,
     },
     {
       title: "",
       dataIndex: "actions",
       fixed: "right",
-      render: (_: any, record: tableModuleType) => {
+      render: (_: any, record: Khoa) => {
         const items: MenuProps["items"] = [
           {
-            label: "Quản lý chức năng",
-            key: "1",
-            icon: <SettingOutlined />,
-            onClick: () => {
-              sessionStorage.setItem("moduleId", record.id ?? "");
-              router.push(`/QLOperation/`);
-            },
-          },
-          {
             label: "Chi tiết",
-            key: "2",
+            key: "1",
             icon: <EyeOutlined />,
             onClick: () => {
-              setCurrentDetailModule(record);
+              setCurrentDetailKhoa(record);
               setIsOpenDetail(true);
             },
           },
           {
             label: "Chỉnh sửa",
-            key: "3",
+            key: "2",
             icon: <EditOutlined />,
             onClick: () => {
               handleShowModal(true, record);
@@ -181,7 +98,7 @@ const QLModule: React.FC = () => {
           },
           {
             label: "Xóa",
-            key: "4",
+            key: "3",
             danger: true,
             icon: <DeleteOutlined />,
             onClick: () => setOpenPopconfirmId(record.id ?? ""),
@@ -203,12 +120,12 @@ const QLModule: React.FC = () => {
             </Dropdown>
             <Popconfirm
               title="Xác nhận xóa"
-              description="Bạn có muốn xóa chức năng này?"
+              description="Bạn có muốn xóa khoa này?"
               okText="Xóa"
               cancelText="Hủy"
               open={openPopconfirmId === record.id}
               onConfirm={() => {
-                handleDeleteModule(record.id || "");
+                handleDeleteKhoa(record.id || "");
                 setOpenPopconfirmId(null);
               }}
               onCancel={() => setOpenPopconfirmId(null)}
@@ -220,20 +137,20 @@ const QLModule: React.FC = () => {
   ];
 
   const hanleCreateEditSuccess = () => {
-    handleGetListModule();
+    handleGetListKhoa();
   };
 
-  const handleDeleteModule = async (id: string) => {
+  const handleDeleteKhoa = async (id: string) => {
     try {
-      const response = await moduleService.Delete(id);
+      const response = await khoaService.Delete(id);
       if (response.status) {
-        toast.success("Xóa chức năng thành công");
-        handleGetListModule();
+        toast.success("Xóa khoa thành công");
+        handleGetListKhoa();
       } else {
-        toast.error("Xóa chức năng thất bại");
+        toast.error("Xóa khoa thất bại");
       }
     } catch (error) {
-      toast.error("Xóa chức năng thất bại");
+      toast.error("Xóa khoa thất bại");
     }
   };
 
@@ -241,19 +158,17 @@ const QLModule: React.FC = () => {
     setIsPanelVisible(!isPanelVisible);
   };
 
-  const onFinishSearch: FormProps<searchModule>["onFinish"] = async (
-    values
-  ) => {
+  const onFinishSearch: FormProps<searchKhoa>["onFinish"] = async (values) => {
     try {
       setSearchValues(values);
-      await handleGetListModule(values);
+      await handleGetListKhoa(values);
     } catch (error) {
       console.error("Lỗi khi lưu dữ liệu:", error);
     }
   };
 
-  const handleGetListModule = useCallback(
-    async (searchDataOverride?: searchModule) => {
+  const handleGetListKhoa = useCallback(
+    async (searchDataOverride?: searchKhoa) => {
       dispatch(setIsLoading(true));
       try {
         const searchData = searchDataOverride || {
@@ -261,11 +176,11 @@ const QLModule: React.FC = () => {
           pageSize,
           ...(searchValues || {}),
         };
-        const response = await moduleService.getDataByPage(searchData);
+        const response = await khoaService.getDataByPage(searchData);
         if (response != null && response.data != null) {
           const data = response.data;
           const items = data.items;
-          setListModule(items);
+          setListKhoa(items);
           setDataPage({
             pageIndex: data.pageIndex,
             pageSize: data.pageSize,
@@ -278,19 +193,19 @@ const QLModule: React.FC = () => {
         dispatch(setIsLoading(false));
       }
     },
-    [pageIndex, pageSize]
+    [pageIndex, pageSize, searchValues, dispatch]
   );
 
-  const handleShowModal = (isEdit?: boolean, module?: tableModuleType) => {
+  const handleShowModal = (isEdit?: boolean, khoa?: Khoa) => {
     setIsOpenModal(true);
     if (isEdit) {
-      setCurrentModule(module);
+      setCurrentKhoa(khoa);
     }
   };
 
   const handleClose = () => {
     setIsOpenModal(false);
-    setCurrentModule(null);
+    setCurrentKhoa(null);
   };
 
   const handleCloseDetail = () => {
@@ -298,8 +213,8 @@ const QLModule: React.FC = () => {
   };
 
   useEffect(() => {
-    handleGetListModule();
-  }, [handleGetListModule]);
+    handleGetListKhoa();
+  }, [handleGetListKhoa]);
 
   return (
     <>
@@ -319,17 +234,6 @@ const QLModule: React.FC = () => {
           >
             {isPanelVisible ? "Ẩn tìm kiếm" : "Tìm kiếm"}
           </Button>
-          {/* <Link href="/QLModule/Import">
-            <Button
-              color="pink"
-              variant="solid"
-              icon={<VerticalAlignTopOutlined />}
-              size="small"
-              className={`${classes.mgright5} ${classes.colorKetXuat}`}
-            >
-              Import
-            </Button>
-          </Link> */}
 
           <Button
             onClick={() => {
@@ -345,13 +249,13 @@ const QLModule: React.FC = () => {
             isOpen={isOpenModal}
             onSuccess={hanleCreateEditSuccess}
             onClose={handleClose}
-            module={currentModule}
+            khoa={currentKhoa}
           />
         </div>
       </Flex>
       {isPanelVisible && <Search onFinish={onFinishSearch} />}
-      <QLModuleDetail
-        module={currentDetailModule}
+      <KhoaDetail
+        khoa={currentDetailKhoa}
         isOpen={isOpenDetail}
         onClose={handleCloseDetail}
       />
@@ -360,7 +264,7 @@ const QLModule: React.FC = () => {
           <Table
             columns={tableColumns}
             bordered
-            dataSource={listModule}
+            dataSource={listKhoa}
             rowKey="id"
             scroll={{ x: "max-content" }}
             pagination={false}
@@ -390,4 +294,4 @@ const QLModule: React.FC = () => {
   );
 };
 
-export default withAuthorization(QLModule, "");
+export default withAuthorization(QLKhoa, "");
