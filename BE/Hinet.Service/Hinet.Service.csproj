@@ -53,4 +53,10 @@
     <ProjectReference Include="..\Hinet.Repository\Hinet.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DangKyHocPhanService\" />
+    <Folder Include="DiemRenLuyenService\" />
+    <Folder Include="LopHocPhanService\" />
+  </ItemGroup>
+
 </Project>

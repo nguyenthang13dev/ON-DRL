@@ -43,10 +43,10 @@ namespace CommonHelper.Word
                 string generatedPdfPath = Path.Combine(outputDir, Path.GetFileNameWithoutExtension(inputPath) + ".pdf");
                 string finalPdfPath = Path.Combine(outputDir, outputFileName);
 
-                if (!File.Exists(generatedPdfPath))
+                if (!System.IO.File.Exists(generatedPdfPath))
                     throw new Exception("Không tìm thấy file PDF sau khi chuyển đổi.");
 
-                File.Move(generatedPdfPath, finalPdfPath, overwrite: true);
+                System.IO.File.Move(generatedPdfPath, finalPdfPath, overwrite: true);
             }
         }
 
@@ -69,7 +69,7 @@ namespace CommonHelper.Word
         public static string ConvertWordToHtml(string filePath)
         {
             var libreOfficePath = @"C:\Program Files\LibreOffice\program\soffice.exe";
-            if (!File.Exists(filePath))
+            if (!System.IO.File.Exists(filePath))
                 throw new FileNotFoundException("File Word không tồn tại", filePath);
 
             var outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "htmloutput");
@@ -92,14 +92,13 @@ namespace CommonHelper.Word
             var htmlFileName = Path.GetFileNameWithoutExtension(filePath) + ".html";
             var htmlFilePath = Path.Combine(outputDirectory, htmlFileName);
 
-            if (!File.Exists(htmlFilePath))
+            if (!System.IO.File.Exists(htmlFilePath))
                 throw new Exception("Chuyển đổi file Word sang HTML thất bại.");
-
             // Xóa thư mục tạm chứa html sau khi đọc xong docx
             //Directory.Delete(outputDirectory, recursive: true);
 
 
-            return File.ReadAllText(htmlFilePath);
+            return System.IO.File.ReadAllText(htmlFilePath);
         }
 
         public static FileConversionResult ToPDF(string inputPath, string outputDirectory)
@@ -127,7 +126,7 @@ namespace CommonHelper.Word
 
                     var output = process.StandardOutput.ReadToEnd();
                     var error = process.StandardError.ReadToEnd();
-                    if (process.ExitCode == 0 && File.Exists(outputFilePath))
+                    if (process.ExitCode == 0 && System.IO.File.Exists(outputFilePath))
                     {
                         result.FilePath = outputFilePath;
                         result.Status = true;

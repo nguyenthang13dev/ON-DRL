@@ -1,5 +1,7 @@
 "use client";
 import LoginForm from "@/components/auth-components/LoginForm";
+import SignaturePad from "@/components/signature/SignaturePad";
+import KySoInfo from "@/components/signature/SisnatureInfo";
 import { Col, Divider, Image, Row } from "antd";
 import React, { useState } from "react";
 
@@ -32,8 +34,11 @@ const Login: React.FC = () => {
               Hệ thống đánh giá điểm rèn luyện sinh viên - Đại học Thủy Lợi
             </div>
           </div>
-          {/* <SignaturePad />
-          <KySoInfo idBieuMau={""} idDTTienTrinhXuLy={""}></KySoInfo> */}
+          {/* <SignaturePad /> */}
+          <KySoInfo
+            idBieuMau={"1bbc2563-8156-42e0-808c-164ab99ec0fc"}
+            idDTTienTrinhXuLy={"1bbc2563-8156-42e0-808c-164ab99ec0fc"}
+          ></KySoInfo>
           <Row justify="center">
             <Col
               xs={20}

@@ -1,0 +1,20 @@
+.table {
+  margin-top: 16px;
+}
+
+.table .ant-table-thead > tr > th {
+  background-color: #f0f2f5;
+  font-weight: 600;
+}
+
+.table .ant-table-tbody > tr:hover > td {
+  background-color: #e6f7ff;
+}
+
+.mgright5 {
+  margin-right: 5px;
+}
+
+.customCardShadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

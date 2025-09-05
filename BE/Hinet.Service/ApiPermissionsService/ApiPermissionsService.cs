@@ -11,7 +11,7 @@ using Hinet.Service.ApiPermissionsService.ViewModels;
 using Microsoft.Extensions.Caching.Memory;
 using Pipelines.Sockets.Unofficial;
 using MongoDB.Driver.Linq;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace Hinet.Service.ApiPermissionsService
 {

@@ -8,32 +8,30 @@ import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
 import { DropdownOption, ResponsePageInfo } from "@/types/general";
 import { searchModule, tableModuleType } from "@/types/menu/menu";
-import
-  {
-    CloseOutlined,
-    DeleteOutlined,
-    DownOutlined,
-    EditOutlined,
-    EyeOutlined,
-    PlusCircleOutlined,
-    SearchOutlined,
-    SettingOutlined,
-  } from "@ant-design/icons";
-import
-  {
-    Button,
-    Card,
-    Dropdown,
-    FormProps,
-    Image,
-    MenuProps,
-    Pagination,
-    Popconfirm,
-    Space,
-    Table,
-    TableProps,
-    Tag,
-  } from "antd";
+import {
+  CloseOutlined,
+  DeleteOutlined,
+  DownOutlined,
+  EditOutlined,
+  EyeOutlined,
+  PlusCircleOutlined,
+  SearchOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  Dropdown,
+  FormProps,
+  Image,
+  MenuProps,
+  Pagination,
+  Popconfirm,
+  Space,
+  Table,
+  TableProps,
+  Tag,
+} from "antd";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";

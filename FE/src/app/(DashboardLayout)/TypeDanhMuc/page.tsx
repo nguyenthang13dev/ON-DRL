@@ -7,34 +7,34 @@ import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
 import
-    {
-        SearchTypeDanhMucData,
-        TableTypeDanhMucDataType,
-    } from "@/types/TypeDanhMuc/TypeDanhMuc";
+  {
+    SearchTypeDanhMucData,
+    TableTypeDanhMucDataType,
+  } from "@/types/TypeDanhMuc/TypeDanhMuc";
 import { Response, ResponsePageInfo, ResponsePageList } from "@/types/general";
 import
-    {
-        CloseOutlined,
-        DeleteOutlined,
-        DownOutlined,
-        EditOutlined,
-        EyeOutlined,
-        PlusCircleOutlined,
-        SearchOutlined,
-    } from "@ant-design/icons";
+  {
+    CloseOutlined,
+    DeleteOutlined,
+    DownOutlined,
+    EditOutlined,
+    EyeOutlined,
+    PlusCircleOutlined,
+    SearchOutlined,
+  } from "@ant-design/icons";
 import
-    {
-        Button,
-        Card,
-        Dropdown,
-        FormProps,
-        MenuProps,
-        Pagination,
-        Popconfirm,
-        Space,
-        Table,
-        TableProps,
-    } from "antd";
+  {
+    Button,
+    Card,
+    Dropdown,
+    FormProps,
+    MenuProps,
+    Pagination,
+    Popconfirm,
+    Space,
+    Table,
+    TableProps,
+  } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -80,14 +80,14 @@ const TypeDanhMuc: React.FC = () => {
       ),
     },
     {
-      title: "Loại",
+      title: "Mô tả",
       dataIndex: "type",
       render: (_: any, record: TableTypeDanhMucDataType) => (
         <span>{record.type}</span>
       ),
     },
     {
-      title: "Mã DM",
+      title: "Mã loại",
       dataIndex: "codeDm",
       render: (_: any, record: TableTypeDanhMucDataType) => (
         <span>{record.codeDm}</span>
