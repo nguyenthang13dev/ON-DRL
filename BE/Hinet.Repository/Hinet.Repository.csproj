@@ -23,7 +23,6 @@
   <ItemGroup>
     <Folder Include="DangKyHocPhanRepository\" />
     <Folder Include="DiemRenLuyenRepository\" />
-    <Folder Include="MonHocRepository\" />
     <Folder Include="KhoaRepository\" />
     <Folder Include="LopHocPhanRepository\" />
     <Folder Include="NewFolder\" />
