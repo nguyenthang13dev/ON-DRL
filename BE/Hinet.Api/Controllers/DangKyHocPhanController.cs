@@ -1,7 +1,6 @@
 // Hinet.Api/Controllers/DangKyHocPhanController.cs
 using Hinet.Api.Dto;
 using Hinet.Model.MongoEntities;
-using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
 using Hinet.Service.DangKyHocPhanService;
 using Microsoft.AspNetCore.Authorization;
