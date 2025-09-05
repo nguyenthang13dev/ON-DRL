@@ -11,7 +11,6 @@ import {
   DeleteOutlined,
   DownOutlined,
   EditOutlined,
-  EyeOutlined,
   PlusCircleOutlined,
   SearchOutlined,
   SettingOutlined,
@@ -219,14 +218,12 @@ const NhomDanhMuc: React.FC = () => {
     }
   }
 
-  // const handleClose = () => {
-  //   setIsOpenModal(false)
-  //   setCurrentNhomDanhMuc(null)
-  // }
-
-  // const handleCloseDetail = () => {
-  //   setIsOpenDetail(false)
-  // }
+  const handleAfterUpdateTemplateFields = (formTemplate: FormTemplate) => {
+    setCurrentFormTemplate(formTemplate)
+    setFormTemplates((prev) => {
+      return prev.map((ft) => (ft.id === formTemplate.id ? formTemplate : ft))
+    })
+  }
 
   useEffect(() => {
     console.log({
@@ -283,6 +280,7 @@ const NhomDanhMuc: React.FC = () => {
               setCurrentFormTemplate(null)
             }}
             formTemplate={currentFormTemplate}
+            handleAfterUpdateTemplateFields={handleAfterUpdateTemplateFields}
           />
         </div>
       </Flex>

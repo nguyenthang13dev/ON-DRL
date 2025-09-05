@@ -2,9 +2,10 @@
 
 namespace Hinet.Service.FieldDefinitionService.Dto
 {
-    public class FieldDefinitionSearchDto : SearchBase
+    public class FieldDefinitionUpdateDto 
     {
-        public string? Name { get; set; }
+        public Guid FormTemplateId { get; set; }
+        public FieldDefinitionDto Field {  get; set; }
     }
 
 }

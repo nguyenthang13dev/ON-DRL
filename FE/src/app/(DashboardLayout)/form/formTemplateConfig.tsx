@@ -1,27 +1,28 @@
 'use client'
-import { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import { Modal, Form, Input, Select, Switch, Button, Spin } from 'antd'
+import { useEffect, useState } from 'react'
+import { Modal, Form } from 'antd'
 import { formTemplateService } from '@/services/formTemplate/formTemplate.service'
 import { FormTemplate } from '@/types/formTemplate/formTemplate'
 import Loader from '@/components/fileManager-components/Loader/Loader'
 import './formTemplateConfig.css'
 import { FieldDefinition } from '@/types/fieldDefinition/fieldDefinition'
 import FieldConfig from './fieldConfig'
+import { toast } from 'react-toastify'
 interface Props {
   isOpen: boolean
   formTemplate?: FormTemplate | null
+  handleAfterUpdateTemplateFields: (formTemplate: FormTemplate) => void
   onClose: () => void
 }
 const FormTemplateConfig: React.FC<Props> = ({
   isOpen,
   formTemplate,
+  handleAfterUpdateTemplateFields,
   onClose,
 }: Props) => {
   const [editingField, setEditingField] = useState<
     FieldDefinition | undefined
   >()
-  const [form] = Form.useForm()
   const [isOpenModal, setIsOpenModal] = useState<boolean>(isOpen)
 
   const handleCancel = () => {
@@ -42,19 +43,33 @@ const FormTemplateConfig: React.FC<Props> = ({
       if (!field) return
 
       setEditingField(field)
-      form.setFieldsValue({
-        label: field.label,
-        type: field.type,
-        required: field.required,
-        options: field.options?.join(', '),
-      })
     }
 
     container.addEventListener('click', handler)
     return () => container.removeEventListener('click', handler)
   }, [formTemplate])
 
-  const handleSave = async () => {}
+  const handleSave = async (field: any) => {
+    console.log('field', field)
+    if (!formTemplate) return
+    const updatedFields = formTemplate.fields.map((f) =>
+      f.label === field.label ? field : f
+    )
+    // const updatedFormTemplate = { ...formTemplate, fields: updatedFields }
+    try {
+      field.options = field.options ? field.options.split(',') : []
+      const template = await formTemplateService.UpdateFormTemplateField(
+        formTemplate.id,
+        field
+      )
+      handleAfterUpdateTemplateFields(template.data)
+      setEditingField(undefined)
+      toast.success('Cấu hình thành công')
+    } catch (error) {
+      toast.error('Cập nhật thất bại')
+      console.error(error)
+    }
+  }
 
   if (!formTemplate) return <Loader />
 
@@ -77,45 +92,9 @@ const FormTemplateConfig: React.FC<Props> = ({
         <FieldConfig
           isOpen={!!editingField}
           editingField={editingField}
-          onSuccess={(formValues: FieldDefinition) => {
-            console.log('formValues:', formValues)
-          }}
+          onSuccess={handleSave}
           onClose={() => setEditingField(undefined)}
         />
-        {/* <Modal
-          title={`Cấu hình: ${editingField?.label}`}
-          open={!!editingField}
-          onCancel={() => setEditingField(null)}
-          footer={null}
-        >
-          <Form form={form} layout="vertical" onFinish={handleSave}>
-            <Form.Item name="type" label="Loại field">
-              <Select>
-                <Select.Option value="text">Text</Select.Option>
-                <Select.Option value="textarea">Textarea</Select.Option>
-                <Select.Option value="date">Date</Select.Option>
-                <Select.Option value="select">Select</Select.Option>
-                <Select.Option value="checkbox">Checkbox</Select.Option>
-                <Select.Option value="radio">Radio</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name="required" label="Bắt buộc" valuePropName="checked">
-              <Switch />
-            </Form.Item>
-            <Form.Item name="options" label="Options (cách nhau bằng ,)">
-              <Input />
-            </Form.Item>
-            <Form.Item name="placeholder" label="Placeholder">
-              <Input />
-            </Form.Item>
-            <Form.Item name="formTemplateId" >
-              <Input type='hidden' />
-            </Form.Item>
-            <Button type="primary" htmlType="submit">
-              Lưu
-            </Button>
-          </Form>
-        </Modal> */}
       </div>
     </Modal>
   )
