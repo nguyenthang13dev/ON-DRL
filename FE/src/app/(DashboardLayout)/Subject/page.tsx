@@ -2,18 +2,16 @@
 import Flex from "@/components/shared-components/Flex";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import withAuthorization from "@/libs/authentication";
-import { typeDanhMucService } from "@/services/TypeDanhMuc/TypeDanhMuc.service";
+import { subjectService } from "@/services/Subject/Subject.service";
 import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
-import
-  {
-    SearchTypeDanhMucData,
-    TableTypeDanhMucDataType,
-  } from "@/types/TypeDanhMuc/TypeDanhMuc";
+import {
+    SearchSubjectData,
+    TableSubjectDataType,
+} from "@/types/Subject/Subject";
 import { Response, ResponsePageInfo, ResponsePageList } from "@/types/general";
-import
-  {
+import {
     CloseOutlined,
     DeleteOutlined,
     DownOutlined,
@@ -21,9 +19,8 @@ import
     EyeOutlined,
     PlusCircleOutlined,
     SearchOutlined,
-  } from "@ant-design/icons";
-import
-  {
+} from "@ant-design/icons";
+import {
     Button,
     Card,
     Dropdown,
@@ -34,37 +31,58 @@ import
     Space,
     Table,
     TableProps,
-  } from "antd";
-import { useCallback, useEffect, useState } from "react";
+    Tag,
+} from "antd";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-
 import CreateOrUpdate from "./createOrUpdate";
-import TypeDanhMucDetail from "./detail";
+import SubjectDetail from "./detail";
 import classes from "./page.module.css";
 import Search from "./search";
 
-const TypeDanhMuc: React.FC = () => {
+const Subject: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [listTypeDanhMucs, setListTypeDanhMucs] = useState<
-    TableTypeDanhMucDataType[]
-  >([]);
+  const [listSubjects, setListSubjects] = useState<TableSubjectDataType[]>([]);
   const [dataPage, setDataPage] = useState<ResponsePageInfo>();
   const [pageSize, setPageSize] = useState<number>(20);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
-  const [searchValues, setSearchValues] =
-    useState<SearchTypeDanhMucData | null>(null);
+  const [searchValues, setSearchValues] = useState<SearchSubjectData | null>(
+    null
+  );
   const loading = useSelector((state) => state.general.isLoading);
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const [currentTypeDanhMuc, setCurrentTypeDanhMuc] =
-    useState<TableTypeDanhMucDataType | null>(null);
-  const [currentDetailTypeDanhMuc, setCurrentDetailTypeDanhMuc] =
-    useState<TableTypeDanhMucDataType>();
+  const [isShowAddOrUpdate, setIsShowAddOrUpdate] = useState<boolean>(false);
+  const [currentSubject, setCurrentSubject] =
+    useState<TableSubjectDataType | null>(null);
+  const [currentDetailSubject, setCurrentDetailSubject] =
+    useState<TableSubjectDataType>();
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [openPopconfirmId, setOpenPopconfirmId] = useState<string | null>(null);
 
-  const tableColumns: TableProps<TableTypeDanhMucDataType>["columns"] = [
+  const departmentOptions = useMemo(() => [
+    { id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890", name: "Khoa Kỹ thuật Xây dựng" },
+    { id: "b2c3d4e5-f6g7-8901-bcde-f23456789012", name: "Khoa Kỹ thuật Thủy lợi" },
+    { id: "c3d4e5f6-g7h8-9012-cdef-345678901234", name: "Khoa Môi trường" },
+    { id: "d4e5f6g7-h8i9-0123-def0-456789012345", name: "Khoa Kinh tế" },
+    { id: "e5f6g7h8-i9j0-1234-ef01-567890123456", name: "Khoa Cơ khí" },
+    { id: "f6g7h8i9-j0k1-2345-f012-678901234567", name: "Khoa Điện - Điện tử" },
+    { id: "g7h8i9j0-k1l2-3456-0123-789012345678", name: "Khoa Công nghệ thông tin" },
+    { id: "h8i9j0k1-l2m3-4567-1234-890123456789", name: "Khoa Ngoại ngữ" },
+    { id: "i9j0k1l2-m3n4-5678-2345-901234567890", name: "Khoa Khoa học cơ bản" },
+    { id: "j0k1l2m3-n4o5-6789-3456-012345678901", name: "Khoa Giáo dục thể chất" },
+  ], []);
+
+  // Helper function to get department name by GUID
+  const getDepartmentName = useCallback((departmentId: string | null): string => {
+    if (!departmentId) return "-";
+    const dept = departmentOptions.find(d => d.id === departmentId);
+    return dept ? dept.name : departmentId; // Fallback to ID if not found
+  }, [departmentOptions]);
+
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+
+  const tableColumns: TableProps<TableSubjectDataType>["columns"] = [
     {
       title: "STT",
       dataIndex: "index",
@@ -73,40 +91,66 @@ const TypeDanhMuc: React.FC = () => {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Tên",
+      title: "Mã môn học",
+      dataIndex: "code",
+      width: 120,
+      render: (_: any, record: TableSubjectDataType) => (
+        <span style={{ fontWeight: "bold", color: "#1890ff" }}>
+          {record.code}
+        </span>
+      ),
+    },
+    {
+      title: "Tên môn học",
       dataIndex: "name",
-      render: (_: any, record: TableTypeDanhMucDataType) => (
-        <span>{record.name}</span>
+      width: 250,
+      render: (_: any, record: TableSubjectDataType) => (
+        <span style={{ fontWeight: "500" }}>{record.name}</span>
       ),
     },
     {
-      title: "Mô tả",
-      dataIndex: "type",
-      render: (_: any, record: TableTypeDanhMucDataType) => (
-        <span>{record.type}</span>
-      ),
-    },
-    {
-      title: "Mã loại",
-      dataIndex: "codeDm",
-      render: (_: any, record: TableTypeDanhMucDataType) => (
-        <span>{record.codeDm}</span>
-      ),
-    },
-    {
-      title: "Min",
-      dataIndex: "min",
+      title: "Số tín chỉ",
+      dataIndex: "credits",
+      width: 100,
       align: "center",
-      render: (_: any, record: TableTypeDanhMucDataType) => (
-        <span>{record.min}</span>
-      ),
+      render: (credits: number) => <Tag color="blue">{credits} TC</Tag>,
     },
     {
-      title: "Max",
-      dataIndex: "max",
+      title: "Khoa/Bộ môn",
+      dataIndex: "department",
+      width: 200,
+      ellipsis: true,
+    },
+    {
+      title: "Học kỳ",
+      dataIndex: "semester",
+      width: 80,
       align: "center",
-      render: (_: any, record: TableTypeDanhMucDataType) => (
-        <span>{record.max}</span>
+      render: (semester: number) => (semester ? `HK${semester}` : "-"),
+    },
+    {
+      title: "Lý thuyết",
+      dataIndex: "theoryHours",
+      width: 90,
+      align: "center",
+      render: (hours: number) => (hours ? `${hours}h` : "-"),
+    },
+    {
+      title: "Thực hành",
+      dataIndex: "practiceHours",
+      width: 90,
+      align: "center",
+      render: (hours: number) => (hours ? `${hours}h` : "-"),
+    },
+    {
+      title: "Loại môn",
+      dataIndex: "isElective",
+      width: 100,
+      align: "center",
+      render: (isElective: boolean) => (
+        <Tag color={isElective ? "orange" : "green"}>
+          {isElective ? "Tự chọn" : "Bắt buộc"}
+        </Tag>
       ),
     },
     {
@@ -114,14 +158,14 @@ const TypeDanhMuc: React.FC = () => {
       dataIndex: "actions",
       fixed: "right",
       align: "center",
-      render: (_: any, record: TableTypeDanhMucDataType) => {
+      render: (_: any, record: TableSubjectDataType) => {
         const items: MenuProps["items"] = [
           {
             label: "Chi tiết",
             key: "1",
             icon: <EyeOutlined />,
             onClick: () => {
-              setCurrentDetailTypeDanhMuc(record);
+              setCurrentDetailSubject(record);
               setIsOpenDetail(true);
             },
           },
@@ -160,12 +204,12 @@ const TypeDanhMuc: React.FC = () => {
             </Dropdown>
             <Popconfirm
               title="Xác nhận xóa"
-              description="Bạn có chắc chắn muốn xóa?"
+              description="Bạn có chắc chắn muốn xóa môn học này?"
               okText="Xóa"
               cancelText="Hủy"
               open={openPopconfirmId === record.id}
               onConfirm={() => {
-                handleDeleteTypeDanhMuc(record.id || "");
+                handleDeleteSubject(record.id || "");
                 setOpenPopconfirmId(null);
               }}
               onCancel={() => setOpenPopconfirmId(null)}
@@ -177,21 +221,21 @@ const TypeDanhMuc: React.FC = () => {
   ];
 
   const hanleCreateEditSuccess = () => {
-    handleGetListTypeDanhMuc();
-    setCurrentTypeDanhMuc(null);
+    handleGetListSubjects();
+    setCurrentSubject(null);
   };
 
-  const handleDeleteTypeDanhMuc = async (id: string) => {
+  const handleDeleteSubject = async (id: string) => {
     try {
-      const response = await typeDanhMucService.delete(id);
+      const response = await subjectService.delete(id);
       if (response.status) {
-        toast.success("Xóa thành công");
-        handleGetListTypeDanhMuc();
+        toast.success("Xóa môn học thành công");
+        handleGetListSubjects();
       } else {
-        toast.error("Xóa thất bại");
+        toast.error("Xóa môn học thất bại");
       }
     } catch (error) {
-      toast.error("Xóa thất bại");
+      toast.error("Xóa môn học thất bại");
     }
   };
 
@@ -199,19 +243,19 @@ const TypeDanhMuc: React.FC = () => {
     setIsPanelVisible(!isPanelVisible);
   };
 
-  const onFinishSearch: FormProps<SearchTypeDanhMucData>["onFinish"] = async (
+  const onFinishSearch: FormProps<SearchSubjectData>["onFinish"] = async (
     values
   ) => {
     try {
       setSearchValues(values);
-      await handleGetListTypeDanhMuc(values);
+      await handleGetListSubjects(values);
     } catch (error) {
-      console.error("Lỗi khi lưu dữ liệu:", error);
+      console.error("Lỗi khi tìm kiếm:", error);
     }
   };
 
-  const handleGetListTypeDanhMuc = useCallback(
-    async (searchDataOverride?: SearchTypeDanhMucData) => {
+  const handleGetListSubjects = useCallback(
+    async (searchDataOverride?: SearchSubjectData) => {
       dispatch(setIsLoading(true));
       try {
         const searchData = searchDataOverride || {
@@ -219,13 +263,13 @@ const TypeDanhMuc: React.FC = () => {
           pageSize,
           ...(searchValues || {}),
         };
-        const response: Response = await typeDanhMucService.getDataByPage(
+        const response: Response = await subjectService.getDataByPage(
           searchData
         );
         if (response != null && response.data != null) {
           const data: ResponsePageList = response.data;
-          const items: TableTypeDanhMucDataType[] = data.items;
-          setListTypeDanhMucs(items);
+          const items: TableSubjectDataType[] = data.items;
+          setListSubjects(items);
           setDataPage({
             pageIndex: data.pageIndex,
             pageSize: data.pageSize,
@@ -238,22 +282,22 @@ const TypeDanhMuc: React.FC = () => {
         dispatch(setIsLoading(false));
       }
     },
-    [pageIndex, pageSize, dispatch, searchValues]
+    [pageIndex, pageSize, searchValues, dispatch]
   );
 
   const handleShowModal = (
     isEdit?: boolean,
-    TypeDanhMuc?: TableTypeDanhMucDataType
+    subject?: TableSubjectDataType
   ) => {
     setIsOpenModal(true);
     if (isEdit) {
-      setCurrentTypeDanhMuc(TypeDanhMuc ?? null);
+      setCurrentSubject(subject ?? null);
     }
   };
 
   const handleClose = () => {
     setIsOpenModal(false);
-    setCurrentTypeDanhMuc(null);
+    setCurrentSubject(null);
   };
 
   const handleCloseDetail = () => {
@@ -261,8 +305,8 @@ const TypeDanhMuc: React.FC = () => {
   };
 
   useEffect(() => {
-    handleGetListTypeDanhMuc();
-  }, [handleGetListTypeDanhMuc]);
+    handleGetListSubjects();
+  }, [handleGetListSubjects]);
 
   return (
     <>
@@ -290,13 +334,13 @@ const TypeDanhMuc: React.FC = () => {
             icon={<PlusCircleOutlined />}
             size="small"
           >
-            Thêm mới
+            Thêm môn học
           </Button>
           <CreateOrUpdate
             isOpen={isOpenModal}
             onSuccess={hanleCreateEditSuccess}
             onClose={handleClose}
-            TypeDanhMuc={currentTypeDanhMuc}
+            Subject={currentSubject}
           />
         </div>
       </Flex>
@@ -307,8 +351,8 @@ const TypeDanhMuc: React.FC = () => {
           pageSize={pageSize}
         />
       )}
-      <TypeDanhMucDetail
-        TypeDanhMuc={currentDetailTypeDanhMuc}
+      <SubjectDetail
+        Subject={currentDetailSubject}
         isOpen={isOpenDetail}
         onClose={handleCloseDetail}
       />
@@ -317,7 +361,7 @@ const TypeDanhMuc: React.FC = () => {
           <Table
             columns={tableColumns}
             bordered
-            dataSource={listTypeDanhMucs}
+            dataSource={listSubjects}
             rowKey="id"
             scroll={{ x: "max-content" }}
             pagination={false}
@@ -328,7 +372,7 @@ const TypeDanhMuc: React.FC = () => {
           className="mt-2"
           total={dataPage?.totalCount}
           showTotal={(total, range) =>
-            `${range[0]}-${range[1]} trong ${total} dữ liệu`
+            `${range[0]}-${range[1]} trong ${total} môn học`
           }
           pageSize={pageSize}
           defaultCurrent={1}
@@ -347,4 +391,4 @@ const TypeDanhMuc: React.FC = () => {
   );
 };
 
-export default withAuthorization(TypeDanhMuc, "");
+export default withAuthorization(Subject, "");

@@ -30,6 +30,8 @@ import locale from 'antd/locale/vi_VN';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
 
+import { setPermission } from '@/store/auth/PermissionSlice';
+import { toggleSidebar } from '@/store/customizer/CustomizerSlice';
 import NProgress from 'nprogress'; // Thêm nprogress
 import 'nprogress/nprogress.css';
 import 'swiper/css';
@@ -39,9 +41,7 @@ import 'swiper/css/effect-fade';
 import 'swiper/css/effect-flip';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { toggleSidebar } from '@/store/customizer/CustomizerSlice';
 import themConfig from './theme.config';
-import { setPermission } from '@/store/auth/PermissionSlice';
 // ...existing code...
 
 dayjs.locale('vi');
@@ -149,7 +149,7 @@ export default function RootLayout({
               {pathname !== '/auth/login' && pathname !== '/auth/register' && (
                 <div className="flex items-center gap-6 justify-center p-1">
                   <div className="text-md font-semibold">
-                    Công ty Cổ phần Công nghệ HiNET Việt Nam
+                    Đại học Thủy Lợi
                   </div>
                   <div>
                     <div className="p-1">

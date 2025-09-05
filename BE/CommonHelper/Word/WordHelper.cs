@@ -94,7 +94,6 @@ namespace CommonHelper.Word
 
             if (!System.IO.File.Exists(htmlFilePath))
                 throw new Exception("Chuyển đổi file Word sang HTML thất bại.");
-
             // Xóa thư mục tạm chứa html sau khi đọc xong docx
             //Directory.Delete(outputDirectory, recursive: true);
 

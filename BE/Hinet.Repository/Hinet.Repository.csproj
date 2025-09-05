@@ -20,4 +20,12 @@
     <ProjectReference Include="..\Hinet.Model\Hinet.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DangKyHocPhanRepository\" />
+    <Folder Include="DiemRenLuyenRepository\" />
+    <Folder Include="KhoaRepository\" />
+    <Folder Include="LopHocPhanRepository\" />
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

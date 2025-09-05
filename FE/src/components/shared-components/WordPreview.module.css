@@ -1,0 +1,122 @@
+.word-preview-content {
+  font-family: 'Times New Roman', serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+.word-preview-content h1,
+.word-preview-content h2,
+.word-preview-content h3,
+.word-preview-content h4,
+.word-preview-content h5,
+.word-preview-content h6 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.word-preview-content p {
+  margin-bottom: 1em;
+  text-align: justify;
+}
+
+.word-preview-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.word-preview-content table,
+.word-preview-content th,
+.word-preview-content td {
+  border: 1px solid #ddd;
+}
+
+.word-preview-content th,
+.word-preview-content td {
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.word-preview-content th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.word-preview-content ul,
+.word-preview-content ol {
+  margin: 1em 0;
+  padding-left: 2em;
+}
+
+.word-preview-content li {
+  margin-bottom: 0.5em;
+}
+
+.word-preview-content blockquote {
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  border-left: 4px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.word-preview-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 1em 0;
+}
+
+.word-preview-content .word-key-highlight {
+  background-color: #fff3cd !important;
+  border: 1px solid #ffeaa7 !important;
+  border-radius: 3px;
+  padding: 2px 4px;
+  margin: 0 1px;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+.word-preview-content .word-key-highlight:hover {
+  background-color: #ffeaa7 !important;
+  border-color: #fdcb6e !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.word-preview-content .word-key-highlight:active {
+  transform: translateY(0);
+}
+
+.word-preview-content .word-key-highlight::after {
+  content: '⚙️';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.word-preview-content .word-key-highlight:hover::after {
+  opacity: 1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .word-preview-content {
+    font-size: 12px;
+    padding: 12px;
+  }
+  
+  .word-preview-content table {
+    font-size: 11px;
+  }
+  
+  .word-preview-content th,
+  .word-preview-content td {
+    padding: 4px 6px;
+  }
+}
+

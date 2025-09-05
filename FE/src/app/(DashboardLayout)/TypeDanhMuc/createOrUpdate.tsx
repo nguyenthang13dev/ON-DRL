@@ -1,9 +1,9 @@
 import { typeDanhMucService } from "@/services/TypeDanhMuc/TypeDanhMuc.service";
 import
-    {
-        TableTypeDanhMucDataType,
-        TypeDanhMucCreateVM,
-    } from "@/types/TypeDanhMuc/TypeDanhMuc";
+  {
+    TableTypeDanhMucDataType,
+    TypeDanhMucCreateVM,
+  } from "@/types/TypeDanhMuc/TypeDanhMuc";
 import { Form, FormProps, Input, InputNumber, Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -112,7 +112,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
           </Form.Item>
 
           <Form.Item<TypeDanhMucCreateVM>
-            label="Loại"
+            label="Mô tả"
             name="type"
             rules={[
               { required: true, message: "Vui lòng nhập thông tin này!" },
@@ -122,7 +122,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
           </Form.Item>
 
           <Form.Item<TypeDanhMucCreateVM>
-            label="Mã DM"
+            label="Mã loại"
             name="codeDm"
           >
             <Input />
