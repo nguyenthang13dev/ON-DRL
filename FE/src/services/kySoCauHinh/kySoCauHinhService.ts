@@ -1,16 +1,17 @@
-import { apiService } from '@/services';
+import { apiService } from "@/services";
 import {
   DataToSend,
   Dictionary,
   DropdownOption,
   Response,
   ResponsePageList,
-} from '@/types/general';
+} from "@/types/general";
+import { ChuKyType } from "@/types/kySoCauHinh/chuKy";
 import {
   KySoCauHinhCreateOrUpdateType,
   KySoCauHinhSearchType,
   KySoCauHinhType,
-} from '@/types/kySoCauHinh/kySoCauHinh';
+} from "@/types/kySoCauHinh/kySoCauHinh";
 
 class KySoCauHinhService {
   private static _instance: KySoCauHinhService;
@@ -26,7 +27,7 @@ class KySoCauHinhService {
   ): Promise<Response<ResponsePageList<KySoCauHinhType[]>>> {
     const response = await apiService.post<
       Response<ResponsePageList<KySoCauHinhType[]>>
-    >('/kySoCauHinh/getData', searchData);
+    >("/kySoCauHinh/getData", searchData);
     return response.data;
   }
 
@@ -34,7 +35,7 @@ class KySoCauHinhService {
     formData: KySoCauHinhCreateOrUpdateType
   ): Promise<Response> {
     const response = await apiService.post<Response>(
-      '/kySoCauHinh/create',
+      "/kySoCauHinh/create",
       formData
     );
     return response.data;
@@ -44,7 +45,7 @@ class KySoCauHinhService {
     formData: KySoCauHinhCreateOrUpdateType
   ): Promise<Response> {
     const response = await apiService.put<Response>(
-      '/kySoCauHinh/update',
+      "/kySoCauHinh/update",
       formData
     );
     return response.data;
@@ -52,7 +53,7 @@ class KySoCauHinhService {
 
   public async delete(id: string): Promise<Response> {
     const response = await apiService.delete<Response>(
-      '/kySoCauHinh/delete/' + id
+      "/kySoCauHinh/delete/" + id
     );
     return response.data;
   }
@@ -60,7 +61,7 @@ class KySoCauHinhService {
   public async getDropdowns(): Promise<Response<Dictionary<DropdownOption[]>>> {
     const response = await apiService.get<
       Response<Dictionary<DropdownOption[]>>
-    >('/kySoCauHinh/getDropDowns');
+    >("/kySoCauHinh/getDropDowns");
     return response.data;
   }
 
@@ -68,7 +69,7 @@ class KySoCauHinhService {
     search: KySoCauHinhSearchType
   ): Promise<Response<string>> {
     const response = await apiService.post<Response>(
-      '/kySoCauHinh/exportExcel',
+      "/kySoCauHinh/exportExcel",
       search
     );
     return response.data;
@@ -76,19 +77,19 @@ class KySoCauHinhService {
 
   public async exportTemplateImport(): Promise<Response> {
     const response = await apiService.get<Response>(
-      '/kySoCauHinh/exportTemplateImport'
+      "/kySoCauHinh/exportTemplateImport"
     );
     return response.data;
   }
 
   public async getDataImportView(): Promise<Response> {
-    const response = await apiService.get<Response>('/KySoCauHinh/import');
+    const response = await apiService.get<Response>("/KySoCauHinh/import");
     return response.data;
   }
 
   public async saveImport(form: DataToSend): Promise<Response> {
     const response = await apiService.post<Response>(
-      '/kySoCauHinh/importExcel',
+      "/kySoCauHinh/importExcel",
       form
     );
     return response.data;
@@ -97,7 +98,7 @@ class KySoCauHinhService {
   public async upload(form: FormData): Promise<Response> {
     try {
       const response = await apiService.post<Response>(
-        '/kySoCauHinh/upload',
+        "/kySoCauHinh/upload",
         form
       );
       return response.data;
@@ -109,7 +110,7 @@ class KySoCauHinhService {
   //Lưu hoặc tạo mới
   public async save(formData: FormData): Promise<Response> {
     const response = await apiService.post<Response>(
-      '/kySoCauHinh/save',
+      "/kySoCauHinh/save",
       formData
     );
     return response.data;
@@ -121,7 +122,7 @@ class KySoCauHinhService {
   ): Promise<Response> {
     try {
       const response = await apiService.get<Response>(
-        '/kySoCauHinh/getByThongTin/',
+        "/kySoCauHinh/getByThongTin/",
         {
           params: {
             idBieuMau,
@@ -137,8 +138,38 @@ class KySoCauHinhService {
 
   public async image(path: string): Promise<Response> {
     const response = await apiService.get<Response>(
-      '/kySoCauHinh/image?path=' + path
+      "/kySoCauHinh/image?path=" + path
     );
+    return response.data;
+  }
+
+  // Lấy danh sách chữ ký
+  public async getChuKy(): Promise<Response<ChuKyType[]>> {
+    try {
+      const response = await apiService.get<Response<ChuKyType[]>>(
+        "/chuKy/get"
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Lưu chữ ký mới
+  public async saveChuKy(formData: FormData): Promise<Response<ChuKyType>> {
+    try {
+      const response = await apiService.post<Response<ChuKyType>>(
+        "/chuKy/save",
+        formData
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async deleteChuKy(id: string): Promise<Response> {
+    const response = await apiService.delete<Response>("/chuKy/delete/" + id);
     return response.data;
   }
 }

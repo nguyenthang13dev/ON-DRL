@@ -9,7 +9,6 @@ using Hinet.Service.NotificationService.ViewModels;
 
 using Hinet.Service.EmailService;
 using Hinet.Service.TaiLieuDinhKemService;
-using CommonHelper.CrawlProvider;
 using Hinet.Model.Entities;
 using Hinet.Service.ModuleService.Dto;
 using Hinet.Api.Dto;
@@ -54,7 +53,7 @@ namespace Hinet.Controllers
                 if (string.IsNullOrEmpty(model.ItemName)) entity.ItemName = ".";
                 await _notificationService.CreateAsync(entity);
 
-                if (!model.FileDinhKem.IsNullOrEmpty())
+                if (!string.IsNullOrEmpty(model.FileDinhKem))
                 {
                     var file = await _taiLieuDinhKemService.GetByIdAsync(new Guid(model.FileDinhKem));
                     if (file != null)
@@ -107,7 +106,7 @@ namespace Hinet.Controllers
                 if (string.IsNullOrEmpty(model.ItemName)) entity.ItemName = ".";
                 await _notificationService.UpdateAsync(entity);
 
-                if (!model.FileDinhKem.IsNullOrEmpty())
+                if (!string.IsNullOrEmpty(model.FileDinhKem))
                 {
                     var removedAttachments = await _taiLieuDinhKemService.GetQueryable().Where(x => x.LoaiTaiLieu.Equals("FileNotification")
                             && x.Item_ID.Equals(entity.Id)).ToListAsync();

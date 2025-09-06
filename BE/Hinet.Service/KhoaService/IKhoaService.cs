@@ -2,10 +2,12 @@
 using Hinet.Model.MongoEntities;
 using Hinet.Service.Common;
 using Hinet.Service.Common.Service;
+using Hinet.Service.KhoaService.Dto;
 namespace Hinet.Service.KhoaService
 {
     public interface IKhoaService : IService<Khoa>
     {
-        // Add specialized methods here if needed
+        Task<PagedList<KhoaDto>> GetData(KhoaSearch search);
+        Task<KhoaDto> GetDto(Guid id);
     }
 }

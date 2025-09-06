@@ -1,10 +1,8 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Modal, Form, Input, Select, Switch, Button, FormProps } from 'antd'
-import { FormTemplate } from '@/types/formTemplate/formTemplate'
 import './formTemplateConfig.css'
 import { FieldDefinition } from '@/types/fieldDefinition/fieldDefinition'
-import { toast } from 'react-toastify'
 interface Props {
   isOpen: boolean
   editingField: FieldDefinition | undefined
@@ -31,6 +29,7 @@ const FieldConfig: React.FC<Props> = ({
     })
   }
   useEffect(() => {
+    console.log('editingField', editingField)
     handleMapEdit()
   }, [isOpen])
 
@@ -56,12 +55,15 @@ const FieldConfig: React.FC<Props> = ({
           <Switch />
         </Form.Item>
         <Form.Item name="options" label="Options (cách nhau bằng ,)">
-          <Input />
+          <Input.TextArea />
         </Form.Item>
         <Form.Item name="placeholder" label="Placeholder">
           <Input />
         </Form.Item>
-        <Form.Item name="formTemplateId">
+        <Form.Item name="cssClass" label="CSS Class">
+          <Input.TextArea />
+        </Form.Item>
+        <Form.Item name="label" label="Label" hidden>
           <Input type="hidden" />
         </Form.Item>
         <Button type="primary" htmlType="submit">

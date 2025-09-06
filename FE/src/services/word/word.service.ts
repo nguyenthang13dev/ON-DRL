@@ -1,4 +1,4 @@
-import { Response } from '@/types/general';
+import { Response } from "@/types/general";
 
 export interface WordUploadResponse {
   htmlPreview: string;
@@ -12,7 +12,7 @@ export interface KeyConfig {
   id: string;
   key: string;
   label: string;
-  type: 'text' | 'number' | 'select';
+  type: "text" | "number" | "select";
   required: boolean;
   placeholder?: string;
   options?: string[];
@@ -32,22 +32,24 @@ export interface WordTemplateConfig {
 }
 
 class WordService {
-  private baseUrl = '/api/word';
+  private baseUrl = "/api/word";
 
   /**
    * Upload file Word và convert sang HTML
    */
-  public async uploadAndConvert(file: File): Promise<Response<WordUploadResponse>> {
+  public async uploadAndConvert(
+    file: File
+  ): Promise<Response<WordUploadResponse>> {
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
       const response = await fetch(`${this.baseUrl}/upload-and-convert`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('AccessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
+        },
       });
 
       if (!response.ok) {
@@ -58,14 +60,17 @@ class WordService {
       return {
         success: true,
         data: result,
-        message: 'Upload và convert thành công'
+        message: "Upload và convert thành công",
       };
     } catch (error) {
-      console.error('Upload and convert error:', error);
+      console.error("Upload and convert error:", error);
       return {
         success: false,
-        data: null,
-        message: error instanceof Error ? error.message : 'Có lỗi xảy ra khi upload file'
+        data: {} as WordUploadResponse,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Có lỗi xảy ra khi upload file",
       };
     }
   }
@@ -73,15 +78,17 @@ class WordService {
   /**
    * Lưu cấu hình template Word
    */
-  public async saveTemplateConfig(config: WordTemplateConfig): Promise<Response<WordTemplateConfig>> {
+  public async saveTemplateConfig(
+    config: WordTemplateConfig
+  ): Promise<Response<WordTemplateConfig>> {
     try {
       const response = await fetch(`${this.baseUrl}/template-config`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('AccessToken')}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
         },
-        body: JSON.stringify(config)
+        body: JSON.stringify(config),
       });
 
       if (!response.ok) {
@@ -92,14 +99,17 @@ class WordService {
       return {
         success: true,
         data: result,
-        message: 'Lưu cấu hình template thành công'
+        message: "Lưu cấu hình template thành công",
       };
     } catch (error) {
-      console.error('Save template config error:', error);
+      console.error("Save template config error:", error);
       return {
         success: false,
-        data: null,
-        message: error instanceof Error ? error.message : 'Có lỗi xảy ra khi lưu cấu hình'
+        data: {} as WordTemplateConfig,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Có lỗi xảy ra khi lưu cấu hình",
       };
     }
   }
@@ -110,10 +120,10 @@ class WordService {
   public async getTemplates(): Promise<Response<WordTemplateConfig[]>> {
     try {
       const response = await fetch(`${this.baseUrl}/templates`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('AccessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
+        },
       });
 
       if (!response.ok) {
@@ -124,14 +134,17 @@ class WordService {
       return {
         success: true,
         data: result,
-        message: 'Lấy danh sách template thành công'
+        message: "Lấy danh sách template thành công",
       };
     } catch (error) {
-      console.error('Get templates error:', error);
+      console.error("Get templates error:", error);
       return {
         success: false,
-        data: null,
-        message: error instanceof Error ? error.message : 'Có lỗi xảy ra khi lấy danh sách template'
+        data: [] as WordTemplateConfig[],
+        message:
+          error instanceof Error
+            ? error.message
+            : "Có lỗi xảy ra khi lấy danh sách template",
       };
     }
   }
@@ -139,13 +152,15 @@ class WordService {
   /**
    * Lấy template theo ID
    */
-  public async getTemplateById(id: string): Promise<Response<WordTemplateConfig>> {
+  public async getTemplateById(
+    id: string
+  ): Promise<Response<WordTemplateConfig>> {
     try {
       const response = await fetch(`${this.baseUrl}/templates/${id}`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('AccessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
+        },
       });
 
       if (!response.ok) {
@@ -156,14 +171,17 @@ class WordService {
       return {
         success: true,
         data: result,
-        message: 'Lấy template thành công'
+        message: "Lấy template thành công",
       };
     } catch (error) {
-      console.error('Get template error:', error);
+      console.error("Get template error:", error);
       return {
         success: false,
-        data: null,
-        message: error instanceof Error ? error.message : 'Có lỗi xảy ra khi lấy template'
+        data: {} as WordTemplateConfig,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Có lỗi xảy ra khi lấy template",
       };
     }
   }
@@ -171,15 +189,18 @@ class WordService {
   /**
    * Cập nhật template
    */
-  public async updateTemplate(id: string, config: Partial<WordTemplateConfig>): Promise<Response<WordTemplateConfig>> {
+  public async updateTemplate(
+    id: string,
+    config: Partial<WordTemplateConfig>
+  ): Promise<Response<WordTemplateConfig>> {
     try {
       const response = await fetch(`${this.baseUrl}/templates/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('AccessToken')}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
         },
-        body: JSON.stringify(config)
+        body: JSON.stringify(config),
       });
 
       if (!response.ok) {
@@ -190,14 +211,17 @@ class WordService {
       return {
         success: true,
         data: result,
-        message: 'Cập nhật template thành công'
+        message: "Cập nhật template thành công",
       };
     } catch (error) {
-      console.error('Update template error:', error);
+      console.error("Update template error:", error);
       return {
         success: false,
-        data: null,
-        message: error instanceof Error ? error.message : 'Có lỗi xảy ra khi cập nhật template'
+        data: {} as WordTemplateConfig,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Có lỗi xảy ra khi cập nhật template",
       };
     }
   }
@@ -208,10 +232,10 @@ class WordService {
   public async deleteTemplate(id: string): Promise<Response<boolean>> {
     try {
       const response = await fetch(`${this.baseUrl}/templates/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('AccessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
+        },
       });
 
       if (!response.ok) {
@@ -221,14 +245,17 @@ class WordService {
       return {
         success: true,
         data: true,
-        message: 'Xóa template thành công'
+        message: "Xóa template thành công",
       };
     } catch (error) {
-      console.error('Delete template error:', error);
+      console.error("Delete template error:", error);
       return {
         success: false,
         data: false,
-        message: error instanceof Error ? error.message : 'Có lỗi xảy ra khi xóa template'
+        message:
+          error instanceof Error
+            ? error.message
+            : "Có lỗi xảy ra khi xóa template",
       };
     }
   }
@@ -236,18 +263,21 @@ class WordService {
   /**
    * Generate form từ template
    */
-  public async generateForm(templateId: string, data: Record<string, any>): Promise<Response<string>> {
+  public async generateForm(
+    templateId: string,
+    data: Record<string, any>
+  ): Promise<Response<string>> {
     try {
       const response = await fetch(`${this.baseUrl}/generate-form`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('AccessToken')}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
         },
         body: JSON.stringify({
           templateId,
-          data
-        })
+          data,
+        }),
       });
 
       if (!response.ok) {
@@ -258,14 +288,17 @@ class WordService {
       return {
         success: true,
         data: result.html,
-        message: 'Generate form thành công'
+        message: "Generate form thành công",
       };
     } catch (error) {
-      console.error('Generate form error:', error);
+      console.error("Generate form error:", error);
       return {
         success: false,
-        data: '',
-        message: error instanceof Error ? error.message : 'Có lỗi xảy ra khi generate form'
+        data: "",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Có lỗi xảy ra khi generate form",
       };
     }
   }
@@ -276,12 +309,12 @@ class WordService {
   public async extractKeys(htmlContent: string): Promise<Response<string[]>> {
     try {
       const response = await fetch(`${this.baseUrl}/extract-keys`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('AccessToken')}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
         },
-        body: JSON.stringify({ htmlContent })
+        body: JSON.stringify({ htmlContent }),
       });
 
       if (!response.ok) {
@@ -292,14 +325,17 @@ class WordService {
       return {
         success: true,
         data: result.keys,
-        message: 'Extract keys thành công'
+        message: "Extract keys thành công",
       };
     } catch (error) {
-      console.error('Extract keys error:', error);
+      console.error("Extract keys error:", error);
       return {
         success: false,
         data: [],
-        message: error instanceof Error ? error.message : 'Có lỗi xảy ra khi extract keys'
+        message:
+          error instanceof Error
+            ? error.message
+            : "Có lỗi xảy ra khi extract keys",
       };
     }
   }

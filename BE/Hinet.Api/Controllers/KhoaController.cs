@@ -1,9 +1,9 @@
-// Hinet.Api/Controllers/KhoaController.cs
-using Hinet.Api.Dto;
+﻿using Hinet.Api.Dto;
 using Hinet.Model.MongoEntities;
 using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
 using Hinet.Service.KhoaService;
+using Hinet.Service.KhoaService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,49 +26,90 @@ namespace Hinet.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpPost("GetData", Name = "Xem danh sách Khoa")]
+        public async Task<DataResponse<PagedList<KhoaDto>>> GetData([FromBody] KhoaSearch search)
         {
-            var entities = await Task.FromResult(_khoaService.GetQueryable().ToList());
-            return Ok(entities);
+            try
+            {
+                var listData = await _khoaService.GetData(search);
+
+                return new DataResponse<PagedList<KhoaDto>>
+                {
+                    Data = listData,
+                    Message = "GetData PagedList<KhoaDto> thành công",
+                    Status = true
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting Khoa data");
+                return DataResponse<PagedList<KhoaDto>>.False("Có lỗi xảy ra khi lấy dữ liệu");
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<DataResponse<KhoaDto>> GetById(Guid id)
         {
-            var entity = await _khoaService.GetByIdAsync(id);
+            var entity = await _khoaService.GetDto(id);
             if (entity == null)
-                return NotFound();
-            
-            return Ok(entity);
+                return DataResponse<KhoaDto>.False("Không tìm thấy khoa");
+
+            return DataResponse<KhoaDto>.Success(entity);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Khoa khoa)
+        [HttpPost("Create")]
+        public async Task<DataResponse<Khoa>> Create([FromBody] Khoa khoa)
         {
-            await _khoaService.CreateAsync(khoa);
-            return CreatedAtAction(nameof(GetById), new { id = khoa.Id }, khoa);
+            try
+            {
+                await _khoaService.CreateAsync(khoa);
+                return DataResponse<Khoa>.Success(khoa);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating Khoa");
+                return DataResponse<Khoa>.False("Có lỗi xảy ra khi tạo khoa mới");
+            }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] Khoa khoa)
+        [HttpPut("Update/{id}")]
+        public async Task<DataResponse<Khoa>> Update(Guid id, [FromBody] Khoa khoa)
         {
-            if (id != khoa.Id)
-                return BadRequest();
+            try
+            {
+                var entity = await _khoaService.GetByIdAsync(id);
+                if (entity == null)
+                    return DataResponse<Khoa>.False("Không tìm thấy khoa");
 
-            await _khoaService.UpdateAsync(khoa);
-            return NoContent();
+                khoa.Id = id;
+                await _khoaService.UpdateAsync(khoa);
+                return DataResponse<Khoa>.Success(khoa);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating Khoa");
+                return DataResponse<Khoa>.False("Có lỗi xảy ra khi cập nhật khoa");
+            }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<DataResponse> Delete(Guid id)
         {
-            var entity = await _khoaService.GetByIdAsync(id);
-            if (entity == null)
-                return NotFound();
-            
-            await _khoaService.DeleteAsync(entity);
-            return NoContent();
+            try
+            {
+                var entity = await _khoaService.GetByIdAsync(id);
+                if (entity == null)
+                    return DataResponse.False("Không tìm thấy khoa");
+
+                await _khoaService.DeleteAsync(entity);
+                return DataResponse.Success(null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting Khoa");
+                return DataResponse.False("Có lỗi xảy ra khi xóa khoa");
+            }
         }
     }
 }

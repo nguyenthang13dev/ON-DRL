@@ -3,6 +3,7 @@ using Hinet.Model.MongoEntities;
 using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
 using Hinet.Service.DM_NhomDanhMucService.Dto;
+using Hinet.Service.FieldDefinitionService.Dto;
 using Hinet.Service.FormTemplateService;
 using Hinet.Service.FormTemplateService.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -75,7 +76,6 @@ namespace Hinet.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<DataResponse<FormTemplate>> GetFormTemplate(Guid id)
         {
             try
@@ -89,25 +89,35 @@ namespace Hinet.Controllers
             }
         }
 
-        //[HttpPut("{templateId}/fields/{fieldId}")]
-        //public async Task<IActionResult> UpdateField(string templateId,string fieldId,[FromBody] UpdateFieldRequest request)
-        //{
-        //    var template = await _formTemplates.Find(t => t.Id == templateId).FirstOrDefaultAsync();
-        //    if (template == null) return NotFound();
 
-        //    var field = template.Fields.FirstOrDefault(f => f.FieldId == fieldId);
-        //    if (field == null) return NotFound();
+        [HttpPost("{templateId}/field/update")]
+        public async Task<DataResponse<FormTemplate>> UpdateField(
+            [FromRoute] Guid templateId, 
+            [FromBody]FieldDefinitionDto dto)
+        {
+            try
+            {
+                var template = await _formTemplateService.UpdateFieldAsync(templateId, dto);
+                return new DataResponse<FormTemplate>() { Data = template, Status = true };
+            }
+            catch (Exception ex)
+            {
+                return DataResponse<FormTemplate>.False("Error", new string[] { ex.Message });
+            }
+        }
 
-        //    field.Label = request.Label;
-        //    field.Type = request.Type;
-        //    field.Required = request.Required;
-        //    field.Options = string.IsNullOrWhiteSpace(request.Options)
-        //        ? new List<string>()
-        //        : request.Options.Split(',').Select(o => o.Trim()).ToList();
-
-        //    await _formTemplates.ReplaceOneAsync(t => t.Id == templateId, template);
-
-        //    return Ok(field);
-        //}
+        [HttpGet("GenerateFormHtml/{id}")]
+        public async Task<DataResponse<FormTemplate>> GenerateFormHtmlAsync(Guid id)
+        {
+            try
+            {
+                var template = await _formTemplateService.GenerateFormHtmlAsync(id);
+                return new DataResponse<FormTemplate>() { Data = template, Status = true };
+            }
+            catch (Exception ex)
+            {
+                return DataResponse<FormTemplate>.False("Error", new string[] { ex.Message });
+            }
+        }
     }
 }
