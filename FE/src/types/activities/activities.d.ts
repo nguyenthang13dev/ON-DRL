@@ -25,5 +25,5 @@ export interface ActivitiesSearchType extends SearchBase {
   name?: string;
   description?: string;
   qRPath?: string;
-  image: string;
+  image?: string;
 }

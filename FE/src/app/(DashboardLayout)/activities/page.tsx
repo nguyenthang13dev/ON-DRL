@@ -40,7 +40,6 @@ import {
 import activitiesService from "@/services/activities/activitiesService";
 import ActivitiesCreateOrUpdate from "./createOrUpdate";
 
-
 const ActivitiesPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [data, setData] = useState<ResponsePageList<ActivitiesType[]>>();
@@ -65,40 +64,24 @@ const ActivitiesPage: React.FC = () => {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-			title: "Thời gian bắt đầu",
-			dataIndex: "startDate",
-			render: (_: any, record: ActivitiesType) => (
-				<span>{record.startDate}</span>
-			),
-		},
-		{
-			title: "Thời gian kết thúc",
-			dataIndex: "endDate",
-			render: (_: any, record: ActivitiesType) => (
-				<span>{record.endDate}</span>
-			),
-		},
-		{
-			title: "Tên hoạt động",
-			dataIndex: "name",
-			render: (_: any, record: ActivitiesType) => (
-				<span>{record.name}</span>
-			),
-		},
-		{
-			title: "Mô tả",
-			dataIndex: "description",
-			render: (_: any, record: ActivitiesType) => (
-				<span>{record.description}</span>
-			),
-		},
-		{
-			title: "QR tham gia",
-			dataIndex: "qRPath",
-			render: (_: any, record: ActivitiesType) => (
-				<span>{record.qRPath}</span>
-			),
-		},
+      title: "Thời gian",
+      dataIndex: "startDate",
+      render: (_: any, record: ActivitiesType) => (
+        <span>{extensions.toDateString(record.startDate)}</span>
+      ),
+    },
+
+    {
+      title: "Tên hoạt động",
+      dataIndex: "name",
+      render: (_: any, record: ActivitiesType) => <span>{record.name}</span>,
+    },
+
+    {
+      title: "QR tham gia",
+      dataIndex: "qRPath",
+      render: (_: any, record: ActivitiesType) => <span>{record.qRPath}</span>,
+    },
     {
       title: "Thao tác",
       dataIndex: "actions",
