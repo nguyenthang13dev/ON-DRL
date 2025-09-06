@@ -42,7 +42,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
         formData.append("description", formValues.description ?? "");
         formData.append(
             "isClassMonitorHandled",
-            formValues.isClassMonitorHandled.toString(),
+            formValues?.isClassMonitorHandled?.toString() ?? "false",
         );
         if (
             formValues.originalFile &&

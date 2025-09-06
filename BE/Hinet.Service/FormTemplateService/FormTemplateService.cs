@@ -33,7 +33,6 @@ namespace Hinet.Service.FormTemplateService
         private readonly IAppUserRepository _appUserRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IMemoryCache _cache;
-        private readonly TimeSpan _defaultCacheDuration = TimeSpan.FromHours(1);
         private readonly IFormTemplateRepository _formTemplateRepository;
 
         public FormTemplateService(
@@ -174,12 +173,27 @@ namespace Hinet.Service.FormTemplateService
             }
 
             // 2. Convert Word -> HTML
-            string htmlPreview;
-            using (var docStream = System.IO.File.OpenRead(filePath))
-            {
-                var result = new Mammoth.DocumentConverter().ConvertToHtml(docStream);
-                htmlPreview = result.Value;
-            }
+            string htmlPreview = ConvertDocxToHtml(filePath);
+            //using (var docStream = System.IO.File.OpenRead(filePath))
+            //{
+            //    var result = new Mammoth.DocumentConverter().ConvertToHtml(docStream);
+            //    htmlPreview = result.Value;
+            //}
+
+            //using (var wordDoc = WordprocessingDocument.Open(filePath, false))
+            //{
+            //    var settings = new HtmlConverterSettings()
+            //    {
+            //        PageTitle = "Preview",
+            //        FabricateCssClasses = true,
+            //        CssClassPrefix = "pt-",
+            //        RestrictToSupportedLanguages = false,
+            //        RestrictToSupportedNumberingFormats = false,
+            //    };
+
+            //    XElement htmlElement = HtmlConverter.ConvertToHtml(wordDoc, settings);
+            //    htmlPreview = htmlElement.ToString(SaveOptions.DisableFormatting);
+            //}
 
             // 3. Detect placeholder [[fieldId]]
             var fieldMatches = Regex.Matches(htmlPreview, @"\[\[(.*?)\]\]");
@@ -258,7 +272,7 @@ namespace Hinet.Service.FormTemplateService
             string filePath = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), formTemplate.OriginalFilePath));
             string html = ConvertDocxToHtml(filePath);
             // 2. Apply field configs
-            string finalHtml = ApplyFieldConfig(html, formTemplate.Fields);
+            string finalHtml = ApplyFieldConfig(html, formTemplate.Fields, formTemplate.Id);
             formTemplate.HtmlPreview = finalHtml;
             return formTemplate;
         }
@@ -286,10 +300,7 @@ namespace Hinet.Service.FormTemplateService
             }
         }
 
-
-
-
-        private static string ApplyFieldConfig(string html, List<FieldDefinition> fields)
+        private static string ApplyFieldConfig(string html, List<FieldDefinition> fields, Guid templateId)
         {
             foreach (var field in fields)
             {
@@ -299,8 +310,30 @@ namespace Hinet.Service.FormTemplateService
                     attrs.Add($"placeholder='{field.Placeholder}'");
                 if (field.Required)
                     attrs.Add("required");
+
+                string inlineStyle = "border:none; border-bottom:1px dotted #000; outline:none;";
+
                 if (!string.IsNullOrEmpty(field.CssClass))
-                    attrs.Add($"class='{field.CssClass}'");
+                {
+                    // Check có class dạng w-XX không
+                    var match = System.Text.RegularExpressions.Regex.Match(field.CssClass, @"w-(\d{1,3})");
+                    if (match.Success)
+                    {
+                        int percent = int.Parse(match.Groups[1].Value);
+                        if (percent >= 1 && percent <= 100)
+                        {
+                            inlineStyle += $" width:{percent}%;";
+                            // Bỏ w-xx khỏi class để tránh bị dư class không có CSS định nghĩa
+                            field.CssClass = System.Text.RegularExpressions.Regex.Replace(field.CssClass, @"w-(\d{1,3})", "").Trim();
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(field.CssClass))
+                        attrs.Add($"class='{field.CssClass}'");
+                }
+
+                // Add inline style cuối cùng
+                attrs.Add($"style=\"{inlineStyle}\"");
 
                 if (field.Config != null)
                 {
@@ -345,8 +378,10 @@ namespace Hinet.Service.FormTemplateService
                 // Replace placeholder [[Label]]
                 html = html.Replace($"[[{field.Label}]]", replacement);
             }
-
-            return html;
+            string formHtml = $"<form method='post' action='/FormTemplate/Submit?templateId={templateId}'>{html} <button type='submit'>Gửi</button></form>";
+            return formHtml;
         }
+
+
     }
 }

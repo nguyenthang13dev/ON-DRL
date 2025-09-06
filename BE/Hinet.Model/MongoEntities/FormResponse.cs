@@ -9,7 +9,7 @@ namespace Hinet.Model.MongoEntities
     {
         //[BsonId] public ObjectId Id { get; set; }
         [BsonElement("formTemplateId")] 
-        public ObjectId FormTemplateId { get; set; }
+        public Guid FormTemplateId { get; set; }
         [BsonElement("userId")] 
         public string UserId { get; set; } = default!;
         [BsonElement("responses")] 

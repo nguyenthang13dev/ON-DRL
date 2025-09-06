@@ -27,7 +27,7 @@ export default function DynamicForm() {
   }
 
   useEffect(() => {
-    getForm('1bbc2563-8156-42e0-808c-164ab99ec0fc')
+    getForm('7eb27600-c0d5-43eb-96d2-99b1900f9930')
   }, [])
 
   if (!template) return <Loader />
