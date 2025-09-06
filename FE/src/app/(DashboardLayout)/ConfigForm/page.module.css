@@ -1,0 +1,229 @@
+.container {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 
+              0 1px 6px -1px rgba(0, 0, 0, 0.02), 
+              0 2px 4px 0 rgba(0, 0, 0, 0.02);
+}
+
+.configFormPage {
+  .ant-table-thead > tr > th {
+    background: #fafafa;
+    font-weight: 600;
+    color: #262626;
+  }
+
+  .ant-btn-primary {
+    background: #1890ff;
+    border-color: #1890ff;
+    
+    &:hover {
+      background: #40a9ff;
+      border-color: #40a9ff;
+    }
+  }
+
+  .ant-tag {
+    font-weight: 500;
+    border-radius: 4px;
+  }
+
+  .ant-table-tbody > tr > td {
+    vertical-align: middle;
+  }
+
+  .ant-table-pagination {
+    margin: 16px 0 0 0;
+    
+    .ant-pagination-total-text {
+      color: #666;
+    }
+  }
+
+  .ant-table-row {
+    &:hover {
+      background-color: #f5f5f5;
+    }
+  }
+
+  .ant-dropdown-menu {
+    border-radius: 6px;
+  }
+
+  /* File attachment column styling */
+  .file-attachment-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Modal styling */
+  .ant-modal-header {
+    background: #f0f2f5;
+    border-radius: 6px 6px 0 0;
+  }
+
+  .ant-modal-title {
+    color: #1890ff;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .ant-form-item-label > label {
+    font-weight: 500;
+    color: #262626;
+  }
+
+  .ant-input, .ant-select-selector, .ant-input-number {
+    border-radius: 4px;
+    
+    &:focus, &:hover {
+      border-color: #40a9ff;
+    }
+  }
+
+  .ant-switch-checked {
+    background-color: #52c41a;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .container {
+      padding: 12px;
+    }
+
+    .ant-table-scroll {
+      .ant-table-body {
+        overflow-x: auto;
+      }
+    }
+  }
+
+  @media (max-width: 576px) {
+    .ant-modal {
+      margin: 0;
+      max-width: 100vw;
+      width: 100vw !important;
+      height: 100vh;
+      
+      .ant-modal-content {
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  }
+}
+
+.container {
+  padding: 24px;
+}
+
+.container .ant-card-head-title {
+  font-weight: 600;
+  color: #1890ff;
+  font-size: 18px;
+}
+
+.container .ant-table-thead > tr > th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #262626;
+}
+
+.container .ant-btn-primary {
+  background: #1890ff;
+  border-color: #1890ff;
+}
+
+.container .ant-btn-primary:hover {
+  background: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.container .ant-tag {
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+.container .ant-form-item-label > label {
+  font-weight: 500;
+  color: #262626;
+}
+
+.container .ant-table-tbody > tr > td {
+  vertical-align: middle;
+}
+
+.container .ant-table-row:hover {
+  background-color: #f5f5f5;
+}
+
+.container .ant-pagination {
+  margin-top: 16px;
+}
+
+.container .ant-pagination-total-text {
+  color: #666;
+}
+
+/* Search card styles */
+.container .ant-card {
+  border-radius: 6px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 
+              0 1px 6px -1px rgba(0, 0, 0, 0.02), 
+              0 2px 4px 0 rgba(0, 0, 0, 0.02);
+}
+
+/* Form styles */
+.container .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.container .ant-input,
+.container .ant-select-selector,
+.container .ant-input-number {
+  border-radius: 4px;
+}
+
+.container .ant-input:focus,
+.container .ant-select-selector:focus,
+.container .ant-input-number:focus {
+  border-color: #40a9ff;
+}
+
+.container .ant-switch-checked {
+  background-color: #52c41a;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+  
+  .container .ant-card-extra .ant-btn {
+    margin-bottom: 8px;
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  
+  .container .ant-table-scroll .ant-table-body {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .container .ant-modal {
+    margin: 0;
+    max-width: 100vw;
+    width: 100vw !important;
+    height: 100vh;
+  }
+  
+  .container .ant-modal-content {
+    height: 100vh;
+    border-radius: 0;
+  }
+}

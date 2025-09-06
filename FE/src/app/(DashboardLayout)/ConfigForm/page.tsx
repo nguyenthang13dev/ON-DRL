@@ -1,146 +1,343 @@
 "use client";
-
-import React, { useState } from "react";
-import { Card, Button, Space, Typography, message, Modal } from "antd";
-import {
-    FileWordOutlined,
-    EyeOutlined,
-    SettingOutlined,
-    PlayCircleOutlined,
-} from "@ant-design/icons";
-import withAuthorization from "@/libs/authentication";
+import Flex from "@/components/shared-components/Flex";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
-import ConfirmFormTest from "@/components/shared-components/ConfirmFormTest";
+import withAuthorization from "@/libs/authentication";
+import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
+import { setIsLoading } from "@/store/general/GeneralSlice";
+import { useSelector } from "@/store/hooks";
+import { AppDispatch } from "@/store/store";
+import
+    {
+        SearchConfigFormData,
+        TableConfigFormDataType,
+    } from "@/types/ConfigForm/ConfigForm";
+import { Response, ResponsePageInfo, ResponsePageList } from "@/types/general";
+import
+    {
+        DeleteOutlined,
+        DownOutlined,
+        EditOutlined,
+        EyeOutlined,
+        PlusCircleOutlined,
+        SearchOutlined
+    } from "@ant-design/icons";
+import
+    {
+        Button,
+        Card,
+        Dropdown,
+        FormProps,
+        MenuProps,
+        Pagination,
+        Popconfirm,
+        Space,
+        Table,
+        TableProps,
+        Tag
+    } from "antd";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import CreateOrUpdate from "./createOrUpdate";
+import ConfigFormDetail from "./detail";
+import classes from "./page.module.css";
+import Search from "./search";
 
-const { Title, Text } = Typography;
 
-const TestConfirmFormPage: React.FC = () => {
-    const [showTestForm, setShowTestForm] = useState(false);
-    const [testResults, setTestResults] = useState<any>(null);
+const ConfigForm: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const [listConfigForms, setListConfigForms] = useState<TableConfigFormDataType[]>([]);
+  const [dataPage, setDataPage] = useState<ResponsePageInfo>();
+  const [pageSize, setPageSize] = useState<number>(20);
+  const [pageIndex, setPageIndex] = useState<number>(1);
+  const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
+  const [searchValues, setSearchValues] = useState<SearchConfigFormData | null>(
+    null
+  );
+  const loading = useSelector((state) => state.general.isLoading);
+  const [isShowAddOrUpdate, setIsShowAddOrUpdate] = useState<boolean>(false);
+  const [currentConfigForm, setCurrentConfigForm] =
+    useState<TableConfigFormDataType | null>(null);
+  const [currentDetailConfigForm, setCurrentDetailConfigForm] =
+    useState<TableConfigFormDataType>();
+  const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
+  const [openPopconfirmId, setOpenPopconfirmId] = useState<string | null>(null);
 
-    const handleStartTest = () => {
-        setShowTestForm(true);
-    };
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
-    const handleSaveTest = (data: any) => {
-        setTestResults(data);
-        setShowTestForm(false);
-        message.success("Test hoàn thành!");
-    };
-
-    const handleCancelTest = () => {
-        setShowTestForm(false);
-    };
-
-    return (
-        <div style={{ padding: "24px" }}>
-            <AutoBreadcrumb />
-
-            <Card
-                title={
-                    <Space>
-                        <PlayCircleOutlined style={{ color: "#1890ff" }} />
-                        <span>
-                            Test ConfirmForm - Upload Word và Cấu hình Key
-                        </span>
-                    </Space>
-                }
-                extra={
-                    <Button
-                        type="primary"
-                        icon={<PlayCircleOutlined />}
-                        onClick={handleStartTest}
-                    >
-                        Bắt đầu Test
-                    </Button>
-                }
+  const tableColumns: TableProps<TableConfigFormDataType>["columns"] = [
+    {
+      title: "STT",
+      dataIndex: "index",
+      key: "index",
+      align: "center",
+      render: (_: any, __: any, index: number) => index + 1,
+    },
+    {
+      title: "Tên cấu hình",
+      dataIndex: "name",
+      width: 250,
+      render: (_: any, record: TableConfigFormDataType) => (
+        <span style={{ fontWeight: "500" }}>{record.name}</span>
+      ),
+    },
+    {
+      title: "Mô tả",
+      dataIndex: "description",
+      width: 300,
+      ellipsis: true,
+      render: (description: string) => description || "-",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "isActive",
+      width: 120,
+      align: "center",
+      render: (isActive: boolean) => (
+        <Tag color={isActive ? "green" : "red"}>
+          {isActive ? "Hoạt động" : "Không hoạt động"}
+        </Tag>
+      ),
+    },
+    {
+      title: "File đính kèm",
+      dataIndex: "fileDinhKems",
+      width: 200,
+      align: "center",
+      render: (fileDinhKems: string) => {
+        if (!fileDinhKems) {
+          return <Tag color="default">Không có file</Tag>;
+        }
+        return (
+          <Space direction="vertical" size="small">
+            <Tag color="blue">Có file đính kèm</Tag>
+            <Button 
+              size="small" 
+              type="link"
+              onClick={() => window.open(`${process.env.NEXT_PUBLIC_STATIC_FILE_BASE_URL}/${fileDinhKems}`, '_blank')}
             >
-                <div style={{ marginBottom: 16 }}>
-                    <Text type="secondary">
-                        Test tính năng upload file Word, preview HTML và cấu
-                        hình các key trong file Word.
-                    </Text>
-                </div>
+              Tải xuống
+            </Button>
+          </Space>
+        );
+      },
+    },
+    {
+      title: "Ngày tạo",
+      dataIndex: "createdDate",
+      width: 120,
+      render: (date: string) => 
+        date ? new Date(date).toLocaleDateString("vi-VN") : "-",
+    },
+    {
+      title: "Thao tác",
+      key: "actions",
+      width: 150,
+      align: "center",
+      render: (_: any, record: TableConfigFormDataType) => {
+        const items: MenuProps["items"] = [
+          {
+            key: "detail",
+            label: "Xem chi tiết",
+            icon: <EyeOutlined />,
+            onClick: () => handleDetail(record),
+          },
+          {
+            key: "edit",
+            label: "Chỉnh sửa",
+            icon: <EditOutlined />,
+            onClick: () => handleEdit(record),
+          },
+          {
+            key: "delete",
+            label: "Xóa",
+            icon: <DeleteOutlined />,
+            danger: true,
+            onClick: () => setOpenPopconfirmId(record.id!),
+          },
+        ];
 
-                <div
-                    style={{
-                        padding: "20px",
-                        backgroundColor: "#f9f9f9",
-                        borderRadius: "8px",
-                        border: "1px dashed #d9d9d9",
-                    }}
-                >
-                    <Title level={4}>Hướng dẫn Test:</Title>
-                    <ol style={{ paddingLeft: "20px" }}>
-                        <li>
-                            <Text>
-                                Upload file Word (.doc, .docx) - sử dụng mock
-                                data để test
-                            </Text>
-                        </li>
-                        <li>
-                            <Text>Xem preview HTML được convert từ Word</Text>
-                        </li>
-                        <li>
-                            <Text>
-                                Click vào các key được highlight để test tương
-                                tác
-                            </Text>
-                        </li>
-                        <li>
-                            <Text>Điền thông tin vào form cấu hình</Text>
-                        </li>
-                        <li>
-                            <Text>Lưu và xem kết quả test</Text>
-                        </li>
-                    </ol>
-                </div>
-
-                {testResults && (
-                    <Card
-                        title="Kết quả Test"
-                        size="small"
-                        style={{ marginTop: 16 }}
-                        extra={
-                            <Button
-                                size="small"
-                                onClick={() => setTestResults(null)}
-                            >
-                                Xóa kết quả
-                            </Button>
-                        }
-                    >
-                        <pre
-                            style={{
-                                backgroundColor: "#f5f5f5",
-                                padding: "12px",
-                                borderRadius: "4px",
-                                fontSize: "12px",
-                                maxHeight: "300px",
-                                overflow: "auto",
-                            }}
-                        >
-                            {JSON.stringify(testResults, null, 2)}
-                        </pre>
-                    </Card>
-                )}
-            </Card>
-
-            <Modal
-                title="Test ConfirmForm"
-                open={showTestForm}
-                onCancel={handleCancelTest}
-                footer={null}
-                width={1200}
-                style={{ top: 20 }}
+        return (
+          <Space size="small">
+            <Dropdown
+              menu={{ items }}
+              trigger={["click"]}
+              placement="bottomRight"
             >
-                <ConfirmFormTest
-                    onSave={handleSaveTest}
-                    onCancel={handleCancelTest}
-                />
-            </Modal>
+              <Button type="text" icon={<DownOutlined />} />
+            </Dropdown>
+            <Popconfirm
+              title="Xóa cấu hình biểu mẫu"
+              description="Bạn có chắc chắn muốn xóa cấu hình này?"
+              open={openPopconfirmId === record.id}
+              onConfirm={() => handleDelete(record.id!)}
+              onCancel={() => setOpenPopconfirmId(null)}
+              okText="Có"
+              cancelText="Không"
+            >
+              <span />
+            </Popconfirm>
+          </Space>
+        );
+      },
+    },
+  ];
+
+  const fetchData = useCallback(
+    async (searchData?: SearchConfigFormData) => {
+      try {
+        dispatch(setIsLoading(true));
+        const params: SearchConfigFormData = {
+          ...searchData,
+          pageIndex: searchData?.pageIndex || pageIndex,
+          pageSize,
+        };
+
+        const response: Response = await configFormService.getDataByPage(params);
+        if (response.status) {
+          const result = response.data as ResponsePageList<TableConfigFormDataType[]>;
+          setListConfigForms(result.items || []);
+          setDataPage(result);
+        } else {
+          toast.error(response.message || "Có lỗi xảy ra khi tải dữ liệu");
+        }
+      } catch (error) {
+        toast.error("Có lỗi xảy ra khi tải dữ liệu");
+      } finally {
+        dispatch(setIsLoading(false));
+      }
+    },
+    [dispatch, pageIndex, pageSize]
+  );
+
+  useEffect(() => {
+    fetchData(searchValues || undefined);
+  }, [fetchData, searchValues]);
+
+  const handleSearch: FormProps<SearchConfigFormData>["onFinish"] = (values) => {
+    setSearchValues(values);
+    setPageIndex(1);
+  };
+
+  const handleAdd = () => {
+    setCurrentConfigForm(null);
+    setIsShowAddOrUpdate(true);
+  };
+
+  const handleEdit = (record: TableConfigFormDataType) => {
+    setCurrentConfigForm(record);
+    setIsShowAddOrUpdate(true);
+  };
+
+  const handleDetail = (record: TableConfigFormDataType) => {
+    setCurrentDetailConfigForm(record);
+    setIsOpenDetail(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      dispatch(setIsLoading(true));
+      const response = await configFormService.delete(id);
+      if (response.status) {
+        toast.success("Xóa cấu hình biểu mẫu thành công");
+        fetchData(searchValues || undefined);
+      } else {
+        toast.error(response.message || "Có lỗi xảy ra khi xóa");
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi xóa");
+    } finally {
+      dispatch(setIsLoading(false));
+      setOpenPopconfirmId(null);
+    }
+  };
+
+  const handlePageChange = (page: number, size?: number) => {
+    setPageIndex(page);
+    if (size) setPageSize(size);
+  };
+
+  const handleSuccess = () => {
+    fetchData(searchValues || undefined);
+    setIsShowAddOrUpdate(false);
+  };
+
+  return (
+    <>
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        className="mb-2 flex-wrap justify-content-end"
+      >
+        <AutoBreadcrumb />
+        <div>
+          <Button
+            icon={<SearchOutlined />}
+            onClick={() => setIsPanelVisible(!isPanelVisible)}
+          >
+            {isPanelVisible ? 'Ẩn tìm kiếm' : 'Tìm kiếm'}
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlusCircleOutlined />}
+            onClick={handleAdd}
+          >
+            Thêm cấu hình
+          </Button>
         </div>
-    );
+      </Flex>
+
+      {isPanelVisible && (
+        <div style={{ marginBottom: 16 }}>
+          <Search
+            onFinish={handleSearch}
+            pageIndex={pageIndex}
+            pageSize={pageSize}
+          />
+        </div>
+      )}
+ <Card style={{ padding: "0px" }} className={classes.customCardShadow}>
+              <div className="table-responsive">
+                  <Table
+        columns={tableColumns}
+        dataSource={listConfigForms}
+        rowKey="id"
+        loading={loading}
+        pagination={false}
+        scroll={{ x: 1200 }}
+        size="middle"
+      />
+              </div>
+              <Pagination
+          current={pageIndex}
+          pageSize={pageSize}
+          total={dataPage?.totalCount || 0}
+          showSizeChanger
+          showQuickJumper
+          showTotal={(total, range) =>
+            `${range[0]}-${range[1]} trong ${total} cấu hình`
+          }
+          onChange={handlePageChange}
+          pageSizeOptions={["10", "20", "50", "100"]}
+        />
+
+              </Card>
+      
+
+      <CreateOrUpdate
+        isOpen={isShowAddOrUpdate}
+        onClose={() => setIsShowAddOrUpdate(false)}
+        onSuccess={handleSuccess}
+        ConfigForm={currentConfigForm}
+      />
+
+      <ConfigFormDetail
+        isOpen={isOpenDetail}
+        onClose={() => setIsOpenDetail(false)}
+        configForm={currentDetailConfigForm}
+      />
+    </>
+  );
 };
 
-export default withAuthorization(TestConfirmFormPage, "");
+export default withAuthorization(ConfigForm, "");
