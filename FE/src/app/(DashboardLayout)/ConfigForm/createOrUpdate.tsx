@@ -4,7 +4,8 @@ import UploadFiler, { CustomUploadFile } from "@/libs/UploadFilter";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import { ConfigFormCreateVM, TableConfigFormDataType } from "@/types/ConfigForm/ConfigForm";
 import { CloseOutlined, SaveOutlined } from "@ant-design/icons";
-import {
+import
+  {
     Button,
     Col,
     Form,
@@ -13,7 +14,7 @@ import {
     Modal,
     Row,
     Switch,
-} from "antd";
+  } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -36,6 +37,10 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
   const [fileList, setFileList] = useState<CustomUploadFile[]>([]);
   const [uploadedFileIds, setUploadedFileIds] = useState<string[]>([]);
 
+    
+ console.log(fileList, uploadedFileIds);
+ 
+    
   useEffect(() => {
     if (isOpen) {
       if (ConfigForm) {

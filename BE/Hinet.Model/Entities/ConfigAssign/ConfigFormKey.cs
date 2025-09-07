@@ -18,7 +18,5 @@ namespace Hinet.Model.Entities.ConfigAssign
         public string KTT_TYPE { get; set; }
         // Lưu kiểu nhập
         public ConfigForm FormId { get; set; }
-
-
     }
 }

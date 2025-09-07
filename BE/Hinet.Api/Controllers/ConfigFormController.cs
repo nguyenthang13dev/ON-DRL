@@ -11,6 +11,7 @@ using Hinet.Service.AppUserService.Dto;
 using Hinet.Api.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Hinet.Model.Entities.ConfigAssign;
+using Hinet.Service.TaiLieuDinhKemService;
 
 namespace Hinet.Controllers
 {
@@ -19,19 +20,21 @@ namespace Hinet.Controllers
     {
         private readonly IConfigFormService _ConfigFormService;
         private readonly IMapper _mapper;
+        private readonly ITaiLieuDinhKemService _taiLieuDinhKemService;
         private readonly ILogger<ConfigFormController> _logger;
 
         public ConfigFormController(
             IConfigFormService ConfigFormService,
             IMapper mapper,
             ILogger<ConfigFormController> logger
-            )
+,
+            ITaiLieuDinhKemService taiLieuDinhKemService)
         {
             this._ConfigFormService = ConfigFormService;
             this._mapper = mapper;
             _logger = logger;
+            _taiLieuDinhKemService = taiLieuDinhKemService;
         }
-
 
         [HttpPost("Create")]
         public async Task<DataResponse<ConfigForm>> Create([FromBody] ConfigFormCreateVM model)
@@ -41,6 +44,11 @@ namespace Hinet.Controllers
                 try
                 {
                     var entity = _mapper.Map<ConfigFormCreateVM, ConfigForm>(model);
+                    if (model.FileDinhKems is not null)
+                    {
+                        var fileDinhKes = await _taiLieuDinhKemService.GetByIdAsync(model.FileDinhKems);
+                        entity.FileDinhKems =  fileDinhKes;
+                    }
                     await _ConfigFormService.CreateAsync(entity);
                     return new DataResponse<ConfigForm>() { Data = entity, Status = true };
                 }
@@ -51,7 +59,7 @@ namespace Hinet.Controllers
             }
             return DataResponse<ConfigForm>.False("Some properties are not valid", ModelStateError);
         }
-
+        
         [HttpPut("Update")]
         public async Task<DataResponse<ConfigForm>> Update([FromBody] ConfigFormEditVM model)
         {

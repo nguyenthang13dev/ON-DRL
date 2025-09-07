@@ -10,6 +10,8 @@ using Hinet.Repository.DepartmentRepository;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Reflection;
 using Hinet.Model.Entities.ConfigAssign;
+using Hinet.Service.NotificationService.Dto;
+using MongoDB.Driver.Linq;
 
 namespace Hinet.Service.ConfigFormService
 {
@@ -27,26 +29,26 @@ namespace Hinet.Service.ConfigFormService
         {
             try
             {
-                var query = from q in GetQueryable()
-                            select new ConfigFormDto
-                            {
-                                CreatedId = q.CreatedId,
-                                UpdatedId = q.UpdatedId,
-                                Id = q.Id,
-                                CreatedBy = q.CreatedBy,
-                                UpdatedBy = q.UpdatedBy,
-                                DeleteId = q.DeleteId,
-                                CreatedDate = q.CreatedDate,
-                                UpdatedDate = q.UpdatedDate,
-                                DeleteTime = q.DeleteTime,
-                            };
-
+                var query =GetQueryable().Select(q => new ConfigFormDto
+                {
+                    CreatedId = q.CreatedId,
+                    UpdatedId = q.UpdatedId,
+                    Id = q.Id,
+                    Description = q.Description,
+                    FileDinhKems = q.FileDinhKems,
+                    IsActive = q.IsActive,
+                    Subject = q.Subject,
+                    Name = q.Name,
+                    CreatedBy = q.CreatedBy,
+                    CreatedDate = q.CreatedDate,
+                    UpdatedDate = q.UpdatedDate,
+                });
                 if (search != null)
                 {
                    
                 }
-                query = query.OrderByDescending(x => x.CreatedDate);
-                return await PagedList<ConfigFormDto>.CreateEfAsync(query, search);
+                //query = query.OrderByDescending(x => x.CreatedDate);
+                return await PagedList<ConfigFormDto>.CreateAsync(query, search);
             }
             catch (Exception ex)
             {
