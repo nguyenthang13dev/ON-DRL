@@ -12,7 +12,7 @@ namespace CommonHelper.String
     {
         public static List<string> ExtractKey(string content)
         {
-            var matches = Regex.Matches(content, @"\[(.*?)\]");
+            var matches = Regex.Matches(content, @"\[\[(.*?)\]\]");
             List<string> result = new List<string>();
             foreach (Match match in matches)
             {
@@ -20,5 +20,8 @@ namespace CommonHelper.String
             }
             return result;  
         }
+
+        //Replace setting key
+       
     }
 }

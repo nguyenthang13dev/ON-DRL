@@ -18,13 +18,32 @@ namespace Hinet.Service.ConfigFormService
     public class ConfigFormService : Service<ConfigForm>, IConfigFormService
     {
       
+        private readonly IConfigFormRepository _configFormRepository;   
 
         public ConfigFormService(
             IConfigFormRepository ConfigFormRepository) : base(ConfigFormRepository)
         {
-       
+            _configFormRepository = ConfigFormRepository;
         }
 
+        public async Task<TaiLieuDinhKem> GetTaiLieuDinhKem(Guid Id)
+        {
+            try
+            {
+                var resFiles = await _configFormRepository.GetByIdAsync(Id);
+                if (resFiles is null)
+                {
+                    throw new Exception("Files is not exits");
+                } else
+                {
+                    return resFiles.FileDinhKems;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        } 
         public async Task<PagedList<ConfigFormDto>> GetData(ConfigFormSearchVM search)
         {
             try

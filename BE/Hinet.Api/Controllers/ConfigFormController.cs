@@ -12,6 +12,13 @@ using Hinet.Api.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Hinet.Model.Entities.ConfigAssign;
 using Hinet.Service.TaiLieuDinhKemService;
+using CommonHelper.Word;
+using SharpCompress.Common;
+using Hinet.Service.Constant;
+using Hinet.Service.ConfigFormKeyService;
+using System.Text.RegularExpressions;
+using CommonHelper.String;
+using Hinet.Service.ConfigFormKeyService.ViewModels;
 
 namespace Hinet.Controllers
 {
@@ -19,21 +26,26 @@ namespace Hinet.Controllers
     public class ConfigFormController : HinetController
     {
         private readonly IConfigFormService _ConfigFormService;
+        private readonly IConfigFormKeyService _ConfigFormKeyService;
         private readonly IMapper _mapper;
         private readonly ITaiLieuDinhKemService _taiLieuDinhKemService;
         private readonly ILogger<ConfigFormController> _logger;
-
+        private readonly IWebHostEnvironment _webHostEnvironment;
         public ConfigFormController(
             IConfigFormService ConfigFormService,
             IMapper mapper,
             ILogger<ConfigFormController> logger
 ,
-            ITaiLieuDinhKemService taiLieuDinhKemService)
+            ITaiLieuDinhKemService taiLieuDinhKemService,
+            IWebHostEnvironment webHostEnvironment,
+            IConfigFormKeyService configFormKeyService)
         {
             this._ConfigFormService = ConfigFormService;
             this._mapper = mapper;
             _logger = logger;
             _taiLieuDinhKemService = taiLieuDinhKemService;
+            _webHostEnvironment = webHostEnvironment;
+            _ConfigFormKeyService = configFormKeyService;
         }
 
         [HttpPost("Create")]
@@ -50,6 +62,7 @@ namespace Hinet.Controllers
                         entity.FileDinhKems =  fileDinhKes;
                     }
                     await _ConfigFormService.CreateAsync(entity);
+                    // Tạo danh sách form
                     return new DataResponse<ConfigForm>() { Data = entity, Status = true };
                 }
                 catch (Exception ex)
@@ -71,6 +84,11 @@ namespace Hinet.Controllers
                     if (entity == null)
                         return DataResponse<ConfigForm>.False("Không tìm thấy nhóm danh mục để sửa");
                     entity = _mapper.Map(model, entity);
+                    if (model.FileDinhKems is not null)
+                    {
+                        var fileDinhKes = await _taiLieuDinhKemService.GetByIdAsync(model.FileDinhKems);
+                        entity.FileDinhKems = fileDinhKes;
+                    }
                     await _ConfigFormService.UpdateAsync(entity);
                     return new DataResponse<ConfigForm>() { Data = entity, Status = true };
                 }
@@ -80,6 +98,49 @@ namespace Hinet.Controllers
                 }
             }
             return DataResponse<ConfigForm>.False("Some properties are not valid", ModelStateError);
+        }
+        
+        
+        [HttpGet("Config-preview")]
+        public async Task<DataResponse<FormKeyConfig>> PreviewConfig([FromQuery] Guid Id)
+        {
+            var configForm = await _ConfigFormService.GetByIdAsync(Id);
+            var file = await _ConfigFormService.GetTaiLieuDinhKem(Id);
+            var formKeyDto = new FormKeyConfig();
+            if (file != null)
+            {
+                var path = _webHostEnvironment.WebRootPath;
+                var filePath = Path.Combine(path, "uploads",  file.DuongDanFile.Substring(1));
+                var htmlFileName = Path.Combine("htmloutput", Path.GetFileNameWithoutExtension(filePath) + ".html");
+                var htmlFilePath = Path.Combine(path, htmlFileName);
+                var resHtmlContent = htmlFileName != null ? System.IO.File.ReadAllText(htmlFilePath) :  WordHelper.ConvertWordToHtml(filePath);
+                formKeyDto.HtmlContent = resHtmlContent;
+                // Lấy ra 
+                List<string> content = RegexHelper.ExtractKey(resHtmlContent);
+                var existingKeys = await _ConfigFormKeyService.GetConfig(configForm.Id);
+                var existingKeyNames = existingKeys.Select(t => t.KTT_KEY).ToHashSet();
+    
+                var newKeys = content
+                    .Where(t => !existingKeyNames.Contains(t))
+                    .Select(t => new ConfigFormKeyCreateVM
+                    {
+                        KTT_KEY = t,
+                        KTT_TYPE = "",
+                        IsRquired = false,
+                        FormId = configForm
+                    })
+                    .ToList();
+                if (newKeys.Any())
+                {
+                    var newEntities = _mapper.MapList<ConfigFormKeyCreateVM, ConfigFormKey>(newKeys);
+                    await _ConfigFormKeyService.CreateAsync(newEntities);
+                }
+                return DataResponse<FormKeyConfig>.Success(formKeyDto, "Success");
+            }
+            else
+            {
+                return DataResponse<FormKeyConfig>.False("Có lỗi xảy ra trong quá trình xử lý");
+            }
         }
 
         [HttpGet("Get/{id}")]

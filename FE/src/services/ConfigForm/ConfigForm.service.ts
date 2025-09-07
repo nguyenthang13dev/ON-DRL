@@ -1,12 +1,25 @@
 import
-    {
-        ConfigFormCreateVM,
-        SearchConfigFormData,
-    } from "@/types/ConfigForm/ConfigForm";
+  {
+    ConfigFormCreateVM,
+    SearchConfigFormData,
+  } from "@/types/ConfigForm/ConfigForm";
 import { Response } from "@/types/general";
 import { apiService } from "../index";
 
 class ConfigFormService {
+  /**
+   * Lấy nội dung HTML từ file Word theo fileId (GUID)
+   */
+  public async getHtmlContentFromWord(fileId: string): Promise<Response<{ htmlContent: string }>> {
+    try {
+      const response = await apiService.get<Response<{ htmlContent: string }>>(
+        `/ConfigForm/GetHtmlContentFromWord/${fileId}`
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   private static _instance: ConfigFormService;
   public static get instance(): ConfigFormService {
     if (!ConfigFormService._instance) {
@@ -50,6 +63,19 @@ class ConfigFormService {
       throw error;
     }
   }
+
+  public async PrerviewConfigSetting(Id: string): Promise<Response>
+  {
+    try {
+      const response = await apiService.get<Response>(
+        `/ConfigForm/Config-preview?Id=${Id}`
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 
   public async create(formData: ConfigFormCreateVM): Promise<Response> {
     try {

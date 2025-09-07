@@ -7,34 +7,36 @@ import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
 import
-    {
-        SearchConfigFormData,
-        TableConfigFormDataType,
-    } from "@/types/ConfigForm/ConfigForm";
+  {
+    SearchConfigFormData,
+    TableConfigFormDataType,
+  } from "@/types/ConfigForm/ConfigForm";
 import { Response, ResponsePageInfo, ResponsePageList } from "@/types/general";
 import
-    {
-        DeleteOutlined,
-        DownOutlined,
-        EditOutlined,
-        EyeOutlined,
-        PlusCircleOutlined,
-        SearchOutlined
-    } from "@ant-design/icons";
+  {
+    DeleteOutlined,
+    DownOutlined,
+    EditOutlined,
+    EyeOutlined,
+    PlusCircleOutlined,
+    SearchOutlined,
+    SettingFilled
+  } from "@ant-design/icons";
 import
-    {
-        Button,
-        Card,
-        Dropdown,
-        FormProps,
-        MenuProps,
-        Pagination,
-        Popconfirm,
-        Space,
-        Table,
-        TableProps,
-        Tag
-    } from "antd";
+  {
+    Button,
+    Card,
+    Dropdown,
+    FormProps,
+    MenuProps,
+    Modal,
+    Pagination,
+    Space,
+    Table,
+    TableProps,
+    Tag
+  } from "antd";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -64,6 +66,7 @@ const ConfigForm: React.FC = () => {
   const [openPopconfirmId, setOpenPopconfirmId] = useState<string | null>(null);
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const router = useRouter();
 
   const tableColumns: TableProps<TableConfigFormDataType>["columns"] = [
     {
@@ -149,6 +152,18 @@ const ConfigForm: React.FC = () => {
             onClick: () => handleEdit(record),
           },
           {
+            key: "config",
+            label: "Cấu hình biểu mẫu",
+            icon: <SettingFilled />,
+            onClick: () => {
+              if (record.fileDinhKems) {
+                router.push(`/ConfigForm/preview?Id=${record.id}`);
+              } else {
+                toast.warning("Không có file đính kèm để cấu hình");
+              }
+            },
+          },
+          {
             key: "delete",
             label: "Xóa",
             icon: <DeleteOutlined />,
@@ -158,26 +173,20 @@ const ConfigForm: React.FC = () => {
         ];
 
         return (
-          <Space size="small">
-            <Dropdown
-              menu={{ items }}
-              trigger={["click"]}
-              placement="bottomRight"
-            >
-              <Button type="text" icon={<DownOutlined />} />
+           <>
+            <Dropdown menu={{ items }} trigger={["click"]}>
+              <Button
+                onClick={(e) => e.preventDefault()}
+                color="primary"
+                size="small"
+              >
+                <Space>
+                  Thao tác
+                  <DownOutlined />
+                </Space>
+              </Button>
             </Dropdown>
-            <Popconfirm
-              title="Xóa cấu hình biểu mẫu"
-              description="Bạn có chắc chắn muốn xóa cấu hình này?"
-              open={openPopconfirmId === record.id}
-              onConfirm={() => handleDelete(record.id!)}
-              onCancel={() => setOpenPopconfirmId(null)}
-              okText="Có"
-              cancelText="Không"
-            >
-              <span />
-            </Popconfirm>
-          </Space>
+          </>
         );
       },
     },
@@ -272,13 +281,17 @@ const ConfigForm: React.FC = () => {
         <AutoBreadcrumb />
         <div>
           <Button
+            type="primary"
+            size="small"
             icon={<SearchOutlined />}
             onClick={() => setIsPanelVisible(!isPanelVisible)}
-          >
+            className={classes.mgright5}
+            >
             {isPanelVisible ? 'Ẩn tìm kiếm' : 'Tìm kiếm'}
           </Button>
           <Button
             type="primary"
+            size="small"
             icon={<PlusCircleOutlined />}
             onClick={handleAdd}
           >
@@ -299,13 +312,13 @@ const ConfigForm: React.FC = () => {
  <Card style={{ padding: "0px" }} className={classes.customCardShadow}>
               <div className="table-responsive">
                   <Table
-        columns={tableColumns}
-        dataSource={listConfigForms}
-        rowKey="id"
-        loading={loading}
-        pagination={false}
-        scroll={{ x: 1200 }}
-        size="middle"
+                columns={tableColumns}
+                dataSource={listConfigForms}
+                rowKey="id"
+                loading={loading}
+                pagination={false}
+                scroll={{ x: 1200 }}
+                size="middle"
       />
               </div>
               <Pagination
@@ -336,6 +349,23 @@ const ConfigForm: React.FC = () => {
         onClose={() => setIsOpenDetail(false)}
         configForm={currentDetailConfigForm}
       />
+
+
+
+      {
+        openPopconfirmId && (
+        <Modal
+          title="Xác nhận xóa"
+            open={true} 
+            onOk={() => handleDelete( openPopconfirmId! )}
+            onCancel={() => setOpenPopconfirmId( null )}
+            okText="Xóa"
+            okButtonProps={{ danger: true }}
+            cancelText="Hủy"
+          >
+          <p>Bạn có chắc chắn muốn xóa cấu hình biểu mẫu này không?</p>
+          </Modal>
+    )      }
     </>
   );
 };
