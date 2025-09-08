@@ -74,7 +74,7 @@ export const addImageAndTextToPdf = async (
 
   // Trả lại blob PDF sau khi đã xử lý
   const pdfBytes = await pdfDoc.save();
-  return new Blob([pdfBytes], { type: "application/pdf" });
+  return new Blob([pdfBytes as any], { type: "application/pdf" });
 };
 
 // Hàm tải font arial
