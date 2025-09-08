@@ -56,7 +56,6 @@
   <ItemGroup>
     <Folder Include="DangKyHocPhanService\" />
     <Folder Include="DiemRenLuyenService\" />
-    <Folder Include="FormResponseService\Dto\" />
     <Folder Include="LopHocPhanService\" />
   </ItemGroup>
 

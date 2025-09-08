@@ -30,7 +30,6 @@ class FormTemplateService {
     }
   }
 
-
   public async GenerateFormHtml(id: string): Promise<Response> {
     try {
       const response = await apiService.get<Response>(
@@ -63,41 +62,16 @@ class FormTemplateService {
     )
     return response.data
   }
-
-  // public async Create(formData: createEditType): Promise<Response> {
-  //   try {
-  //     const response = await apiService.post<Response>(
-  //       '/DM_DuLieuDanhMuc/Create',
-  //       formData
-  //     )
-  //     return response.data
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // }
-
-  // public async Update(formData: createEditType): Promise<Response> {
-  //   try {
-  //     const response = await apiService.put<Response>(
-  //       '/DM_DuLieuDanhMuc/Update',
-  //       formData
-  //     )
-  //     return response.data
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // }
-
-  // public async Delete(id: string): Promise<Response> {
-  //   try {
-  //     const response = await apiService.delete<Response>(
-  //       '/DM_DuLieuDanhMuc/Delete/' + id
-  //     )
-  //     return response.data
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // }
+  public async Delete(id: string): Promise<Response> {
+    try {
+      const response = await apiService.delete<Response>(
+        `/FormTemplate/Delete/${id}`
+      )
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  }
 
   // public async Export(searchData: searchDuLieuDanhMucData): Promise<Response> {
   //   try {
