@@ -50,7 +50,20 @@ interface Props {
 
 const ActivitiesCreateOrUpdate: React.FC<Props> = (props: Props) => {
   const [form] = Form.useForm<ActivitiesCreateOrUpdateType>();
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>(
+    props.item?.thumbnail
+      ? [
+          {
+            uid: props.item.thumbnail.id?.toString() || "0",
+            name: props.item.thumbnail.tenTaiLieu || "file",
+            status: "done",
+            url: StaticFileUrl + props.item.thumbnail.duongDanFile,
+            thumbUrl: StaticFileUrl + props.item.thumbnail.duongDanFile,
+            ...props.item.thumbnail,
+          },
+        ]
+      : []
+  );
   const [uploadedData, setUploadedData] = useState<string[]>([]);
   const quillRef = useRef<any>();
   const [editorValue, setEditorValue] = useState<string>("");
@@ -163,7 +176,6 @@ const ActivitiesCreateOrUpdate: React.FC<Props> = (props: Props) => {
         startDate: props.item.startDate
           ? dayjs(props.item.startDate)
           : undefined,
-        endDate: props.item.endDate ? dayjs(props.item.endDate) : undefined,
       });
     }
   }, [form, props.item]);

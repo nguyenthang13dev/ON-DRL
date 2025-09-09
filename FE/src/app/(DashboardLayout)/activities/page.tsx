@@ -30,7 +30,6 @@ import {
 } from "antd";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import ActivitiesDetail from "./detail";
 import Search from "./search";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import {
@@ -39,8 +38,10 @@ import {
 } from "@/types/activities/activities";
 import activitiesService from "@/services/activities/activitiesService";
 import ActivitiesCreateOrUpdate from "./createOrUpdate";
+import { useRouter } from "next/navigation";
 
 const ActivitiesPage: React.FC = () => {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [data, setData] = useState<ResponsePageList<ActivitiesType[]>>();
   const [pageSize, setPageSize] = useState<number>(20);
@@ -52,7 +53,6 @@ const ActivitiesPage: React.FC = () => {
   const loading = useSelector((state) => state.general.isLoading);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [currentItem, setCurentItem] = useState<ActivitiesType | null>(null);
-  const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const tableColumns: TableProps<ActivitiesType>["columns"] = [
@@ -94,8 +94,7 @@ const ActivitiesPage: React.FC = () => {
             key: "2",
             icon: <EyeOutlined />,
             onClick: () => {
-              setCurentItem(record);
-              setIsOpenDetail(true);
+              router.push(`/activities/${record.id}`);
             },
           },
           {
@@ -197,10 +196,6 @@ const ActivitiesPage: React.FC = () => {
     setCurentItem(null);
   };
 
-  const handleCloseDetail = () => {
-    setIsOpenDetail(false);
-  };
-
   useEffect(() => {
     handleLoadData();
   }, [handleLoadData]);
@@ -247,9 +242,6 @@ const ActivitiesPage: React.FC = () => {
           pageIndex={pageIndex}
           pageSize={pageSize}
         />
-      )}
-      {isOpenDetail && (
-        <ActivitiesDetail item={currentItem} onClose={handleCloseDetail} />
       )}
 
       {confirmDeleteId && (
