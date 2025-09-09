@@ -10,16 +10,7 @@ class ConfigFormService {
   /**
    * Lấy nội dung HTML từ file Word theo fileId (GUID)
    */
-  public async getHtmlContentFromWord(fileId: string): Promise<Response<{ htmlContent: string }>> {
-    try {
-      const response = await apiService.get<Response<{ htmlContent: string }>>(
-        `/ConfigForm/GetHtmlContentFromWord/${fileId}`
-      );
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
+ 
   private static _instance: ConfigFormService;
   public static get instance(): ConfigFormService {
     if (!ConfigFormService._instance) {

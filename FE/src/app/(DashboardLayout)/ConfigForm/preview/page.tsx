@@ -2,20 +2,21 @@
 import renderHtmlWithSettings from "@/components/shared-components/renderHtmlWithSettings ";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import
-  {
-    Button,
-    Card,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Modal,
-    Select,
-    Spin,
-    Switch,
-  } from "antd";
+    {
+        Button,
+        Card,
+        Form,
+        Input,
+        InputNumber,
+        message,
+        Modal,
+        Select,
+        Spin,
+        Switch,
+    } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+
 
 const PreviewConfigForm = () => {
     const router = useRouter();

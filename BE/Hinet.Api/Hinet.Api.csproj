@@ -1368,6 +1368,7 @@
   <ItemGroup>
     <Folder Include="Core\Attributes\" />
     <Folder Include="Core\Common\" />
+    <Folder Include="wwwroot\htmloutput\" />
   </ItemGroup>
 
   <ItemGroup>

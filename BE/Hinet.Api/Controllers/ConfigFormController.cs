@@ -100,7 +100,6 @@ namespace Hinet.Controllers
             return DataResponse<ConfigForm>.False("Some properties are not valid", ModelStateError);
         }
         
-        
         [HttpGet("Config-preview")]
         public async Task<DataResponse<FormKeyConfig>> PreviewConfig([FromQuery] Guid Id)
         {
@@ -119,7 +118,7 @@ namespace Hinet.Controllers
                 List<string> content = RegexHelper.ExtractKey(resHtmlContent);
                 var existingKeys = await _ConfigFormKeyService.GetConfig(configForm.Id);
                 var existingKeyNames = existingKeys.Select(t => t.KTT_KEY).ToHashSet();
-    
+                
                 var newKeys = content
                     .Where(t => !existingKeyNames.Contains(t))
                     .Select(t => new ConfigFormKeyCreateVM
