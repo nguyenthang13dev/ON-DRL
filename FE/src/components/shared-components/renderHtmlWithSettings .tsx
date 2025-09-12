@@ -1,3 +1,4 @@
+
 import { SettingFilled } from "@ant-design/icons";
 import { Button, Tooltip } from "antd";
 import parse from "html-react-parser";
@@ -14,8 +15,11 @@ const renderHtmlWithSettings = (
     onFieldClick?: (field: string) => void,
     fieldConfig?: Record<string, any>,
 ) => {
+    // Thêm wrapper div để đảm bảo không phá vỡ layout
+    const wrappedHtml = `<div class="html-wrapper">${html}</div>`;
+    
     // Pre-process HTML to handle multiple patterns
-    const processedHtml = html
+    const processedHtml = wrappedHtml
         // Handle [[field]] pattern - replace with inline button
         .replace(/\[\[([^\]]+)\]\]/g, (match, field) => {
             return `<span class="setting-btn" data-field="${field}" style="
@@ -35,6 +39,7 @@ const renderHtmlWithSettings = (
           align-items: center;
           gap: 4px;
           transition: all 0.2s;
+          max-width: 200px;
         " onmouseover="this.style.background='#e6f7ff'; this.style.borderColor='#91d5ff'" 
            onmouseout="this.style.background='#f0f0f0'; this.style.borderColor='#d9d9d9'">
           <span>⚙️</span>
@@ -47,8 +52,8 @@ const renderHtmlWithSettings = (
             const config = fieldConfig?.[field];
             const configIcon = config ? "✅" : "⚙️";
             return `<span class="field-highlight" data-field="${field}" style="
-        background-color: #fff3cd;
-        border: 1px solid #ffeaa7;
+        background-color: ${config ? "#d4edda" : "#fff3cd"};
+        border: 1px solid ${config ? "#c3e6cb" : "#ffeaa7"};
         border-radius: 3px;
         padding: 2px 6px;
         margin: 0 1px;
@@ -56,10 +61,12 @@ const renderHtmlWithSettings = (
         position: relative;
         display: inline-block;
         font-size: 12px;
-        color: #856404;
+        color: ${config ? "#155724" : "#856404"};
         transition: all 0.2s;
-      " onmouseover="this.style.backgroundColor='#ffeaa7'; this.style.borderColor='#fdcb6e'" 
-         onmouseout="this.style.backgroundColor='#fff3cd'; this.style.borderColor='#ffeaa7'">
+        max-width: 200px;
+        word-break: break-word;
+      " onmouseover="this.style.backgroundColor='${config ? "#c3e6cb" : "#ffeaa7"}'; this.style.borderColor='${config ? "#b8dacc" : "#fdcb6e"}'" 
+         onmouseout="this.style.backgroundColor='${config ? "#d4edda" : "#fff3cd"}'; this.style.borderColor='${config ? "#c3e6cb" : "#ffeaa7"}'">
         <span style="margin-right: 4px;">${configIcon}</span>
         <span>${field}</span>
       </span>`;
@@ -67,6 +74,20 @@ const renderHtmlWithSettings = (
 
     return parse(processedHtml, {
         replace: (domNode: any) => {
+            // Handle wrapper div
+            if (
+                domNode.type === "tag" &&
+                domNode.name === "div" &&
+                domNode.attribs?.["class"] === "html-wrapper"
+            ) {
+                // Return children wrapped in our safe wrapper
+                return (
+                    <>
+                        {domNode.children}
+                    </>
+                );
+            }
+
             // Handle setting buttons
             if (
                 domNode.type === "tag" &&
@@ -93,6 +114,9 @@ const renderHtmlWithSettings = (
                                 fontSize: "12px",
                                 height: "24px",
                                 padding: "0 8px",
+                                maxWidth: "200px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
                             }}
                         >
                             {field}
@@ -131,6 +155,8 @@ const renderHtmlWithSettings = (
                                 fontSize: "12px",
                                 color: config ? "#155724" : "#856404",
                                 transition: "all 0.2s",
+                                maxWidth: "200px",
+                                wordBreak: "break-word",
                             }}
                             onClick={() => onFieldClick?.(field)}
                             onMouseEnter={(e) => {
@@ -162,5 +188,17 @@ const renderHtmlWithSettings = (
     });
 };
 
-export default renderHtmlWithSettings;
-  
+
+// Safe render component
+const RenderHtmlWithSettings: React.FC<RenderHtmlWithSettingsProps> = ({
+    html,
+    onFieldClick,
+    fieldConfig
+}) => {
+    return (
+        <div className="safe-html-renderer" style={{ width: '100%' }}>
+            {renderHtmlWithSettings(html, onFieldClick, fieldConfig)}
+        </div>
+    );
+};
+export default RenderHtmlWithSettings;

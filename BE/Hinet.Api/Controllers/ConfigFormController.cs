@@ -112,7 +112,10 @@ namespace Hinet.Controllers
                 var filePath = Path.Combine(path, "uploads",  file.DuongDanFile.Substring(1));
                 var htmlFileName = Path.Combine("htmloutput", Path.GetFileNameWithoutExtension(filePath) + ".html");
                 var htmlFilePath = Path.Combine(path, htmlFileName);
-                var resHtmlContent = htmlFileName != null ? System.IO.File.ReadAllText(htmlFilePath) :  WordHelper.ConvertWordToHtml(filePath);
+
+                var checkExitsFile = System.IO.File.Exists(htmlFilePath);
+
+                var resHtmlContent = checkExitsFile ? System.IO.File.ReadAllText(htmlFilePath) :  WordHelper.ConvertWordToHtml(filePath);
                 formKeyDto.HtmlContent = resHtmlContent;
                 // Lấy ra 
                 List<string> content = RegexHelper.ExtractKey(resHtmlContent);

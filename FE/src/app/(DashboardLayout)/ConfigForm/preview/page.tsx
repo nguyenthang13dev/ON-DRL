@@ -1,5 +1,5 @@
 "use client";
-import renderHtmlWithSettings from "@/components/shared-components/renderHtmlWithSettings ";
+import RenderHtmlWithSettings from "@/components/shared-components/renderHtmlWithSettings ";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import
     {
@@ -86,15 +86,21 @@ const PreviewConfigForm = () => {
             ) : error ? (
                 <div style={{ color: "red" }}>{error}</div>
             ) : (
-                <div
-                    style={{ minHeight: 400, background: "#fff", padding: 16 }}
-                >
-                    {renderHtmlWithSettings(
-                        htmlContent,
-                        handleFieldClick,
-                        fieldConfig,
-                    )}
-                </div>
+               <div
+                        style={{ 
+                            minHeight: 400, 
+                            background: "#fff", 
+                            padding: 16,
+                            width: '100%',
+                            boxSizing: 'border-box',
+                        }}
+                    >
+                        <RenderHtmlWithSettings
+                            html={htmlContent}
+                            onFieldClick={handleFieldClick}
+                            fieldConfig={fieldConfig}
+                        />
+                    </div>
             )}
             <Modal
                 open={modalOpen}
