@@ -1,7 +1,6 @@
-
 import { SettingFilled } from "@ant-design/icons";
 import { Button, Tooltip } from "antd";
-import parse from "html-react-parser";
+import parse, { domToReact } from "html-react-parser";
 import React from "react";
 
 interface RenderHtmlWithSettingsProps {
@@ -17,7 +16,7 @@ const renderHtmlWithSettings = (
 ) => {
     // Thêm wrapper div để đảm bảo không phá vỡ layout
     const wrappedHtml = `<div class="html-wrapper">${html}</div>`;
-    
+
     // Pre-process HTML to handle multiple patterns
     const processedHtml = wrappedHtml
         // Handle [[field]] pattern - replace with inline button
@@ -65,14 +64,18 @@ const renderHtmlWithSettings = (
         transition: all 0.2s;
         max-width: 200px;
         word-break: break-word;
-      " onmouseover="this.style.backgroundColor='${config ? "#c3e6cb" : "#ffeaa7"}'; this.style.borderColor='${config ? "#b8dacc" : "#fdcb6e"}'" 
-         onmouseout="this.style.backgroundColor='${config ? "#d4edda" : "#fff3cd"}'; this.style.borderColor='${config ? "#c3e6cb" : "#ffeaa7"}'">
+      " onmouseover="this.style.backgroundColor='${
+          config ? "#c3e6cb" : "#ffeaa7"
+      }'; this.style.borderColor='${config ? "#b8dacc" : "#fdcb6e"}'" 
+         onmouseout="this.style.backgroundColor='${
+             config ? "#d4edda" : "#fff3cd"
+         }'; this.style.borderColor='${config ? "#c3e6cb" : "#ffeaa7"}'">
         <span style="margin-right: 4px;">${configIcon}</span>
         <span>${field}</span>
       </span>`;
         });
 
-    return parse(processedHtml, {
+    const options = {
         replace: (domNode: any) => {
             // Handle wrapper div
             if (
@@ -80,11 +83,9 @@ const renderHtmlWithSettings = (
                 domNode.name === "div" &&
                 domNode.attribs?.["class"] === "html-wrapper"
             ) {
-                // Return children wrapped in our safe wrapper
+                // Convert parsed children using the same options so nested nodes get handlers
                 return (
-                    <>
-                        {domNode.children}
-                    </>
+                    <>{domToReact(domNode.children as any, options as any)}</>
                 );
             }
 
@@ -185,18 +186,19 @@ const renderHtmlWithSettings = (
                 );
             }
         },
-    });
-};
+    } as const;
 
+    return parse(processedHtml, options as any);
+};
 
 // Safe render component
 const RenderHtmlWithSettings: React.FC<RenderHtmlWithSettingsProps> = ({
     html,
     onFieldClick,
-    fieldConfig
+    fieldConfig,
 }) => {
     return (
-        <div className="safe-html-renderer" style={{ width: '100%' }}>
+        <div className="safe-html-renderer" style={{ width: "100%" }}>
             {renderHtmlWithSettings(html, onFieldClick, fieldConfig)}
         </div>
     );

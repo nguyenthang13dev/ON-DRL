@@ -1,13 +1,13 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { Modal, Form } from 'antd'
-import { formTemplateService } from '@/services/formTemplate/formTemplate.service'
-import { FormTemplate } from '@/types/formTemplate/formTemplate'
 import Loader from '@/components/fileManager-components/Loader/Loader'
-import './formTemplateConfig.css'
+import { formTemplateService } from '@/services/formTemplate/formTemplate.service'
 import { FieldDefinition } from '@/types/fieldDefinition/fieldDefinition'
-import FieldConfig from './fieldConfig'
+import { FormTemplate } from '@/types/formTemplate/formTemplate'
+import { Modal } from 'antd'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import FieldConfig from './fieldConfig'
+import './formTemplateConfig.css'
 interface Props {
   isOpen: boolean
   formTemplate?: FormTemplate | null

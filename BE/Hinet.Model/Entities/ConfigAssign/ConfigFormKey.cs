@@ -10,6 +10,9 @@ namespace Hinet.Model.Entities.ConfigAssign
     [CollectionName("ConfigFormKey")]
     public class ConfigFormKey : AuditableEntity
     {
+
+        public bool IsSystem { get; set; }
+        public string DefautKey { get; set; }
         // Có bắt buộc
         public bool IsRquired { get; set; }
         // Lưu key nội dung

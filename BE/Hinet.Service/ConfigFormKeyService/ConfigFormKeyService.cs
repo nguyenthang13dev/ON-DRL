@@ -22,9 +22,9 @@ namespace Hinet.Service.ConfigFormKeyService
 
         public async Task<ConfigFormKey> GetConfigName(string name, Guid ConfigId)
         {
-            var query = await _configFormKeyRepository.GetQueryable()
+            var query =  _configFormKeyRepository.GetQueryable()
                 .Where(t => t.FormId.Id == ConfigId)
-                                .FirstOrDefaultAsync(t => t.KTT_KEY == name);
+                                .FirstOrDefault(t => t.KTT_KEY == name);
             return query;
         }
         public async Task<List<ConfigFormKey>> GetConfig(Guid ConfigId)

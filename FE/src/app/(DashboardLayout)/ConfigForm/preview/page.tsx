@@ -1,22 +1,22 @@
 "use client";
 import RenderHtmlWithSettings from "@/components/shared-components/renderHtmlWithSettings ";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
-import
-    {
-        Button,
-        Card,
-        Form,
-        Input,
-        InputNumber,
-        message,
-        Modal,
-        Select,
-        Spin,
-        Switch,
-    } from "antd";
+import { configFormKeyService } from "@/services/configFormKey/configFormKey.service";
+import { tableConfigFormKeyEditVMData } from "@/types/ConfigFormKey/ConfigFormKey";
+import {
+    Button,
+    Card,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Modal,
+    Select,
+    Spin,
+    Switch,
+} from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-
 
 const PreviewConfigForm = () => {
     const router = useRouter();
@@ -29,6 +29,17 @@ const PreviewConfigForm = () => {
     const [currentField, setCurrentField] = useState<string | null>(null);
     const [fieldConfig, setFieldConfig] = useState<any>({});
     const [form] = Form.useForm();
+    const systemDefaultOptions = [
+        { key: "{{user.fullName}}", label: "Họ tên (user.fullName)" },
+        { key: "{{user.dateOfBirth}}", label: "Ngày sinh (user.dateOfBirth)" },
+        {
+            key: "{{user.studentCode}}",
+            label: "Mã sinh viên (user.studentCode)",
+        },
+        { key: "{{user.className}}", label: "Lớp (user.className)" },
+        { key: "{{user.email}}", label: "Email (user.email)" },
+        { key: "{{user.phone}}", label: "Số điện thoại (user.phone)" },
+    ];
 
     const handleGetPreViewConfig = useCallback(async () => {
         setLoading(true);
@@ -61,24 +72,59 @@ const PreviewConfigForm = () => {
         } else {
             form.resetFields();
             form.setFieldsValue({
-                key: field,
+                kTT_KEY: field,
                 type: "text",
-                required: false,
+                isRequired: false,
+                isSystem: false,
+                defaultKey: undefined,
+                configId: Id || "",
             });
         }
         setModalOpen(true);
     };
 
-    const handleSaveConfig = () => {
+    const handleSaveConfig = async () => {
         const values = form.getFieldsValue();
-        setFieldConfig((prev: any) => ({ ...prev, [values.key]: values }));
-        setModalOpen(false);
+        const payload: tableConfigFormKeyEditVMData = {
+            id: values.id,
+            kTT_KEY: values.kTT_KEY,
+            type: values.type,
+            min: values.min,
+            max: values.max,
+            isSystem: !!values.isSystem,
+            isRequired: !!values.isRequired,
+            defaultKey: values.defaultKey,
+            configId: values.configId || (Id as string),
+        };
+        try {
+            const res = await configFormKeyService.editByForm(payload);
+            if ((res as any)?.status || (res as any)?.success) {
+                message.success("Lưu cấu hình thành công");
+                setFieldConfig((prev: any) => ({
+                    ...prev,
+                    [payload.kTT_KEY!]: payload,
+                }));
+                setModalOpen(false);
+            } else {
+                message.error((res as any)?.message || "Lỗi khi lưu cấu hình");
+            }
+        } catch (error) {
+            message.error("Lỗi khi lưu cấu hình");
+        }
     };
 
     return (
         <Card
             title="Cấu hình nội dung biểu mẫu"
-            extra={<Button onClick={() => router.back()}>Quay lại</Button>}
+            extra={
+                <Button
+                    onClick={() => router.back()}
+                    size="small"
+                    type="primary"
+                >
+                    Quay lại
+                </Button>
+            }
             style={{ margin: 24 }}
         >
             {loading ? (
@@ -86,21 +132,21 @@ const PreviewConfigForm = () => {
             ) : error ? (
                 <div style={{ color: "red" }}>{error}</div>
             ) : (
-               <div
-                        style={{ 
-                            minHeight: 400, 
-                            background: "#fff", 
-                            padding: 16,
-                            width: '100%',
-                            boxSizing: 'border-box',
-                        }}
-                    >
-                        <RenderHtmlWithSettings
-                            html={htmlContent}
-                            onFieldClick={handleFieldClick}
-                            fieldConfig={fieldConfig}
-                        />
-                    </div>
+                <div
+                    style={{
+                        minHeight: 400,
+                        background: "#fff",
+                        padding: 16,
+                        width: "100%",
+                        boxSizing: "border-box",
+                    }}
+                >
+                    <RenderHtmlWithSettings
+                        html={htmlContent}
+                        onFieldClick={handleFieldClick}
+                        fieldConfig={fieldConfig}
+                    />
+                </div>
             )}
             <Modal
                 open={modalOpen}
@@ -109,7 +155,7 @@ const PreviewConfigForm = () => {
                     setCurrentField(null);
                     form.resetFields();
                 }}
-                title={`Cấu hình trường: ${currentField || ""}`}
+                title={`Cấu hình trường: [${currentField || ""}]`}
                 onOk={handleSaveConfig}
                 okText="Lưu cấu hình"
             >
@@ -117,14 +163,76 @@ const PreviewConfigForm = () => {
                     form={form}
                     layout="vertical"
                     initialValues={{
-                        key: currentField,
+                        kTT_KEY: currentField,
                         type: "text",
-                        required: false,
+                        isRequired: false,
+                        isSystem: false,
+                        defaultKey: undefined,
+                        configId: Id || "",
                     }}
                 >
-                    <Form.Item label="Tên key" name="key">
+                    <Form.Item<tableConfigFormKeyEditVMData>
+                        label="Tên key"
+                        name="kTT_KEY"
+                    >
                         <Input disabled />
                     </Form.Item>
+                    <Form.Item
+                        label="Mã cấu hình (configId)"
+                        name="configId"
+                        hidden
+                    >
+                        <Input disabled />
+                    </Form.Item>
+                    <Form.Item
+                        label="Dùng giá trị mặc định hệ thống"
+                        name="isSystem"
+                        valuePropName="checked"
+                    >
+                        <Switch />
+                    </Form.Item>
+                    <Form.Item
+                        noStyle
+                        shouldUpdate={(prev, curr) =>
+                            prev.isSystem !== curr.isSystem
+                        }
+                    >
+                        {({ getFieldValue }) =>
+                            getFieldValue("isSystem") && (
+                                <>
+                                    <Form.Item
+                                        label="Chọn khóa mặc định"
+                                        name="defaultKey"
+                                    >
+                                        <Select
+                                            placeholder="Ví dụ: Họ tên, Ngày sinh, ..."
+                                            options={systemDefaultOptions.map(
+                                                (o) => ({
+                                                    label: o.label,
+                                                    value: o.key,
+                                                }),
+                                            )}
+                                            onChange={() => {}}
+                                        />
+                                    </Form.Item>
+                                    <div
+                                        style={{
+                                            fontSize: 12,
+                                            color: "#888",
+                                            marginTop: -8,
+                                            marginBottom: 8,
+                                        }}
+                                    >
+                                        Gợi ý khóa phổ biến:{" "}
+                                        {systemDefaultOptions
+                                            .map((o) => o.key)
+                                            .join(", ")}
+                                    </div>
+                                </>
+                            )
+                        }
+                    </Form.Item>
+                    {/* Không dùng defaultValue tự do; dùng defaultKey khi isSystem = true */}
                     <Form.Item
                         label="Loại dữ liệu"
                         name="type"
@@ -135,12 +243,6 @@ const PreviewConfigForm = () => {
                         <Select>
                             <Select.Option value="text">Text</Select.Option>
                             <Select.Option value="number">Number</Select.Option>
-                            <Select.Option value="datetime">
-                                Datetime
-                            </Select.Option>
-                            <Select.Option value="dropdown">
-                                Dropdown
-                            </Select.Option>
                         </Select>
                     </Form.Item>
                     {/* Min/Max for number */}
@@ -171,25 +273,10 @@ const PreviewConfigForm = () => {
                             )
                         }
                     </Form.Item>
-                    {/* Dropdown options */}
-                    <Form.Item
-                        noStyle
-                        shouldUpdate={(prev, curr) => prev.type !== curr.type}
-                    >
-                        {({ getFieldValue }) =>
-                            getFieldValue("type") === "dropdown" && (
-                                <Form.Item
-                                    label="Danh sách lựa chọn (phân cách bởi dấu phẩy)"
-                                    name="options"
-                                >
-                                    <Input placeholder="ví dụ: Lựa chọn 1, Lựa chọn 2, ..." />
-                                </Form.Item>
-                            )
-                        }
-                    </Form.Item>
+                    {/* Removed dropdown/datetime specific configurations */}
                     <Form.Item
                         label="Bắt buộc nhập"
-                        name="required"
+                        name="isRequired"
                         valuePropName="checked"
                     >
                         <Switch />
