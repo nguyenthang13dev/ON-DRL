@@ -27,17 +27,17 @@ namespace Hinet.Controllers
             _logger = logger;
         }
 
-        //[HttpPost("GetData")]
-        //public async Task<DataResponse<PagedList<FormDeclarationDto>>> GetData([FromBody] FormDeclarationSearchDto search)
-        //{
-        //    var result = await _formDeclarationService.GetData(search);
-        //    return new DataResponse<PagedList<FormDeclarationDto>>
-        //    {
-        //        Data = result,
-        //        Message = "Lấy dữ liệu thành công",
-        //        Status = true
-        //    };
-        //}
+        [HttpPost("GetData")]
+        public async Task<DataResponse<PagedList<FormDeclarationDto>>> GetData([FromBody] FormDeclarationSearchDto search)
+        {
+            var result = await _formDeclarationService.GetData(search);
+            return new DataResponse<PagedList<FormDeclarationDto>>
+            {
+                Data = result,
+                Message = "Lấy dữ liệu thành công",
+                Status = true
+            };
+        }
 
     }
 }
