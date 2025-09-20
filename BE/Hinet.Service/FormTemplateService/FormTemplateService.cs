@@ -368,7 +368,8 @@ namespace Hinet.Service.FormTemplateService
                 // Replace placeholder [[Label]]
                 html = html.Replace($"[[{field.Label}]]", replacement);
             }
-            string formHtml = $"<form method='post' action='/FormTemplate/Submit?templateId={templateId}'>{html} <button type='submit'>Gửi</button></form>";
+            //string formHtml = $"<form method='post' action='/FormTemplate/Submit?templateId={templateId}'>{html}</form>";
+            string formHtml = $"<form id=\"dynamicForm\">{html}</form>";
             return formHtml;
         }
 

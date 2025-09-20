@@ -4,7 +4,7 @@ namespace Hinet.Service.FormDeclarationService.Dto
 {
     public class FormDeclarationDto : FormDeclaration
     {
-        public string DeclaringUser { get; set; }
+        public string Declarant { get; set; }
     }
 
 }

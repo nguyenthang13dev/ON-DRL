@@ -38,6 +38,19 @@ namespace Hinet.Controllers
                 Status = true
             };
         }
-
+        [HttpPost("Create")]
+        public async Task<DataResponse<FormDeclaration>> Create([FromBody] FormDeclarationCreateDto dto)
+        {
+            try
+            {
+                dto.UserId = UserId ?? Guid.Empty;
+                var createResult = await _formDeclarationService.CreateAsync(dto);
+                return new DataResponse<FormDeclaration>() { Data = createResult, Status = true };
+            }
+            catch (Exception ex)
+            {
+                return DataResponse<FormDeclaration>.False("Error", new string[] { ex.Message });
+            }
+        }
     }
 }

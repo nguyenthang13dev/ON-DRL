@@ -8,7 +8,7 @@ import { FormDeclarationSearch } from '@/types/formDeclaration/formDeclaration'
 
 class FormDeclarationService {
   public async getDataByPage(
-    searchData: FormDeclarationSearch
+    searchData: any
   ): Promise<Response> {
     try {
       const response = await apiService.post<Response>(
@@ -40,11 +40,11 @@ class FormDeclarationService {
     }
   }
 
-  public async CreatOrUpdate(formData: FormData): Promise<Response> {
+  public async Create(dto: any): Promise<Response> {
     try {
       const response = await apiService.post<Response>(
-        '/FormDeclaration/CreateOrUpdate',
-        formData
+        '/FormDeclaration/Create',
+        dto
       )
       return response.data
     } catch (error) {

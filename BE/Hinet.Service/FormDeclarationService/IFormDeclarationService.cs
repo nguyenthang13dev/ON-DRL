@@ -8,5 +8,6 @@ namespace Hinet.Service.FormDeclarationService
     public interface IFormDeclarationService : IService<FormDeclaration>
     {
         Task<PagedList<FormDeclarationDto>> GetData(FormDeclarationSearchDto search);
+        Task<FormDeclaration> CreateAsync(FormDeclarationCreateDto dto);
     }
 }

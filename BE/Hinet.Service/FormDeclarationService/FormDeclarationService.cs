@@ -7,7 +7,9 @@ using Hinet.Service.Common;
 using Hinet.Service.Common.Service;
 using Hinet.Service.FormDeclarationService.Dto;
 using Microsoft.Extensions.Caching.Memory;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver.Linq;
+using System.Text.Json;
 
 namespace Hinet.Service.FormDeclarationService
 {
@@ -45,8 +47,9 @@ namespace Hinet.Service.FormDeclarationService
                         {
                             Id = q.Id,
                             FormTemplateId = q.FormTemplateId,
+                            Name = q.Name,
                             UserId = q.UserId,
-                            DeclaringUser = u.Name ?? "",
+                            Declarant = u.Name ?? "",
                             Status = q.Status,
                             Declaration = q.Declaration,
                             CreatedId = q.CreatedId,
@@ -76,7 +79,7 @@ namespace Hinet.Service.FormDeclarationService
                 if (!string.IsNullOrEmpty(search.DeclaringUser))
                 {
                     var searchStr = search.DeclaringUser.Trim().ToLower();
-                    query = query.Where(x => x.DeclaringUser.ToLower().Equals(searchStr));
+                    query = query.Where(x => x.Declarant.ToLower().Equals(searchStr));
                 }
 
                 if (search.FromDate.HasValue)
@@ -94,6 +97,63 @@ namespace Hinet.Service.FormDeclarationService
             query = query.OrderByDescending(x => x.CreatedDate);
             var result = await PagedList<FormDeclarationDto>.CreateAsync(query, search);
             return result;
+        }
+
+        public async Task<FormDeclaration> CreateAsync(FormDeclarationCreateDto dto)
+        {
+            var cleaned = new Dictionary<string, object>();
+            foreach (var kvp in dto.Declaration)
+            {
+                if (kvp.Value is JsonElement element)
+                {
+                    cleaned[kvp.Key] = ConvertJsonElement(element);
+                }
+                else
+                {
+                    cleaned[kvp.Key] = kvp.Value;
+                }
+            }
+            var newDeclaration = new FormDeclaration
+            {
+                FormTemplateId = dto.FormTemplateId,
+                Name = dto.Name,
+                UserId = dto.UserId,
+                Declaration = cleaned
+            };
+            await base.CreateAsync(newDeclaration);
+            return newDeclaration;
+        }
+
+        private object ConvertJsonElement(JsonElement element)
+        {
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.String:
+                    return element.GetString();
+                case JsonValueKind.Number:
+                    if (element.TryGetInt64(out long l))
+                        return l;
+                    if (element.TryGetDouble(out double d))
+                        return d;
+                    return element.GetRawText();
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                    return element.GetBoolean();
+                case JsonValueKind.Object:
+                    var dict = new Dictionary<string, object>();
+                    foreach (var prop in element.EnumerateObject())
+                        dict[prop.Name] = ConvertJsonElement(prop.Value);
+                    return dict;
+                case JsonValueKind.Array:
+                    var list = new List<object>();
+                    foreach (var item in element.EnumerateArray())
+                        list.Add(ConvertJsonElement(item));
+                    return list;
+                case JsonValueKind.Null:
+                    return null;
+                default:
+                    return element.GetRawText();
+            }
         }
     }
 }

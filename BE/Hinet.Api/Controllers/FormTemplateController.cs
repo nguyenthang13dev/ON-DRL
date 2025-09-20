@@ -2,6 +2,7 @@
 using Hinet.Model.MongoEntities;
 using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
+using Hinet.Service.Dto;
 using Hinet.Service.FormTemplateService;
 using Hinet.Service.FormTemplateService.Dto;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,19 @@ namespace Hinet.Controllers
         {
             var result = await _formTemplateService.GetData(search);
             return new DataResponse<PagedList<FormTemplateDto>>
+            {
+                Data = result,
+                Message = "Lấy dữ liệu thành công",
+                Status = true
+            };
+        }
+
+
+        [HttpGet("GetDropdown")]
+        public async Task<DataResponse<List<DropdownOption>>> GetDropdown()
+        {
+            var result = await _formTemplateService.GetDropDown("Name", "Id");
+            return new DataResponse<List<DropdownOption>>
             {
                 Data = result,
                 Message = "Lấy dữ liệu thành công",
@@ -115,27 +129,6 @@ namespace Hinet.Controllers
                 return DataResponse<FormTemplate>.False("Error", new string[] { ex.Message });
             }
         } 
-
-        //[HttpPost]
-        //public async Task<IActionResult> Submit(Guid templateId)
-        //{
-        //    var responses = new Dictionary<string, object>();
-
-        //    foreach (var key in Request.Form.Keys)
-        //    {
-        //        responses[key] = Request.Form[key].ToString();
-        //    }
-
-        //    var formResponse = new FormResponse
-        //    {
-        //        FormTemplateId = templateId,
-        //        UserId = User.Identity?.Name ?? "anonymous",
-        //        Responses = responses,
-        //        SubmittedAt = DateTime.UtcNow
-        //    };
-        //    await _formResponseService.CreateAsync(formResponse);
-        //    return Content("Đã lưu form thành công!");
-        //}
 
         [HttpDelete("delete/{id}")]
         public async Task<DataResponse<FormTemplate>> Delete([FromRoute] Guid id)
