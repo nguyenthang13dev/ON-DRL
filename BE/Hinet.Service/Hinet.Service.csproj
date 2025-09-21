@@ -56,6 +56,8 @@
   <ItemGroup>
     <Folder Include="DangKyHocPhanService\" />
     <Folder Include="DiemRenLuyenService\" />
+    <Folder Include="GiaoVienService\Dto\" />
+    <Folder Include="LopHanhChinhService\Dto\" />
     <Folder Include="LopHocPhanService\" />
   </ItemGroup>
 

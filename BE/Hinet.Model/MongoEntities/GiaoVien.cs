@@ -22,9 +22,6 @@ namespace Hinet.Model.MongoEntities
         [BsonElement("khoaId")]
         public Guid KhoaId { get; set; }
         
-        [BsonElement("chucVu")]
-        public string? ChucVu { get; set; }
-        
         [BsonElement("trangThai")]
         public string TrangThai { get; set; } // DangLam, NghiViec, etc.
     }
