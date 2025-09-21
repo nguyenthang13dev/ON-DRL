@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import { formTemplateService } from '@/services/formTemplate/formTemplate.service'
 import Loader from '@/components/fileManager-components/Loader/Loader'
-import './page.css'
+import './declaration.css'
 export default function DynamicForm() {
   const [template, setTemplate] = useState<any>(null)
   const [form] = Form.useForm()
@@ -27,7 +27,7 @@ export default function DynamicForm() {
   }
 
   useEffect(() => {
-    getForm('7eb27600-c0d5-43eb-96d2-99b1900f9930')
+    getForm('b18f06eb-4b64-4474-b38c-15ae950ed558')
   }, [])
 
   if (!template) return <Loader />

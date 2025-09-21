@@ -12,19 +12,26 @@ namespace Hinet.Model.MongoEntities
     {
         [BsonElement("maSV")]
         public string MaSV { get; set; }
+
         [BsonElement("hoTen")]
         public string HoTen { get; set; }
+
         [BsonElement("ngaySinh")]
         public DateTime NgaySinh { get; set; }
+
         [BsonElement("gioiTinh")]
         public bool GioiTinh { get; set; }
+
         [BsonElement("email")]
         public string Email { get; set; }
+
         [BsonElement("trangThai")]
-        public string TrangThai { get; set; }
+        public string TrangThai { get; set; } // DangHoc, BaoLuu, DaTotNghiep, NghiHoc
+
         [BsonElement("khoaId")]
         public Guid KhoaId { get; set; }
-        [BsonElement("lopId")]
-        public Guid LopId { get; set; }
+
+        [BsonElement("lopHanhChinhId")]
+        public Guid LopHanhChinhId { get; set; } // Changed from LopId to LopHanhChinhId
     }
 }

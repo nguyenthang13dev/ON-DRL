@@ -1,12 +1,12 @@
 import { apiService } from "../index";
 import { Response, DropdownOption } from "@/types/general";
-import { createEditType, searchKhoa } from "@/types/khoa/khoa";
+import { createEditType, searchGiaoVien } from "@/types/giaoVien/giaoVien";
 
-class KhoaService {
-  public async getDataByPage(searchData: searchKhoa): Promise<Response> {
+class GiaoVienService {
+  public async getDataByPage(searchData: searchGiaoVien): Promise<Response> {
     try {
       const response = await apiService.post<Response>(
-        "/Khoa/GetData",
+        "/GiaoVien/GetData",
         searchData
       );
       return response.data;
@@ -17,7 +17,7 @@ class KhoaService {
 
   public async GetById(id: string): Promise<Response> {
     try {
-      const response = await apiService.get<Response>(`/Khoa/${id}`);
+      const response = await apiService.get<Response>(`/GiaoVien/${id}`);
       return response.data;
     } catch (error) {
       throw error;
@@ -26,7 +26,10 @@ class KhoaService {
 
   public async Create(data: createEditType): Promise<Response> {
     try {
-      const response = await apiService.post<Response>("/Khoa/Create", data);
+      const response = await apiService.post<Response>(
+        "/GiaoVien/Create",
+        data
+      );
       return response.data;
     } catch (error) {
       throw error;
@@ -36,7 +39,7 @@ class KhoaService {
   public async Update(id: string, data: createEditType): Promise<Response> {
     try {
       const response = await apiService.put<Response>(
-        `/Khoa/Update/${id}`,
+        `/GiaoVien/Update/${id}`,
         data
       );
       return response.data;
@@ -47,17 +50,19 @@ class KhoaService {
 
   public async Delete(id: string): Promise<Response> {
     try {
-      const response = await apiService.delete<Response>(`/Khoa/Delete/${id}`);
+      const response = await apiService.delete<Response>(
+        `/GiaoVien/Delete/${id}`
+      );
       return response.data;
     } catch (error) {
       throw error;
     }
   }
 
-  public async GetDropKhoa(selected?: string): Promise<Response> {
+  public async GetDropGiaoVien(khoaId?: string): Promise<Response> {
     try {
       const response = await apiService.get<Response>(
-        `/Khoa/GetDropKhoa?selected=${selected ?? ""}`
+        `/GiaoVien/DropdownByKhoa?khoaId=${khoaId ?? ""}`
       );
       return response.data;
     } catch (error) {
@@ -66,4 +71,4 @@ class KhoaService {
   }
 }
 
-export const khoaService = new KhoaService();
+export const giaoVienService = new GiaoVienService();

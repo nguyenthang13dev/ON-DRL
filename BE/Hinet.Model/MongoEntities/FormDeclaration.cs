@@ -9,10 +9,12 @@ namespace Hinet.Model.MongoEntities
     {
         [BsonElement("formTemplateId")] 
         public Guid FormTemplateId { get; set; }
+        [BsonElement("name")] 
+        public string Name { get; set; }
         [BsonElement("userId")] 
         public Guid UserId { get; set; } //người kê khai
         [BsonElement("status")]
-        public string Status { get; set; }
+        public string Status { get; set; } = "NHAP";
         [BsonElement("declaration")] 
         public Dictionary<string, object> Declaration { get; set; } = new();
     }

@@ -1,7 +1,9 @@
 ﻿using Hinet.Api.Dto;
 using Hinet.Model.MongoEntities;
 using Hinet.Service.Common;
+using Hinet.Service.Constant;
 using Hinet.Service.Core.Mapper;
+using Hinet.Service.Dto;
 using Hinet.Service.KhoaService;
 using Hinet.Service.KhoaService.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -115,6 +117,19 @@ namespace Hinet.Controllers
                 _logger.LogError(ex, "Error deleting Khoa");
                 return DataResponse.False("Có lỗi xảy ra khi xóa khoa");
             }
+        }
+
+
+        [HttpGet("GetDropKhoa")]
+        public async Task<DataResponse<List<DropdownOption>>> GetDropVaiTro(string? selected)
+        {
+            var result = await _khoaService.GetDropDownKhoa(selected);
+            return new DataResponse<List<DropdownOption>>
+            {
+                Data = result,
+                Message = "GetDrop khoa thành công",
+                Status = true
+            };
         }
     }
 }

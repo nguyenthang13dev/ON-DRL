@@ -1,7 +1,12 @@
 'use client'
 import Flex from '@/components/shared-components/Flex'
 import { tableNhomDanhMucDataType } from '@/types/nhomDanhMuc/nhomDanhMuc'
-import { Response, ResponsePageInfo, ResponsePageList } from '@/types/general'
+import {
+  DropdownOption,
+  Response,
+  ResponsePageInfo,
+  ResponsePageList,
+} from '@/types/general'
 import withAuthorization from '@/libs/authentication'
 import { setIsLoading } from '@/store/general/GeneralSlice'
 import { useSelector } from '@/store/hooks'
@@ -20,6 +25,7 @@ import {
   Card,
   Dropdown,
   FormProps,
+  Menu,
   MenuProps,
   Pagination,
   Popconfirm,
@@ -30,41 +36,41 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import classes from './page.module.css'
-import { useRouter } from 'next/navigation'
 import AutoBreadcrumb from '@/components/util-compenents/Breadcrumb'
-import {
-  FormTemplate,
-  FormTemplateSearch,
-} from '@/types/formTemplate/formTemplate'
-import { formTemplateService } from '@/services/formTemplate/formTemplate.service'
-import FormTemplateConfig from './formTemplateConfig'
-import CreateOrUpdate from './createOrUpdate'
 import { toast } from 'react-toastify'
+import {
+  FormDeclaration,
+  FormDeclarationSearch,
+} from '@/types/formDeclaration/formDeclaration'
+import { formDeclarationService } from '@/services/formDeclaration/formDeclaration.service'
+import { formTemplateService } from '@/services/formTemplate/formTemplate.service'
+import CreateOrUpdate from './createOrUpdate'
 
-const NhomDanhMuc: React.FC = () => {
+const Declaration: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const [formTemplates, setFormTemplates] = useState<FormTemplate[]>([])
-  const [currentFormTemplate, setCurrentFormTemplate] =
-    useState<FormTemplate | null>(null)
+  const [templateOptions, setTemplateOptions] = useState<MenuProps['items']>([])
+  const [currentTemplateId, setCurrentTemplateId] = useState<string>('')
+  const [formDeclarations, setFormDeclarations] = useState<FormDeclaration[]>(
+    []
+  )
+  const [currentDeclaration, setCurrentDeclaration] =
+    useState<FormDeclaration | null>(null)
   const [dataPage, setDataPage] = useState<ResponsePageInfo>()
   const [pageSize, setPageSize] = useState<number>(20)
   const [pageIndex, setPageIndex] = useState<number>(1)
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false)
-  const [searchValues, setSearchValues] = useState<FormTemplateSearch | null>(
-    null
-  )
+  const [searchValues, setSearchValues] =
+    useState<FormDeclarationSearch | null>(null)
   const loading = useSelector((state) => state.general.isLoading)
+
+  //state for modal
   const [isOpenCreateUpdate, setIsOpenCreateUpdate] = useState<boolean>(false)
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
   const [isOpenConfigModal, setIsOpenConfigModal] = useState<boolean>(false)
-
-  const [currentDetailNhomDanhMuc, setCurrentDetailNhomDanhMuc] =
-    useState<tableNhomDanhMucDataType>()
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false)
-  const router = useRouter()
   const [openPopconfirmId, setOpenPopconfirmId] = useState<string | null>(null)
 
-  const tableColumns: TableProps<FormTemplate>['columns'] = [
+  const tableColumns: TableProps<FormDeclaration>['columns'] = [
     {
       title: 'STT',
       dataIndex: 'index',
@@ -73,24 +79,36 @@ const NhomDanhMuc: React.FC = () => {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: 'Tên mẫu',
-      dataIndex: 'groupCode',
-      render: (_: any, record: FormTemplate) => <span>{record.name}</span>,
+      title: 'Tên kê khai',
+      dataIndex: 'name',
+      render: (_: any, record: FormDeclaration) => <span>{record.name}</span>,
+    },
+    {
+      title: 'Người kê khai',
+      dataIndex: 'name',
+      render: (_: any, record: FormDeclaration) => <span>{record.name}</span>,
+    },
+    {
+      title: 'Tên kê khai',
+      dataIndex: 'name',
+      render: (_: any, record: FormDeclaration) => (
+        <span>{record.declarant}</span>
+      ),
     },
     {
       title: 'Thao tác',
       dataIndex: 'actions',
       fixed: 'right',
       align: 'center',
-      render: (_: any, record: FormTemplate) => {
+      render: (_: any, record: FormDeclaration) => {
         const items: MenuProps['items'] = [
           {
-            label: 'Cấu hình',
+            label: 'Xem',
             key: '1',
             icon: <SettingOutlined />,
             onClick: () => {
-              setIsOpenConfigModal(true)
-              setCurrentFormTemplate(record)
+              // setIsOpenConfigModal(true)
+              // setCurrentFormTemplate(record)
             },
           },
           {
@@ -98,7 +116,7 @@ const NhomDanhMuc: React.FC = () => {
             key: '2',
             icon: <EditOutlined />,
             onClick: () => {
-              handleShowCreateUpdateModal(true, record)
+              // handleShowCreateUpdateModal(true, record)
             },
           },
           {
@@ -109,7 +127,7 @@ const NhomDanhMuc: React.FC = () => {
             key: '4',
             danger: true,
             icon: <DeleteOutlined />,
-            onClick: () => setOpenPopconfirmId(record.id ?? ''),
+            // onClick: () => setOpenPopconfirmId(record.id ?? ''),
           },
         ]
         return (
@@ -133,7 +151,7 @@ const NhomDanhMuc: React.FC = () => {
               cancelText="Hủy"
               open={openPopconfirmId === record.id}
               onConfirm={() => {
-                handleDelete(record.id || '')
+                // handleDelete(record.id || '')
                 setOpenPopconfirmId(null)
               }}
               onCancel={() => setOpenPopconfirmId(null)}
@@ -144,42 +162,60 @@ const NhomDanhMuc: React.FC = () => {
     },
   ]
 
-  const hanleCreateEditSuccess = () => {
-    handleGetFormTemplates()
-    setCurrentFormTemplate(null)
-  }
+  // const hanleCreateEditSuccess = () => {
+  //   handleGetFormTemplates()
+  //   setCurrentFormTemplate(null)
+  // }
 
-  const handleDelete = async (id: string) => {
-    try {
-      const response = await formTemplateService.Delete(id)
-      if (response.status) {
-        toast.success('Xóa thành công')
-        handleGetFormTemplates()
-      } else {
-        toast.error('Xóa thất bại')
-      }
-    } catch (error) {
-      toast.error('Xóa thất bại')
-    }
-  }
+  // const handleDelete = async (id: string) => {
+  //   try {
+  //     const response = await formTemplateService.Delete(id)
+  //     if (response.status) {
+  //       toast.success('Xóa thành công')
+  //       handleGetFormTemplates()
+  //     } else {
+  //       toast.error('Xóa thất bại')
+  //     }
+  //   } catch (error) {
+  //     toast.error('Xóa thất bại')
+  //   }
+  // }
 
   const toggleSearch = () => {
     setIsPanelVisible(!isPanelVisible)
   }
 
-  const onFinishSearch: FormProps<FormTemplateSearch>['onFinish'] = async (
-    values
-  ) => {
+  // const onFinishSearch: FormProps<FormTemplateSearch>['onFinish'] = async (
+  //   values
+  // ) => {
+  //   try {
+  //     setSearchValues(values)
+  //     await handleGetFormTemplates(values)
+  //   } catch (error) {
+  //     console.error('Lỗi khi lưu dữ liệu:', error)
+  //   }
+  // }
+
+  const handleGetTemplates = async () => {
     try {
-      setSearchValues(values)
-      await handleGetFormTemplates(values)
+      const response: Response = await formTemplateService.GetDropdown()
+      if (response != null && response.data != null) {
+        const data: DropdownOption[] = response.data
+        const options = data.map((item) => ({
+          label: item.label,
+          key: item.value,
+        }))
+        setTemplateOptions(options)
+      } else {
+        setTemplateOptions([])
+      }
     } catch (error) {
-      console.error('Lỗi khi lưu dữ liệu:', error)
+      setTemplateOptions([])
     }
   }
 
-  const handleGetFormTemplates = useCallback(
-    async (searchDataOverride?: FormTemplateSearch) => {
+  const handleGetDeclarations = useCallback(
+    async (searchDataOverride?: FormDeclarationSearch) => {
       dispatch(setIsLoading(true))
       try {
         const searchData = searchDataOverride || {
@@ -187,13 +223,13 @@ const NhomDanhMuc: React.FC = () => {
           pageSize,
           ...(searchValues || {}),
         }
-        const response: Response = await formTemplateService.getDataByPage(
+        const response: Response = await formDeclarationService.getDataByPage(
           searchData
         )
         if (response != null && response.data != null) {
           const data: ResponsePageList = response.data
-          const items: FormTemplate[] = data.items
-          setFormTemplates(items)
+          const items: FormDeclaration[] = data.items
+          setFormDeclarations(items)
           setDataPage({
             pageIndex: data.pageIndex,
             pageSize: data.pageSize,
@@ -211,29 +247,20 @@ const NhomDanhMuc: React.FC = () => {
 
   const handleShowCreateUpdateModal = (
     isEdit?: boolean,
-    currentFormTemplate?: FormTemplate
+    currentDeclaration?: FormDeclaration
   ) => {
     setIsOpenCreateUpdate(true)
     if (isEdit) {
-      setCurrentFormTemplate(currentFormTemplate ?? null)
+      setCurrentDeclaration(currentDeclaration ?? null)
     }
   }
 
-  const handleAfterUpdateTemplateFields = (formTemplate: FormTemplate) => {
-    setCurrentFormTemplate(formTemplate)
-    setFormTemplates((prev) => {
-      return prev.map((ft) => (ft.id === formTemplate.id ? formTemplate : ft))
-    })
-  }
+  // Define handleSelectFormType function
 
   useEffect(() => {
-    console.log({
-      ...searchValues,
-      pageIndex,
-      pageSize,
-    })
-    handleGetFormTemplates()
-  }, [])
+    handleGetDeclarations()
+    handleGetTemplates()
+  }, [handleGetDeclarations])
 
   return (
     <>
@@ -253,28 +280,46 @@ const NhomDanhMuc: React.FC = () => {
           >
             {isPanelVisible ? 'Ẩn tìm kiếm' : 'Tìm kiếm'}
           </Button>
-          <Button
-            onClick={() => {
-              handleShowCreateUpdateModal()
-            }}
-            type="primary"
-            icon={<PlusCircleOutlined />}
-            size="small"
+          <Dropdown
+            overlay={
+              <Menu
+                onClick={({ key }) => {
+                  setCurrentTemplateId(key)
+                  setIsOpenCreateUpdate(true)
+                }}
+                items={templateOptions}
+              />
+            }
+            trigger={['click']}
           >
-            Thêm mới
-          </Button>
+            <Button
+              type="primary"
+              icon={<PlusCircleOutlined />}
+              size="small"
+              style={{ marginLeft: 8 }}
+            >
+              Thêm mới
+            </Button>
+          </Dropdown>
           <CreateOrUpdate
             isOpen={isOpenCreateUpdate}
-            onSuccess={hanleCreateEditSuccess}
+            templateId={currentTemplateId}
+            currentDeclaration={currentDeclaration}
+            onSuccess={() => {
+              setIsOpenCreateUpdate(false)
+              setCurrentDeclaration(null)
+              setCurrentTemplateId('')
+              handleGetDeclarations()
+            }}
             onClose={() => {
               setIsOpenCreateUpdate(false)
-              setCurrentFormTemplate(null)
+              setCurrentDeclaration(null)
+              setCurrentTemplateId('')
             }}
-            currentFormTemplate={currentFormTemplate}
           />
 
           {/* {isOpenModal && <TemplatePreviewPage />} */}
-          <FormTemplateConfig
+          {/* <FormTemplateConfig
             isOpen={isOpenConfigModal}
             onClose={() => {
               setIsOpenConfigModal(false)
@@ -282,7 +327,7 @@ const NhomDanhMuc: React.FC = () => {
             }}
             formTemplate={currentFormTemplate}
             handleAfterUpdateTemplateFields={handleAfterUpdateTemplateFields}
-          />
+          /> */}
         </div>
       </Flex>
       {/* {isPanelVisible && (
@@ -302,7 +347,7 @@ const NhomDanhMuc: React.FC = () => {
           <Table
             columns={tableColumns}
             bordered
-            dataSource={formTemplates}
+            dataSource={formDeclarations}
             rowKey="id"
             scroll={{ x: 'max-content' }}
             pagination={false}
@@ -332,4 +377,4 @@ const NhomDanhMuc: React.FC = () => {
   )
 }
 
-export default withAuthorization(NhomDanhMuc, '')
+export default withAuthorization(Declaration, '')
