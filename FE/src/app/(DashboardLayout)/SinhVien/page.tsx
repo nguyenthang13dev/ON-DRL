@@ -92,15 +92,23 @@ const QLSinhVien: React.FC = () => {
     },
     {
       title: "Trạng thái",
-      dataIndex: "trangThai",
+      dataIndex: "tenTrangThai",
       render: (_: any, record: SinhVien) => (
-        <Tag
-          bordered={false}
-          color={record.trangThai === "active" ? "green" : "red"}
-          style={{ fontSize: "12px" }}
-        >
-          {record.trangThai === "active" ? "Hoạt động" : "Không hoạt động"}
+        <Tag bordered={false} color={"green"} style={{ fontSize: "12px" }}>
+          {record.tenTrangThai}
         </Tag>
+      ),
+    },
+    {
+      title: "Tên khoa",
+      dataIndex: "tenKhoa",
+      render: (_: any, record: SinhVien) => <span>{record.tenKhoa}</span>,
+    },
+    {
+      title: "Tên lớp",
+      dataIndex: "tenLopHanhChinh",
+      render: (_: any, record: SinhVien) => (
+        <span>{record.tenLopHanhChinh}</span>
       ),
     },
     {

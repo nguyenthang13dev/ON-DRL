@@ -27,4 +27,7 @@ export interface SinhVien {
   trangThai: string;
   khoaId: string;
   lopId: string;
+  tenTrangThai?: string;
+  tenKhoa?: string;
+  tenLopHanhChinh?: string;
 }

@@ -32,6 +32,6 @@ namespace Hinet.Model.MongoEntities
         public Guid KhoaId { get; set; }
 
         [BsonElement("lopHanhChinhId")]
-        public Guid LopHanhChinhId { get; set; } // Changed from LopId to LopHanhChinhId
+        public Guid LopHanhChinhId { get; set; } 
     }
 }

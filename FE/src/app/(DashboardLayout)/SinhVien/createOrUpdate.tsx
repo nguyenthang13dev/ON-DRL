@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { SinhVien, createEditType } from "@/types/sinhVien/sinhVien";
 import { sinhVienService } from "@/services/sinhVien/sinhVien.service";
 import { khoaService } from "@/services/khoa/khoa.service";
+import { lopHanhChinhService } from "@/services/lopHanhChinh/lopHanhChinh.service";
 import { DropdownOption } from "@/types/general";
 
 interface Props {
@@ -18,6 +19,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
   const [form] = Form.useForm();
   const [isOpen, setIsOpen] = useState<boolean>(props.isOpen);
   const [khoaOptions, setKhoaOptions] = useState<DropdownOption[]>([]);
+  const [lopOptions, setLopOptions] = useState<DropdownOption[]>([]);
 
   const handleOnFinish: FormProps<createEditType>["onFinish"] = async (
     formData: createEditType
@@ -63,8 +65,13 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
             ? dayjs(props.sinhVien.ngaySinh)
             : null,
         });
+        // Load lớp theo khoa khi edit
+        if (props.sinhVien.khoaId) {
+          loadLopOptions(props.sinhVien.khoaId);
+        }
       } else {
         form.resetFields();
+        setLopOptions([]); // Reset danh sách lớp khi thêm mới
       }
     }
   }, [props.isOpen, props.sinhVien, form]);
@@ -77,6 +84,40 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
       }
     } catch (error) {
       toast.error("Không thể tải danh sách khoa");
+    }
+  };
+
+  const loadLopOptions = async (khoaId?: string) => {
+    try {
+      // Sử dụng getDataByPage để lấy danh sách lớp theo khoa
+      const response = await lopHanhChinhService.getDataByPage({
+        khoaId: khoaId,
+        pageIndex: 1,
+        pageSize: 1000, // Lấy tất cả lớp
+      });
+      if (response && response.data && response.data.items) {
+        // Chuyển đổi dữ liệu thành format DropdownOption
+        const lopDropdownOptions: DropdownOption[] = response.data.items.map(
+          (lop: any) => ({
+            value: lop.id,
+            label: lop.tenLop,
+          })
+        );
+        setLopOptions(lopDropdownOptions);
+      }
+    } catch (error) {
+      toast.error("Không thể tải danh sách lớp");
+    }
+  };
+
+  const handleKhoaChange = (khoaId: string) => {
+    // Reset lớp khi thay đổi khoa
+    form.setFieldValue("lopId", undefined);
+    setLopOptions([]);
+
+    // Load danh sách lớp theo khoa mới
+    if (khoaId) {
+      loadLopOptions(khoaId);
     }
   };
 
@@ -169,6 +210,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
             placeholder="Chọn khoa"
             showSearch
             optionFilterProp="children"
+            onChange={handleKhoaChange}
           >
             {khoaOptions.map((option) => (
               <Select.Option key={option.value} value={option.value}>
@@ -179,11 +221,22 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
         </Form.Item>
 
         <Form.Item
-          label="Lớp ID"
-          name="lopId"
-          rules={[{ required: true, message: "Vui lòng nhập lớp ID!" }]}
+          label="Lớp"
+          name="lopHanhChinhId"
+          rules={[{ required: true, message: "Vui lòng chọn lớp!" }]}
         >
-          <Input placeholder="Nhập lớp ID" />
+          <Select
+            placeholder="Chọn lớp"
+            showSearch
+            optionFilterProp="children"
+            disabled={lopOptions.length === 0}
+          >
+            {lopOptions.map((option) => (
+              <Select.Option key={option.value} value={option.value}>
+                {option.label}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
       </Form>
     </Modal>

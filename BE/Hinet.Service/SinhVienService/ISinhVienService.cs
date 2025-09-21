@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hinet.Model.MongoEntities;
+﻿using Hinet.Model.MongoEntities;
+using Hinet.Service.Common;
 using Hinet.Service.Common.Service;
+using Hinet.Service.Dto;
+using Hinet.Service.SinhVienService.Dto;
 
 namespace Hinet.Service.SinhVienService
 {
     public interface ISinhVienService : IService<SinhVien>
     {
-        // Add specialized methods here if needed
-        // Example: Task<List<LopHocPhan>> GetLopHocPhanByHocKy(string hocKy);
+        Task<PagedList<SinhVienDto>> GetData(SinhVienSearch search);
+        Task<SinhVienDto> GetDto(Guid id);
+        Task<List<DropdownOption>> GetDropdownByLopHanhChinh(Guid lopHanhChinhId);
+        Task<List<DropdownOption>> GetDropdownByKhoa(Guid khoaId);
     }
 }
-
