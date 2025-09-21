@@ -37,7 +37,7 @@ const PreviewConfigForm = () => {
             label: "Mã sinh viên (user.studentCode)",
         },
         { key: "{{user.className}}", label: "Lớp (user.className)" },
-        { key: "{{user.email}}", label: "Email (user.email)" },
+        { key: "{{user.}}", label: "Email (user.email)" },
         { key: "{{user.phone}}", label: "Số điện thoại (user.phone)" },
     ];
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { subjectService } from "@/services/Subject/Subject.service";
+import { DropdownOption } from "@/types/general";
 import { SubjectCreateVM, TableSubjectDataType } from "@/types/Subject/Subject";
 import { CloseOutlined, SaveOutlined } from "@ant-design/icons";
 import
@@ -16,7 +17,7 @@ import
     Select,
     Switch
   } from "antd";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface CreateOrUpdateProps {
@@ -37,18 +38,9 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
 }) => {
   const [form] = Form.useForm<SubjectCreateVM>();
 
-  const departmentOptions = useMemo(() => [
-    { id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890", name: "Khoa Kỹ thuật Xây dựng" },
-    { id: "b2c3d4e5-f6g7-8901-bcde-f23456789012", name: "Khoa Kỹ thuật Thủy lợi" },
-    { id: "c3d4e5f6-g7h8-9012-cdef-345678901234", name: "Khoa Môi trường" },
-    { id: "d4e5f6g7-h8i9-0123-def0-456789012345", name: "Khoa Kinh tế" },
-    { id: "e5f6g7h8-i9j0-1234-ef01-567890123456", name: "Khoa Cơ khí" },
-    { id: "f6g7h8i9-j0k1-2345-f012-678901234567", name: "Khoa Điện - Điện tử" },
-    { id: "g7h8i9j0-k1l2-3456-0123-789012345678", name: "Khoa Công nghệ thông tin" },
-    { id: "h8i9j0k1-l2m3-4567-1234-890123456789", name: "Khoa Ngoại ngữ" },
-    { id: "i9j0k1l2-m3n4-5678-2345-901234567890", name: "Khoa Khoa học cơ bản" },
-    { id: "j0k1l2m3-n4o5-6789-3456-012345678901", name: "Khoa Giáo dục thể chất" },
-  ], []);
+
+  const [departmentOptions, setDepartmentOptions] = useState<DropdownOption[]>([]);
+
 
   // Helper function to find department ID by name (for backward compatibility)
   const findDepartmentId = useCallback((departmentName: string | null): string | null => {

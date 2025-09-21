@@ -26,6 +26,11 @@ namespace Hinet.Controllers
             _logger = logger;
         }
 
+
+
+
+        [HttpGet("Khoa")]
+
         [HttpPost("GetData", Name = "Xem danh sách Khoa")]
         public async Task<DataResponse<PagedList<KhoaDto>>> GetData([FromBody] KhoaSearch search)
         {
