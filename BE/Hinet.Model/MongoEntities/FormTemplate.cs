@@ -24,4 +24,22 @@ namespace Hinet.Model.MongoEntities
         [BsonElement("fields")]
         public List<FieldDefinition> Fields { get; set; } = new();
     }
+
+    public class FieldDefinition : AuditableEntity
+    {
+        [BsonElement("label")]
+        public string Label { get; set; } = default!;
+        [BsonElement("type")]
+        public string Type { get; set; } = default!; // text|textarea|select|checkbox|date|number ...
+        [BsonElement("placeholder")]
+        public string? Placeholder { get; set; }
+        [BsonElement("required")]
+        public bool Required { get; set; }
+        [BsonElement("options")]
+        public List<string>? Options { get; set; }
+        [BsonElement("cssClass")]
+        public string? CssClass { get; set; }
+        [BsonElement("config")]
+        public Dictionary<string, object>? Config { get; set; }
+    }
 }

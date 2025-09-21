@@ -8,8 +8,11 @@
 
   <ItemGroup>
     <Compile Remove="GroupRoleRepository\**" />
+    <Compile Remove="NewFolder\**" />
     <EmbeddedResource Remove="GroupRoleRepository\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
     <None Remove="GroupRoleRepository\**" />
+    <None Remove="NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +28,6 @@
     <Folder Include="DiemRenLuyenRepository\" />
     <Folder Include="KhoaRepository\" />
     <Folder Include="LopHocPhanRepository\" />
-    <Folder Include="NewFolder\" />
   </ItemGroup>
 
 </Project>

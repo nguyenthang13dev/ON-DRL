@@ -207,7 +207,7 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
       // if (responseDuLieuBieuMau?.status && responseDuLieuBieuMau.data?.path) {
       //   setPdfTempLink(extractFilePath(responseDuLieuBieuMau.data.path));
       // }
-      setPdfTempLink(extractFilePath("0001.pdf"));
+      setPdfTempLink(extractFilePath("0002.pdf"));
       const responseKySoInfo = await kySoInfoService.GetByThongTin(
         idBieuMau,
         "DTHoSoXuLy",

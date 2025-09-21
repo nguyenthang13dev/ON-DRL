@@ -11,7 +11,6 @@ import {
   DeleteOutlined,
   DownOutlined,
   EditOutlined,
-  EyeOutlined,
   PlusCircleOutlined,
   SearchOutlined,
   SettingOutlined,
@@ -40,6 +39,7 @@ import {
 import { formTemplateService } from '@/services/formTemplate/formTemplate.service'
 import FormTemplateConfig from './formTemplateConfig'
 import CreateOrUpdate from './createOrUpdate'
+import { toast } from 'react-toastify'
 
 const NhomDanhMuc: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -133,7 +133,7 @@ const NhomDanhMuc: React.FC = () => {
               cancelText="Hủy"
               open={openPopconfirmId === record.id}
               onConfirm={() => {
-                // handleDeleteNhomDanhMuc(record.id || '')
+                handleDelete(record.id || '')
                 setOpenPopconfirmId(null)
               }}
               onCancel={() => setOpenPopconfirmId(null)}
@@ -149,19 +149,19 @@ const NhomDanhMuc: React.FC = () => {
     setCurrentFormTemplate(null)
   }
 
-  // const handleDeleteNhomDanhMuc = async (id: string) => {
-  //   try {
-  //     const response = await nhomDanhMucService.Delete(id)
-  //     if (response.status) {
-  //       toast.success('Xóa thành công')
-  //       handleGetListNhomDanhMuc()
-  //     } else {
-  //       toast.error('Xóa thất bại')
-  //     }
-  //   } catch (error) {
-  //     toast.error('Xóa thất bại')
-  //   }
-  // }
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await formTemplateService.Delete(id)
+      if (response.status) {
+        toast.success('Xóa thành công')
+        handleGetFormTemplates()
+      } else {
+        toast.error('Xóa thất bại')
+      }
+    } catch (error) {
+      toast.error('Xóa thất bại')
+    }
+  }
 
   const toggleSearch = () => {
     setIsPanelVisible(!isPanelVisible)
@@ -219,14 +219,12 @@ const NhomDanhMuc: React.FC = () => {
     }
   }
 
-  // const handleClose = () => {
-  //   setIsOpenModal(false)
-  //   setCurrentNhomDanhMuc(null)
-  // }
-
-  // const handleCloseDetail = () => {
-  //   setIsOpenDetail(false)
-  // }
+  const handleAfterUpdateTemplateFields = (formTemplate: FormTemplate) => {
+    setCurrentFormTemplate(formTemplate)
+    setFormTemplates((prev) => {
+      return prev.map((ft) => (ft.id === formTemplate.id ? formTemplate : ft))
+    })
+  }
 
   useEffect(() => {
     console.log({
@@ -235,7 +233,7 @@ const NhomDanhMuc: React.FC = () => {
       pageSize,
     })
     handleGetFormTemplates()
-  }, [handleGetFormTemplates])
+  }, [])
 
   return (
     <>
@@ -283,6 +281,7 @@ const NhomDanhMuc: React.FC = () => {
               setCurrentFormTemplate(null)
             }}
             formTemplate={currentFormTemplate}
+            handleAfterUpdateTemplateFields={handleAfterUpdateTemplateFields}
           />
         </div>
       </Flex>

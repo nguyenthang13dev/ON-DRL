@@ -92,7 +92,7 @@ internal class Program
         app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "uploads")),
+        Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "uploads")),
             RequestPath = "/uploads"
         });
 

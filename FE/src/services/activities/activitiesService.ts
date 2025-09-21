@@ -21,6 +21,12 @@ class ActivitiesService {
     return ActivitiesService._instance;
   }
 
+  public async get(id: string): Promise<Response<ActivitiesType>> {
+    const response = await apiService.get<Response<ActivitiesType>>(
+      `/activities/get/${id}`
+    );
+    return response.data;
+  }
   public async getData(
     searchData: ActivitiesSearchType
   ): Promise<Response<ResponsePageList<ActivitiesType[]>>> {
@@ -57,9 +63,9 @@ class ActivitiesService {
     return response.data;
   }
   public async getDropdowns(): Promise<Response<Dictionary<DropdownOption[]>>> {
-    const response = await apiService.get<Response<Dictionary<DropdownOption[]>>>(
-      "/activities/getDropDowns"
-    );
+    const response = await apiService.get<
+      Response<Dictionary<DropdownOption[]>>
+    >("/activities/getDropDowns");
     return response.data;
   }
 
@@ -92,8 +98,6 @@ class ActivitiesService {
     );
     return response.data;
   }
-
-
 }
 
 const activitiesService = ActivitiesService.instance;

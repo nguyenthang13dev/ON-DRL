@@ -2,10 +2,9 @@
 using Hinet.Model.MongoEntities;
 using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
-using Hinet.Service.DM_NhomDanhMucService.Dto;
+using Hinet.Service.Dto;
 using Hinet.Service.FormTemplateService;
 using Hinet.Service.FormTemplateService.Dto;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -21,8 +20,7 @@ namespace Hinet.Controllers
         public FormTemplateController(
             IFormTemplateService formTemplateService,
             IMapper mapper,
-            ILogger<DM_NhomDanhMucController> logger
-        )
+            ILogger<DM_NhomDanhMucController> logger)
         {
             _formTemplateService = formTemplateService;
             _mapper = mapper;
@@ -36,6 +34,19 @@ namespace Hinet.Controllers
         {
             var result = await _formTemplateService.GetData(search);
             return new DataResponse<PagedList<FormTemplateDto>>
+            {
+                Data = result,
+                Message = "Lấy dữ liệu thành công",
+                Status = true
+            };
+        }
+
+
+        [HttpGet("GetDropdown")]
+        public async Task<DataResponse<List<DropdownOption>>> GetDropdown()
+        {
+            var result = await _formTemplateService.GetDropDown("Name", "Id");
+            return new DataResponse<List<DropdownOption>>
             {
                 Data = result,
                 Message = "Lấy dữ liệu thành công",
@@ -75,7 +86,6 @@ namespace Hinet.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<DataResponse<FormTemplate>> GetFormTemplate(Guid id)
         {
             try
@@ -89,25 +99,56 @@ namespace Hinet.Controllers
             }
         }
 
-        //[HttpPut("{templateId}/fields/{fieldId}")]
-        //public async Task<IActionResult> UpdateField(string templateId,string fieldId,[FromBody] UpdateFieldRequest request)
-        //{
-        //    var template = await _formTemplates.Find(t => t.Id == templateId).FirstOrDefaultAsync();
-        //    if (template == null) return NotFound();
 
-        //    var field = template.Fields.FirstOrDefault(f => f.FieldId == fieldId);
-        //    if (field == null) return NotFound();
+        [HttpPost("{templateId}/field/update")]
+        public async Task<DataResponse<FormTemplate>> UpdateField(
+            [FromRoute] Guid templateId,
+            [FromBody] FieldDefinitionDto dto)
+        {
+            try
+            {
+                var template = await _formTemplateService.UpdateFieldAsync(templateId, dto);
+                return new DataResponse<FormTemplate>() { Data = template, Status = true };
+            }
+            catch (Exception ex)
+            {
+                return DataResponse<FormTemplate>.False("Error", new string[] { ex.Message });
+            }
+        }
 
-        //    field.Label = request.Label;
-        //    field.Type = request.Type;
-        //    field.Required = request.Required;
-        //    field.Options = string.IsNullOrWhiteSpace(request.Options)
-        //        ? new List<string>()
-        //        : request.Options.Split(',').Select(o => o.Trim()).ToList();
+        [HttpGet("GenerateFormHtml/{id}")]
+        public async Task<DataResponse<FormTemplate>> GenerateFormHtmlAsync(Guid id)
+        {
+            try
+            {
+                var template = await _formTemplateService.GenerateFormHtmlAsync(id);
+                return new DataResponse<FormTemplate>() { Data = template, Status = true };
+            }
+            catch (Exception ex)
+            {
+                return DataResponse<FormTemplate>.False("Error", new string[] { ex.Message });
+            }
+        } 
 
-        //    await _formTemplates.ReplaceOneAsync(t => t.Id == templateId, template);
+        [HttpDelete("delete/{id}")]
+        public async Task<DataResponse<FormTemplate>> Delete([FromRoute] Guid id)
+        {
+            try
+            {
+                var existingForm = await _formTemplateService.GetByIdAsync(id);
+                if (existingForm == null) return DataResponse<FormTemplate>.False("Error", new string[] { "Không tìm thấy form" });
+                await _formTemplateService.DeleteAsync(existingForm);
+                return DataResponse<FormTemplate>.Success(existingForm, "Xoá thành công");
+            }
+            catch (Exception ex)
+            {
+                return DataResponse<FormTemplate>.False("Error", new string[] { ex.Message });
+            }
 
-        //    return Ok(field);
-        //}
+
+        }
+
+
+
     }
 }

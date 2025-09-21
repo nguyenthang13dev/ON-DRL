@@ -1,18 +1,17 @@
 import { EntityType, SearchBase } from "../general";
+import { TaiLieuDinhKem } from "../taiLieuDinhKem/taiLieuDinhKem";
 
 export interface ActivitiesType extends EntityType {
   startDate: Date;
-  endDate: Date;
   name: string;
   description: string;
   qRPath: string;
-  image: string;
+  thumbnail: TaiLieuDinhKem | null;
 }
 
 export interface ActivitiesCreateOrUpdateType {
   id?: string;
   startDate: Date;
-  endDate: Date;
   name: string;
   description: string;
   qRPath: string;
@@ -21,9 +20,7 @@ export interface ActivitiesCreateOrUpdateType {
 
 export interface ActivitiesSearchType extends SearchBase {
   startDate?: Date;
-  endDate?: Date;
   name?: string;
   description?: string;
   qRPath?: string;
-  image: string;
 }

@@ -4,7 +4,6 @@ export interface EntityType {
 
 export interface Response<T = any> {
   success: any;
-  danhSachVBPhucDap: never[];
   data: T;
   status?: boolean;
   message?: string;

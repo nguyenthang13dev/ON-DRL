@@ -16,8 +16,7 @@
         public static string FileDuLieuDanhMuc => "FileDuLieuDanhMuc";
         public static string FileChinhSachChuaPhuHop => "FileChinhSachChuaPhuHop";
         public static string NoiDungCuocHop => "NoiDungCuocHop";
-
-
+        public static string ConfigForm  => "ConfigForm";
         public static string DA_KeHoachNoiBo => "DA_KeHoachNoiBo";
         public static string DA_KeHoachTrienKhai => "DA_KeHoachTrienKhai";
         public static string DA_PhieuKhaoSat => "DA_PhieuKhaoSat";

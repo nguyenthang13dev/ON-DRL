@@ -34,11 +34,6 @@ const Login: React.FC = () => {
               Hệ thống đánh giá điểm rèn luyện sinh viên - Đại học Thủy Lợi
             </div>
           </div>
-          {/* <SignaturePad /> */}
-          <KySoInfo
-            idBieuMau={"1bbc2563-8156-42e0-808c-164ab99ec0fc"}
-            idDTTienTrinhXuLy={"1bbc2563-8156-42e0-808c-164ab99ec0fc"}
-          ></KySoInfo>
           <Row justify="center">
             <Col
               xs={20}

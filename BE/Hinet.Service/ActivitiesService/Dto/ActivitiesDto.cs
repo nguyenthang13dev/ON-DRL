@@ -6,6 +6,6 @@ namespace Hinet.Service.ActivitiesService.Dto
 {
     public class ActivitiesDto : Activities
     {
-        
+        public TaiLieuDinhKem? Thumbnail { get; set; }
     }
 }

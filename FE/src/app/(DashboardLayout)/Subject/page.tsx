@@ -6,12 +6,14 @@ import { subjectService } from "@/services/Subject/Subject.service";
 import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
-import {
+import
+  {
     SearchSubjectData,
     TableSubjectDataType,
-} from "@/types/Subject/Subject";
+  } from "@/types/Subject/Subject";
 import { Response, ResponsePageInfo, ResponsePageList } from "@/types/general";
-import {
+import
+  {
     CloseOutlined,
     DeleteOutlined,
     DownOutlined,
@@ -19,8 +21,9 @@ import {
     EyeOutlined,
     PlusCircleOutlined,
     SearchOutlined,
-} from "@ant-design/icons";
-import {
+  } from "@ant-design/icons";
+import
+  {
     Button,
     Card,
     Dropdown,
@@ -32,7 +35,7 @@ import {
     Table,
     TableProps,
     Tag,
-} from "antd";
+  } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -120,6 +123,7 @@ const Subject: React.FC = () => {
       dataIndex: "department",
       width: 200,
       ellipsis: true,
+      render: (department: string | null) => getDepartmentName(department),
     },
     {
       title: "Học kỳ",

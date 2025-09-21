@@ -9,8 +9,19 @@ import {
     Switch,
     Upload,
     message,
+    Card,
+    Progress,
+    Tag,
 } from "antd";
-import { SaveOutlined, UploadOutlined, FileOutlined } from "@ant-design/icons";
+import {
+    SaveOutlined,
+    UploadOutlined,
+    FileOutlined,
+    InboxOutlined,
+    DeleteOutlined,
+    FileTextOutlined,
+    CheckCircleOutlined,
+} from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -87,10 +98,23 @@ const ConfigForm: React.FC<ConfigFormProps> = ({
         setFileList(newFileList);
 
         if (info.file.status === "done") {
-            message.success(`${info.file.name} file uploaded successfully`);
+            message.success(`${info.file.name} đã tải lên thành công`);
         } else if (info.file.status === "error") {
-            message.error(`${info.file.name} file upload failed.`);
+            message.error(`${info.file.name} tải lên thất bại`);
         }
+    };
+
+    const handleRemoveFile = () => {
+        setFileList([]);
+        message.info("Đã xóa file");
+    };
+
+    const formatFileSize = (bytes: number) => {
+        if (bytes === 0) return "0 Bytes";
+        const k = 1024;
+        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
     };
 
     const uploadProps = {
@@ -101,6 +125,7 @@ const ConfigForm: React.FC<ConfigFormProps> = ({
         },
         fileList,
         onChange: handleFileChange,
+        onRemove: handleRemoveFile,
         beforeUpload: (file: any) => {
             const isLt10M = file.size / 1024 / 1024 < 10;
             if (!isLt10M) {
@@ -108,6 +133,7 @@ const ConfigForm: React.FC<ConfigFormProps> = ({
             }
             return isLt10M;
         },
+        showUploadList: false, // Tắt danh sách file mặc định
     };
 
     return (
@@ -195,13 +221,165 @@ const ConfigForm: React.FC<ConfigFormProps> = ({
                     />
                 </Form.Item>
 
-                <Form.Item
-                    label="File đính kèm"
-                    help="Chọn file đính kèm (tối đa 10MB)"
-                >
-                    <Upload {...uploadProps}>
-                        <Button icon={<UploadOutlined />}>Chọn file</Button>
-                    </Upload>
+                <Form.Item label="File đính kèm">
+                    <Card
+                        size="small"
+                        style={{
+                            border: "2px dashed #d9d9d9",
+                            borderRadius: "8px",
+                            backgroundColor: "#fafafa",
+                            transition: "all 0.3s ease",
+                        }}
+                    >
+                        {fileList.length === 0 ? (
+                            <Upload.Dragger
+                                {...uploadProps}
+                                style={{
+                                    border: "none",
+                                    background: "transparent",
+                                }}
+                            >
+                                <div style={{ padding: "20px 0" }}>
+                                    <InboxOutlined
+                                        style={{
+                                            fontSize: "48px",
+                                            color: "#1890ff",
+                                            marginBottom: "16px",
+                                        }}
+                                    />
+                                    <p
+                                        style={{
+                                            fontSize: "16px",
+                                            margin: "0 0 8px 0",
+                                            color: "#262626",
+                                        }}
+                                    >
+                                        Kéo thả file vào đây hoặc
+                                    </p>
+                                    <Button
+                                        type="primary"
+                                        icon={<UploadOutlined />}
+                                        size="large"
+                                    >
+                                        Chọn file
+                                    </Button>
+                                    <p
+                                        style={{
+                                            fontSize: "12px",
+                                            color: "#8c8c8c",
+                                            margin: "8px 0 0 0",
+                                        }}
+                                    >
+                                        Hỗ trợ tất cả định dạng file, tối đa
+                                        10MB
+                                    </p>
+                                </div>
+                            </Upload.Dragger>
+                        ) : (
+                            <div style={{ padding: "16px" }}>
+                                {fileList.map((file, index) => (
+                                    <Card
+                                        key={index}
+                                        size="small"
+                                        style={{
+                                            marginBottom: "8px",
+                                            border: "1px solid #e8e8e8",
+                                            borderRadius: "6px",
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "space-between",
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    flex: 1,
+                                                }}
+                                            >
+                                                <FileTextOutlined
+                                                    style={{
+                                                        fontSize: "24px",
+                                                        color: "#1890ff",
+                                                        marginRight: "12px",
+                                                    }}
+                                                />
+                                                <div style={{ flex: 1 }}>
+                                                    <div
+                                                        style={{
+                                                            fontWeight: "500",
+                                                            color: "#262626",
+                                                            marginBottom: "4px",
+                                                        }}
+                                                    >
+                                                        {file.name}
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            fontSize: "12px",
+                                                            color: "#8c8c8c",
+                                                        }}
+                                                    >
+                                                        {formatFileSize(
+                                                            file.size || 0,
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: "8px",
+                                                }}
+                                            >
+                                                {file.status === "done" && (
+                                                    <Tag
+                                                        color="success"
+                                                        icon={
+                                                            <CheckCircleOutlined />
+                                                        }
+                                                    >
+                                                        Thành công
+                                                    </Tag>
+                                                )}
+                                                {file.status ===
+                                                    "uploading" && (
+                                                    <div
+                                                        style={{
+                                                            width: "80px",
+                                                        }}
+                                                    >
+                                                        <Progress
+                                                            percent={
+                                                                file.percent
+                                                            }
+                                                            size="small"
+                                                            showInfo={false}
+                                                        />
+                                                    </div>
+                                                )}
+                                                {file.status === "error" && (
+                                                    <Tag color="error">Lỗi</Tag>
+                                                )}
+                                                <Button
+                                                    type="text"
+                                                    danger
+                                                    icon={<DeleteOutlined />}
+                                                    size="small"
+                                                    onClick={handleRemoveFile}
+                                                />
+                                            </div>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+                        )}
+                    </Card>
                 </Form.Item>
             </Form>
         </Modal>
