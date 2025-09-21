@@ -1,6 +1,8 @@
 // Hinet.Service/LopHanhChinhService/LopHanhChinhService.cs
 using System;
 using Hinet.Model.MongoEntities;
+using Hinet.Repository.GiaoVienRepository;
+using Hinet.Repository.KhoaRepository;
 using Hinet.Repository.LopHanhChinhRepository;
 using Hinet.Service.Common;
 using Hinet.Service.Common.Service;
@@ -15,13 +17,19 @@ namespace Hinet.Service.LopHanhChinhService
     {
         private readonly ILopHanhChinhRepository _lopHanhChinhRepository;
         private readonly IMapper _mapper;
+        private readonly IKhoaRepository _khoaRepository;
+        private readonly IGiaoVienRepository _giaoVienRepository;
 
         public LopHanhChinhService(
             ILopHanhChinhRepository lopHanhChinhRepository,
-            IMapper mapper) : base(lopHanhChinhRepository)
+            IMapper mapper,
+            IKhoaRepository khoaRepository,
+            IGiaoVienRepository giaoVienRepository) : base(lopHanhChinhRepository)
         {
             _lopHanhChinhRepository = lopHanhChinhRepository;
             _mapper = mapper;
+            _khoaRepository = khoaRepository;
+            _giaoVienRepository = giaoVienRepository;
         }
 
         public async Task<PagedList<LopHanhChinhDto>> GetData(LopHanhChinhSearch search)
@@ -29,6 +37,12 @@ namespace Hinet.Service.LopHanhChinhService
             try
             {
                 var query = from q in GetQueryable()
+                            join khoa in _khoaRepository.GetQueryable() 
+                            on q.KhoaId equals khoa.Id into khoaJoin
+
+                            join gv in _giaoVienRepository.GetQueryable()
+                            on q.GiaoVienCoVanId equals gv.Id into gvJoin
+
                             select new LopHanhChinhDto
                             {
                                 Id = q.Id,
@@ -44,6 +58,8 @@ namespace Hinet.Service.LopHanhChinhService
                                 UpdatedDate = q.UpdatedDate,
                                 DeleteTime = q.DeleteTime,
                                 IsDelete = q.IsDelete,
+                                TenKhoa = khoaJoin.Any() ? khoaJoin.First().TenKhoa : "",
+                                TenGiaoVienCoVan = gvJoin.Any() ? gvJoin.First().HoTen : "" 
                             };
 
                 if (search != null)

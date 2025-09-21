@@ -6,7 +6,6 @@ namespace Hinet.Service.LopHanhChinhService.Dto
 {
     public class LopHanhChinhDto : LopHanhChinh
     {
-        // You can add additional properties here if needed
         public string? TenKhoa { get; set; }
         public string? TenGiaoVienCoVan { get; set; }
     }

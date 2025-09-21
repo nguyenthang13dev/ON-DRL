@@ -7,7 +7,10 @@ import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
 import { ResponsePageInfo } from "@/types/general";
-import { searchLopHanhChinh, LopHanhChinh } from "@/types/lopHanhChinh/lopHanhChinh";
+import {
+  searchLopHanhChinh,
+  LopHanhChinh,
+} from "@/types/lopHanhChinh/lopHanhChinh";
 import {
   CloseOutlined,
   DeleteOutlined,
@@ -44,12 +47,16 @@ const QLLopHanhChinh: React.FC = () => {
   const [pageSize, setPageSize] = useState<number>(20);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
-  const [searchValues, setSearchValues] = useState<searchLopHanhChinh | null>(null);
+  const [searchValues, setSearchValues] = useState<searchLopHanhChinh | null>(
+    null
+  );
   const loading = useSelector((state) => state.general.isLoading);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
-  const [currentLopHanhChinh, setCurrentLopHanhChinh] = useState<LopHanhChinh | null>();
-  const [currentDetailLopHanhChinh, setCurrentDetailLopHanhChinh] = useState<LopHanhChinh>();
+  const [currentLopHanhChinh, setCurrentLopHanhChinh] =
+    useState<LopHanhChinh | null>();
+  const [currentDetailLopHanhChinh, setCurrentDetailLopHanhChinh] =
+    useState<LopHanhChinh>();
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [openPopconfirmId, setOpenPopconfirmId] = useState<string | null>(null);
 
@@ -67,13 +74,15 @@ const QLLopHanhChinh: React.FC = () => {
     },
     {
       title: "Khoa",
-      dataIndex: "khoaId",
-      render: (_: any, record: LopHanhChinh) => <span>{record.khoaId}</span>,
+      dataIndex: "tenKhoa",
+      render: (_: any, record: LopHanhChinh) => <span>{record.tenKhoa}</span>,
     },
     {
       title: "Giáo viên cố vấn",
-      dataIndex: "giaoVienCoVanId",
-      render: (_: any, record: LopHanhChinh) => <span>{record.giaoVienCoVanId || "-"}</span>,
+      dataIndex: "tenGiaoVienCoVan",
+      render: (_: any, record: LopHanhChinh) => (
+        <span>{record.tenGiaoVienCoVan || ""}</span>
+      ),
     },
     {
       title: "",

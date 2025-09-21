@@ -17,4 +17,6 @@ export interface LopHanhChinh {
   tenLop: string;
   khoaId: string;
   giaoVienCoVanId?: string;
+  tenKhoa?: string;
+  tenGiaoVienCoVan?: string;
 }

@@ -107,8 +107,8 @@ namespace Hinet.Service.GiaoVienService
 
         public async Task<List<DropdownOption>> GetDropdownByKhoa(Guid khoaId)
         {
-            var query = GetQueryable().Where(x => x.KhoaId == khoaId);
-            var items = await query.ToListAsync();
+            var query = _giaoVienRepository.GetQueryable().Where(x => x.KhoaId == khoaId);
+            var items = query.ToList();
             return items.Select(x => new DropdownOption
             {
                 Value = x.Id.ToString(),

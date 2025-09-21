@@ -115,7 +115,7 @@ namespace Hinet.Controllers
         }
 
 
-        [HttpPost("GetDropKhoa")]
+        [HttpGet("GetDropKhoa")]
         public async Task<DataResponse<List<DropdownOption>>> GetDropVaiTro(string? selected)
         {
             var result = await _khoaService.GetDropDownKhoa(selected);

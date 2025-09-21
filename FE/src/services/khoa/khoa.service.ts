@@ -56,9 +56,9 @@ class KhoaService {
 
   public async GetDropKhoa(selected?: string): Promise<Response> {
     try {
-      const response = await apiService.post<Response>("/Khoa/GetDropKhoa", {
-        selected,
-      });
+      const response = await apiService.get<Response>(
+        `/Khoa/GetDropKhoa?selected=${selected ?? ""}`
+      );
       return response.data;
     } catch (error) {
       throw error;

@@ -8,7 +8,6 @@ using Hinet.Service.GiaoVienService;
 using Hinet.Service.GiaoVienService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UglyToad.PdfPig.DocumentLayoutAnalysis;
 
 namespace Hinet.Controllers
 {
@@ -105,7 +104,7 @@ namespace Hinet.Controllers
             }
         }
 
-        [HttpGet("DropdownByKhoa/{khoaId}")]
+        [HttpGet("DropdownByKhoa")]
         public async Task<DataResponse<List<DropdownOption>>> DropdownByKhoa(Guid khoaId)
         {
             try

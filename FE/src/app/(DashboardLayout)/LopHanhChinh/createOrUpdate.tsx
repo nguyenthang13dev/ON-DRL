@@ -2,7 +2,10 @@
 import { Form, FormProps, Input, Modal, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { LopHanhChinh, createEditType } from "@/types/lopHanhChinh/lopHanhChinh";
+import {
+  LopHanhChinh,
+  createEditType,
+} from "@/types/lopHanhChinh/lopHanhChinh";
 import { lopHanhChinhService } from "@/services/lopHanhChinh/lopHanhChinh.service";
 import { khoaService } from "@/services/khoa/khoa.service";
 import { giaoVienService } from "@/services/giaoVien/giaoVien.service";
@@ -58,13 +61,17 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
     setIsOpen(props.isOpen);
     if (props.isOpen) {
       loadKhoaOptions();
-      loadGiaoVienOptions();
       if (props.lopHanhChinh) {
         form.setFieldsValue({
           ...props.lopHanhChinh,
         });
+        // Load giáo viên theo khoa khi edit
+        if (props.lopHanhChinh.khoaId) {
+          loadGiaoVienOptions(props.lopHanhChinh.khoaId);
+        }
       } else {
         form.resetFields();
+        setGiaoVienOptions([]); // Reset danh sách giáo viên khi thêm mới
       }
     }
   }, [props.isOpen, props.lopHanhChinh, form]);
@@ -80,14 +87,25 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
     }
   };
 
-  const loadGiaoVienOptions = async () => {
+  const loadGiaoVienOptions = async (khoaId?: string) => {
     try {
-      const response = await giaoVienService.GetDropGiaoVien();
+      const response = await giaoVienService.GetDropGiaoVien(khoaId);
       if (response.status && response.data) {
         setGiaoVienOptions(response.data);
       }
     } catch (error) {
       toast.error("Không thể tải danh sách giáo viên");
+    }
+  };
+
+  const handleKhoaChange = (khoaId: string) => {
+    // Reset giáo viên cố vấn khi thay đổi khoa
+    form.setFieldValue("giaoVienCoVanId", undefined);
+    setGiaoVienOptions([]);
+
+    // Load danh sách giáo viên theo khoa mới
+    if (khoaId) {
+      loadGiaoVienOptions(khoaId);
     }
   };
 
@@ -98,7 +116,11 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
 
   return (
     <Modal
-      title={props.lopHanhChinh ? "Chỉnh sửa lớp hành chính" : "Thêm mới lớp hành chính"}
+      title={
+        props.lopHanhChinh
+          ? "Chỉnh sửa lớp hành chính"
+          : "Thêm mới lớp hành chính"
+      }
       open={isOpen}
       onOk={() => form.submit()}
       onCancel={handleCancel}
@@ -121,7 +143,12 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
           name="khoaId"
           rules={[{ required: true, message: "Vui lòng chọn khoa!" }]}
         >
-          <Select placeholder="Chọn khoa" showSearch optionFilterProp="children">
+          <Select
+            placeholder="Chọn khoa"
+            showSearch
+            optionFilterProp="children"
+            onChange={handleKhoaChange}
+          >
             {khoaOptions.map((option) => (
               <Select.Option key={option.value} value={option.value}>
                 {option.label}
@@ -130,11 +157,13 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
           </Select>
         </Form.Item>
 
-        <Form.Item
-          label="Giáo viên cố vấn"
-          name="giaoVienCoVanId"
-        >
-          <Select placeholder="Chọn giáo viên cố vấn" showSearch optionFilterProp="children" allowClear>
+        <Form.Item label="Giáo viên cố vấn" name="giaoVienCoVanId">
+          <Select
+            placeholder="Chọn giáo viên cố vấn"
+            showSearch
+            optionFilterProp="children"
+            allowClear
+          >
             {giaoVienOptions.map((option) => (
               <Select.Option key={option.value} value={option.value}>
                 {option.label}
