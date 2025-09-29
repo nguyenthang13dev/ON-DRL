@@ -1,6 +1,4 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Hinet.Model.Entities;
 using Hinet.Model.MongoEntities;
 using Hinet.Repository.AppUserRepository;
 using Hinet.Repository.FormTemplateRepository;
@@ -8,20 +6,12 @@ using Hinet.Repository.RoleRepository;
 using Hinet.Repository.UserRoleRepository;
 using Hinet.Service.Common;
 using Hinet.Service.Common.Service;
-using Hinet.Service.Constant;
-using Hinet.Service.DepartmentService.ViewModels;
-using Hinet.Service.DM_NhomDanhMucService.Dto;
-using Hinet.Service.Dto;
-using Hinet.Service.FieldDefinitionService.Dto;
 using Hinet.Service.FormTemplateService.Dto;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Office.Interop.Word;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using OpenXmlPowerTools;
-using SharpCompress.Common;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -378,7 +368,8 @@ namespace Hinet.Service.FormTemplateService
                 // Replace placeholder [[Label]]
                 html = html.Replace($"[[{field.Label}]]", replacement);
             }
-            string formHtml = $"<form method='post' action='/FormTemplate/Submit?templateId={templateId}'>{html} <button type='submit'>Gửi</button></form>";
+            //string formHtml = $"<form method='post' action='/FormTemplate/Submit?templateId={templateId}'>{html}</form>";
+            string formHtml = $"<form id=\"dynamicForm\">{html}</form>";
             return formHtml;
         }
 

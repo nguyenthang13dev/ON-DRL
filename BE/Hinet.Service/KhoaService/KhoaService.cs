@@ -6,6 +6,7 @@ using Hinet.Repository.KhoaRepository;
 using Hinet.Service.Common;
 using Hinet.Service.Common.Service;
 using Hinet.Service.Core.Mapper;
+using Hinet.Service.Dto;
 using Hinet.Service.KhoaService.Dto;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -107,6 +108,25 @@ namespace Hinet.Service.KhoaService
             catch (Exception ex)
             {
                 throw new Exception($"Failed to retrieve data for ID {id}: {ex.Message}");
+            }
+        }
+
+        public async Task<List<DropdownOption>> GetDropDownKhoa(string? selected)
+        {
+            try
+            {
+                var lstData = GetQueryable();
+               
+                return await lstData.Select(x => new DropdownOption
+                {
+                    Label = x.TenKhoa,
+                    Value = x.Id.ToString(),
+                    Selected = selected != null && selected == x.MaKhoa
+                }).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve dropdown options: " + ex.Message);
             }
         }
     }

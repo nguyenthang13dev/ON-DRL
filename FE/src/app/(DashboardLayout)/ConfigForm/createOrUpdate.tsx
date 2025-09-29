@@ -24,9 +24,7 @@ interface CreateOrUpdateProps {
   onClose: () => void;
   ConfigForm: TableConfigFormDataType | null;
 }
-
 const { TextArea } = Input;
-
 const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
   isOpen,
   onSuccess,

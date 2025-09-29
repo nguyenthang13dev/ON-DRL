@@ -1,20 +1,11 @@
-import {
-  Form,
-  FormProps,
-  Input,
-  Modal,
-  Radio,
-  Select,
-  DatePicker,
-} from "antd";
+import { Form, FormProps, Input, Modal, Radio, Select, DatePicker } from "antd";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
-import {
-  SinhVien,
-  createEditType,
-} from "@/types/sinhVien/sinhVien";
+import { SinhVien, createEditType } from "@/types/sinhVien/sinhVien";
 import { sinhVienService } from "@/services/sinhVien/sinhVien.service";
+import { khoaService } from "@/services/khoa/khoa.service";
+import { lopHanhChinhService } from "@/services/lopHanhChinh/lopHanhChinh.service";
 import { DropdownOption } from "@/types/general";
 
 interface Props {
@@ -27,13 +18,18 @@ interface Props {
 const CreateOrUpdate: React.FC<Props> = (props: Props) => {
   const [form] = Form.useForm();
   const [isOpen, setIsOpen] = useState<boolean>(props.isOpen);
+  const [khoaOptions, setKhoaOptions] = useState<DropdownOption[]>([]);
+  const [lopOptions, setLopOptions] = useState<DropdownOption[]>([]);
 
   const handleOnFinish: FormProps<createEditType>["onFinish"] = async (
     formData: createEditType
   ) => {
     try {
       if (props.sinhVien) {
-        const response = await sinhVienService.Update(props.sinhVien.id!, formData);
+        const response = await sinhVienService.Update(
+          props.sinhVien.id!,
+          formData
+        );
         if (response.status) {
           toast.success("Chỉnh sửa sinh viên thành công");
           form.resetFields();
@@ -61,16 +57,69 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     setIsOpen(props.isOpen);
     if (props.isOpen) {
+      loadKhoaOptions();
       if (props.sinhVien) {
         form.setFieldsValue({
           ...props.sinhVien,
-          ngaySinh: props.sinhVien.ngaySinh ? dayjs(props.sinhVien.ngaySinh) : null,
+          ngaySinh: props.sinhVien.ngaySinh
+            ? dayjs(props.sinhVien.ngaySinh)
+            : null,
         });
+        // Load lớp theo khoa khi edit
+        if (props.sinhVien.khoaId) {
+          loadLopOptions(props.sinhVien.khoaId);
+        }
       } else {
         form.resetFields();
+        setLopOptions([]); // Reset danh sách lớp khi thêm mới
       }
     }
   }, [props.isOpen, props.sinhVien, form]);
+
+  const loadKhoaOptions = async () => {
+    try {
+      const response = await khoaService.GetDropKhoa();
+      if (response.status && response.data) {
+        setKhoaOptions(response.data);
+      }
+    } catch (error) {
+      toast.error("Không thể tải danh sách khoa");
+    }
+  };
+
+  const loadLopOptions = async (khoaId?: string) => {
+    try {
+      // Sử dụng getDataByPage để lấy danh sách lớp theo khoa
+      const response = await lopHanhChinhService.getDataByPage({
+        khoaId: khoaId,
+        pageIndex: 1,
+        pageSize: 1000, // Lấy tất cả lớp
+      });
+      if (response && response.data && response.data.items) {
+        // Chuyển đổi dữ liệu thành format DropdownOption
+        const lopDropdownOptions: DropdownOption[] = response.data.items.map(
+          (lop: any) => ({
+            value: lop.id,
+            label: lop.tenLop,
+          })
+        );
+        setLopOptions(lopDropdownOptions);
+      }
+    } catch (error) {
+      toast.error("Không thể tải danh sách lớp");
+    }
+  };
+
+  const handleKhoaChange = (khoaId: string) => {
+    // Reset lớp khi thay đổi khoa
+    form.setFieldValue("lopId", undefined);
+    setLopOptions([]);
+
+    // Load danh sách lớp theo khoa mới
+    if (khoaId) {
+      loadLopOptions(khoaId);
+    }
+  };
 
   const handleCancel = () => {
     form.resetFields();
@@ -88,17 +137,11 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
       destroyOnClose
       width={600}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleOnFinish}
-      >
+      <Form form={form} layout="vertical" onFinish={handleOnFinish}>
         <Form.Item
           label="Mã sinh viên"
           name="maSV"
-          rules={[
-            { required: true, message: "Vui lòng nhập mã sinh viên!" },
-          ]}
+          rules={[{ required: true, message: "Vui lòng nhập mã sinh viên!" }]}
         >
           <Input placeholder="Nhập mã sinh viên" />
         </Form.Item>
@@ -106,9 +149,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
         <Form.Item
           label="Họ tên"
           name="hoTen"
-          rules={[
-            { required: true, message: "Vui lòng nhập họ tên!" },
-          ]}
+          rules={[{ required: true, message: "Vui lòng nhập họ tên!" }]}
         >
           <Input placeholder="Nhập họ tên" />
         </Form.Item>
@@ -116,9 +157,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
         <Form.Item
           label="Ngày sinh"
           name="ngaySinh"
-          rules={[
-            { required: true, message: "Vui lòng chọn ngày sinh!" },
-          ]}
+          rules={[{ required: true, message: "Vui lòng chọn ngày sinh!" }]}
         >
           <DatePicker
             placeholder="Chọn ngày sinh"
@@ -130,9 +169,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
         <Form.Item
           label="Giới tính"
           name="gioiTinh"
-          rules={[
-            { required: true, message: "Vui lòng chọn giới tính!" },
-          ]}
+          rules={[{ required: true, message: "Vui lòng chọn giới tính!" }]}
         >
           <Radio.Group>
             <Radio value={true}>Nam</Radio>
@@ -154,34 +191,52 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
         <Form.Item
           label="Trạng thái"
           name="trangThai"
-          rules={[
-            { required: true, message: "Vui lòng chọn trạng thái!" },
-          ]}
+          rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}
         >
           <Select placeholder="Chọn trạng thái">
-            <Select.Option value="active">Hoạt động</Select.Option>
-            <Select.Option value="inactive">Không hoạt động</Select.Option>
+            <Select.Option value="DangHoc">Đang học</Select.Option>
+            <Select.Option value="BaoLuu">Bảo lưu</Select.Option>
+            <Select.Option value="DaTotNghiep">Đã tốt nghiệp</Select.Option>
+            <Select.Option value="NghiHoc">Nghỉ học</Select.Option>
           </Select>
         </Form.Item>
 
         <Form.Item
-          label="Khoa ID"
+          label="Khoa"
           name="khoaId"
-          rules={[
-            { required: true, message: "Vui lòng nhập khoa ID!" },
-          ]}
+          rules={[{ required: true, message: "Vui lòng chọn khoa!" }]}
         >
-          <Input placeholder="Nhập khoa ID" />
+          <Select
+            placeholder="Chọn khoa"
+            showSearch
+            optionFilterProp="children"
+            onChange={handleKhoaChange}
+          >
+            {khoaOptions.map((option) => (
+              <Select.Option key={option.value} value={option.value}>
+                {option.label}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
-          label="Lớp ID"
-          name="lopId"
-          rules={[
-            { required: true, message: "Vui lòng nhập lớp ID!" },
-          ]}
+          label="Lớp"
+          name="lopHanhChinhId"
+          rules={[{ required: true, message: "Vui lòng chọn lớp!" }]}
         >
-          <Input placeholder="Nhập lớp ID" />
+          <Select
+            placeholder="Chọn lớp"
+            showSearch
+            optionFilterProp="children"
+            disabled={lopOptions.length === 0}
+          >
+            {lopOptions.map((option) => (
+              <Select.Option key={option.value} value={option.value}>
+                {option.label}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
       </Form>
     </Modal>

@@ -2,14 +2,10 @@
 using Hinet.Model.MongoEntities;
 using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
-using Hinet.Service.DM_NhomDanhMucService.Dto;
-using Hinet.Service.FieldDefinitionService.Dto;
-using Hinet.Service.FormResponseService;
+using Hinet.Service.Dto;
 using Hinet.Service.FormTemplateService;
 using Hinet.Service.FormTemplateService.Dto;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 
 namespace Hinet.Controllers
@@ -18,20 +14,17 @@ namespace Hinet.Controllers
     public class FormTemplateController : HinetController
     {
         private readonly IFormTemplateService _formTemplateService;
-        private readonly IFormResponseService _formResponseService;
         private readonly IMapper _mapper;
         private readonly ILogger<DM_NhomDanhMucController> _logger;
 
         public FormTemplateController(
             IFormTemplateService formTemplateService,
             IMapper mapper,
-            ILogger<DM_NhomDanhMucController> logger,
-            IFormResponseService formResponseService)
+            ILogger<DM_NhomDanhMucController> logger)
         {
             _formTemplateService = formTemplateService;
             _mapper = mapper;
             _logger = logger;
-            _formResponseService = formResponseService;
         }
 
 
@@ -41,6 +34,19 @@ namespace Hinet.Controllers
         {
             var result = await _formTemplateService.GetData(search);
             return new DataResponse<PagedList<FormTemplateDto>>
+            {
+                Data = result,
+                Message = "Lấy dữ liệu thành công",
+                Status = true
+            };
+        }
+
+
+        [HttpGet("GetDropdown")]
+        public async Task<DataResponse<List<DropdownOption>>> GetDropdown()
+        {
+            var result = await _formTemplateService.GetDropDown("Name", "Id");
+            return new DataResponse<List<DropdownOption>>
             {
                 Data = result,
                 Message = "Lấy dữ liệu thành công",
@@ -96,8 +102,8 @@ namespace Hinet.Controllers
 
         [HttpPost("{templateId}/field/update")]
         public async Task<DataResponse<FormTemplate>> UpdateField(
-            [FromRoute] Guid templateId, 
-            [FromBody]FieldDefinitionDto dto)
+            [FromRoute] Guid templateId,
+            [FromBody] FieldDefinitionDto dto)
         {
             try
             {
@@ -122,28 +128,27 @@ namespace Hinet.Controllers
             {
                 return DataResponse<FormTemplate>.False("Error", new string[] { ex.Message });
             }
-        }
+        } 
 
-        [HttpPost]
-        public async Task<IActionResult> Submit(Guid templateId)
+        [HttpDelete("delete/{id}")]
+        public async Task<DataResponse<FormTemplate>> Delete([FromRoute] Guid id)
         {
-            var responses = new Dictionary<string, object>();
-
-            foreach (var key in Request.Form.Keys)
+            try
             {
-                responses[key] = Request.Form[key].ToString();
+                var existingForm = await _formTemplateService.GetByIdAsync(id);
+                if (existingForm == null) return DataResponse<FormTemplate>.False("Error", new string[] { "Không tìm thấy form" });
+                await _formTemplateService.DeleteAsync(existingForm);
+                return DataResponse<FormTemplate>.Success(existingForm, "Xoá thành công");
+            }
+            catch (Exception ex)
+            {
+                return DataResponse<FormTemplate>.False("Error", new string[] { ex.Message });
             }
 
-            var formResponse = new FormResponse
-            {
-                FormTemplateId = templateId,
-                UserId = User.Identity?.Name ?? "anonymous",
-                Responses = responses,
-                SubmittedAt = DateTime.UtcNow
-            };
-            await _formResponseService.CreateAsync(formResponse);
-            return Content("Đã lưu form thành công!");
+
         }
+
+
 
     }
 }
