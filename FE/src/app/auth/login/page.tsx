@@ -23,12 +23,12 @@ const Login: React.FC = () => {
         <div className="h-100 d-flex flex-column justify-content-center">
           <div className="text-center mb-4">
             <div style={{ width: "100px" }} className="m-auto mb-3">
-              <Image
+              {/* <Image
                 className="img-fluid"
                 src="/img/hinet.png"
                 alt="Logo"
                 preview={false}
-              />
+              /> */}
             </div>
             <div className="uppercase text-3xl font-bold text-primary">
               Hệ thống đánh giá điểm rèn luyện sinh viên - Đại học Thủy Lợi
@@ -54,25 +54,6 @@ const Login: React.FC = () => {
               </div>
             </Col>
           </Row>
-        </div>
-        <div className="flex items-center gap-6 justify-center p-1">
-          <div
-            className="text-md font-semibold"
-            style={{ width: "250px", textAlign: "center" }}
-          >
-            Công ty Cổ phần Công nghệ HiNET Việt Nam
-          </div>
-          <div>
-            <div className="p-1">
-              P1101, Đơn nguyên 1, Tòa nhà CT4, KĐT Mỹ Đình - Mễ Trì, Nam Từ
-              Liêm, Hà Nội
-            </div>
-            <div className="flex gap-6 p-1">
-              <div>Điện thoại: 024 858 735 55</div>
-              <div>Website: www.hinet.com.vn</div>
-              <div>Email: info@hinet.com.vn</div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
