@@ -1,18 +1,20 @@
-using Hinet.Service.Core.Mapper;
-using Microsoft.AspNetCore.Mvc;
+using CommonHelper.Excel;
+using CommonHelper.Extenions;
+using Hinet.Api.Dto;
+using Hinet.Api.ViewModels.Import;
+using Hinet.Core.BarCodeProvider;
 using Hinet.Model.Entities;
 using Hinet.Service.ActivitiesService;
 using Hinet.Service.ActivitiesService.Dto;
 using Hinet.Service.ActivitiesService.ViewModels;
 using Hinet.Service.Common;
-using CommonHelper.Excel;
-using CommonHelper.Extenions;
-using Hinet.Web.Common;
-using Hinet.Api.ViewModels.Import;
-using Hinet.Service.TaiLieuDinhKemService;
-using Hinet.Api.Dto;
-using Hinet.Service.Dto;
 using Hinet.Service.Constant;
+using Hinet.Service.Core.Mapper;
+using Hinet.Service.Dto;
+using Hinet.Service.TaiLieuDinhKemService;
+using Hinet.Web.Common;
+using Microsoft.AspNetCore.Mvc;
+using QRCoder;
 
 
 namespace Hinet.Controllers
@@ -49,6 +51,9 @@ namespace Hinet.Controllers
                 {
                     await _taiLieuDinhKemService.UpdateItemIdAsync(model.Image.Value.ToString(), entity.Id);
                 }
+
+                QRCodeProvider.Generate(entity.Id.ToString(), entity.Id.ToString());
+
                 return DataResponse<Activities>.Success(entity);
             }
             catch (Exception ex)

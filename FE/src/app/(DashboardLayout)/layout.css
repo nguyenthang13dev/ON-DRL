@@ -7991,5 +7991,5 @@ a.text-dark:hover {
 }
 
 .signature-item:hover .signature-delete-icon {
-  display: block;
+  display: block !important;
 }

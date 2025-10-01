@@ -1,5 +1,5 @@
 import { apiService } from '../index'
-import { Response } from '@/types/general'
+import { Response, DropdownOption } from '@/types/general'
 import { createEditType, searchLopHanhChinh } from '@/types/lopHanhChinh/lopHanhChinh'
 
 class LopHanhChinhService {

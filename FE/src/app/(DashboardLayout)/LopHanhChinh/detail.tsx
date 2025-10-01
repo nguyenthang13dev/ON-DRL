@@ -23,11 +23,11 @@ const LopHanhChinhDetail: React.FC<Props> = (props: Props) => {
           <Descriptions.Item label="Tên lớp">
             {props.lopHanhChinh.tenLop}
           </Descriptions.Item>
-          <Descriptions.Item label="Khoa ID">
-            {props.lopHanhChinh.khoaId}
+          <Descriptions.Item label="Tên khoa">
+            {props.lopHanhChinh.tenKhoa}
           </Descriptions.Item>
-          <Descriptions.Item label="Giáo viên cố vấn ID">
-            {props.lopHanhChinh.giaoVienCoVanId || "-"}
+          <Descriptions.Item label="Giáo viên cố vấn">
+            {props.lopHanhChinh.tenGiaoVienCoVan || "-"}
           </Descriptions.Item>
         </Descriptions>
       )}
