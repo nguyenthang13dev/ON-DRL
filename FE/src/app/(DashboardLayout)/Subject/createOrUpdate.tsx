@@ -41,12 +41,23 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
 
   const [departmentOptions, setDepartmentOptions] = useState<DropdownOption[]>([]);
 
+  // Load fake department data
+  useEffect(() => {
+    const fakeDepartments: DropdownOption[] = [
+      { label: "Khoa Công nghệ Thông tin", value: "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6" },
+      { label: "Khoa Kỹ thuật Thủy lợi", value: "b2c3d4e5-f6g7-8h9i-0j1k-l2m3n4o5p6q7" },
+      { label: "Khoa Môi trường", value: "c3d4e5f6-g7h8-9i0j-1k2l-m3n4o5p6q7r8" },
+      { label: "Khoa Kinh tế", value: "d4e5f6g7-h8i9-0j1k-2l3m-n4o5p6q7r8s9" },
+      { label: "Khoa Cơ khí", value: "e5f6g7h8-i9j0-1k2l-3m4n-o5p6q7r8s9t0" }
+    ];
+    setDepartmentOptions(fakeDepartments);
+  }, []);
 
   // Helper function to find department ID by name (for backward compatibility)
   const findDepartmentId = useCallback((departmentName: string | null): string | null => {
     if (!departmentName) return null;
-    const dept = departmentOptions.find(d => d.name === departmentName);
-    return dept ? dept.id : null;
+    const dept = departmentOptions.find(d => d.label === departmentName);
+    return dept ? dept.value : null;
   }, [departmentOptions]);
 
   useEffect(() => {
@@ -55,7 +66,7 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
         // Convert null values to undefined for form compatibility
         // Handle department conversion from name to GUID if needed
         let departmentValue = Subject.department;
-        if (Subject.department && !departmentOptions.find(d => d.id === Subject.department)) {
+        if (Subject.department && !departmentOptions.find(d => d.value === Subject.department)) {
           // If department is a name instead of GUID, convert it
           departmentValue = findDepartmentId(Subject.department);
         }
@@ -257,8 +268,8 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
             >
               <Select placeholder="Chọn khoa/bộ môn" showSearch>
                 {departmentOptions.map((dept) => (
-                  <Option key={dept.id} value={dept.id}>
-                    {dept.name}
+                  <Option key={dept.value} value={dept.value}>
+                    {dept.label}
                   </Option>
                 ))}
               </Select>
