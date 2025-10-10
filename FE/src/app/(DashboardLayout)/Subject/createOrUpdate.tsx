@@ -1,5 +1,6 @@
 'use client';
 
+import { khoaService } from "@/services/khoa/khoa.service";
 import { subjectService } from "@/services/Subject/Subject.service";
 import { DropdownOption } from "@/types/general";
 import { SubjectCreateVM, TableSubjectDataType } from "@/types/Subject/Subject";
@@ -39,19 +40,11 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
   const [form] = Form.useForm<SubjectCreateVM>();
 
 
-  const [departmentOptions, setDepartmentOptions] = useState<DropdownOption[]>([]);
+  const [ departmentOptions, setDepartmentOptions ] = useState<DropdownOption[]>( [] );
 
-  // Load fake department data
-  useEffect(() => {
-    const fakeDepartments: DropdownOption[] = [
-      { label: "Khoa Công nghệ Thông tin", value: "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6" },
-      { label: "Khoa Kỹ thuật Thủy lợi", value: "b2c3d4e5-f6g7-8h9i-0j1k-l2m3n4o5p6q7" },
-      { label: "Khoa Môi trường", value: "c3d4e5f6-g7h8-9i0j-1k2l-m3n4o5p6q7r8" },
-      { label: "Khoa Kinh tế", value: "d4e5f6g7-h8i9-0j1k-2l3m-n4o5p6q7r8s9" },
-      { label: "Khoa Cơ khí", value: "e5f6g7h8-i9j0-1k2l-3m4n-o5p6q7r8s9t0" }
-    ];
-    setDepartmentOptions(fakeDepartments);
-  }, []);
+  const [ subjectOptions, setSubjectOptions ] = useState<DropdownOption[]>( [] );
+  const [ subjectMaster, setSubjectMasters ] = useState<DropdownOption[]>( [] );
+
 
   // Helper function to find department ID by name (for backward compatibility)
   const findDepartmentId = useCallback((departmentName: string | null): string | null => {
@@ -59,6 +52,37 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
     const dept = departmentOptions.find(d => d.label === departmentName);
     return dept ? dept.value : null;
   }, [departmentOptions]);
+
+
+
+  const handleGetDropDownSubject = useCallback( async () =>
+  {
+    const response = await subjectService.GetDropDownSubject( "" );
+    if ( response.status )
+    {
+      setSubjectOptions( response.data );
+      setSubjectMasters( response.data );
+    }
+
+  }, []);
+
+  const handleGetDropDownData = useCallback( async () =>
+  {
+    const response = await khoaService.GetDropKhoa( "" );
+    if ( response.status )
+    {
+      setDepartmentOptions( response.data );
+    } else
+    {
+      toast.error( "Lỗi khi tải danh sách khoa/bộ môn" );
+    }
+  }, [] );
+
+
+  useEffect( () => {
+    handleGetDropDownData();
+    handleGetDropDownSubject();
+  }, [] );
 
   useEffect(() => {
     if (isOpen) {
@@ -121,14 +145,14 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
   };
 
   const assessmentMethods = [
-    "Thi viết",
-    "Thi vấn đáp",
-    "Bài tập lớn",
-    "Thực hành",
-    "Tiểu luận",
-    "Thi kết hợp",
-    "Đồ án",
-    "Thực tập",
+    { label: "Thi viết", value: "thiviet" },
+    { label: "Thi vấn đáp", value: "thivandap" },
+    { label: "Bài tập lớn", value: "baitaplon" },
+    { label: "Thực hành", value: "thuchanh" },
+    { label: "Tiểu luận", value: "tieuluan" },
+    { label: "Thi kết hợp", value: "thikethop" },
+    { label: "Đồ án", value: "doan" },
+    { label: "Thực tập", value: "thuctap" },
   ];
 
   return (
@@ -279,8 +303,8 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
             <Form.Item label="Hình thức đánh giá" name="assessmentMethod">
               <Select placeholder="Chọn hình thức đánh giá" allowClear>
                 {assessmentMethods.map((method) => (
-                  <Option key={method} value={method}>
-                    {method}
+                  <Option key={method.value} value={method.value}>
+                    {method.label}
                   </Option>
                 ))}
               </Select>
@@ -291,18 +315,28 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Môn học tiên quyết" name="prerequisites">
-              <Input
-                placeholder="Mã môn học tiên quyết (VD: MATH101)"
-                style={{ textTransform: "uppercase" }}
-              />
+                <Select
+                  placeholder="Chọn môn học tiên quyết"
+                  allowClear
+                  showSearch
+                  options={subjectOptions}
+                  filterOption={(input, option) =>
+                    (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+                  }
+                />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Môn học song hành" name="corequisites">
-              <Input
-                placeholder="Mã môn học song hành (VD: LAB101)"
-                style={{ textTransform: "uppercase" }}
-              />
+              <Select
+                  placeholder="Chọn môn học song hành"
+                  allowClear
+                  showSearch
+                  options={subjectMaster}
+                  filterOption={(input, option) =>
+                    (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+                  }
+                />
             </Form.Item>
           </Col>
         </Row>

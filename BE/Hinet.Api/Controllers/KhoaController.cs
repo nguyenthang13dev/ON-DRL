@@ -54,6 +54,9 @@ namespace Hinet.Controllers
             }
         }
 
+
+
+
         [HttpGet("{id}")]
         public async Task<DataResponse<KhoaDto>> GetById(Guid id)
         {

@@ -8,20 +8,38 @@ using MongoDB.Driver.Linq;
 using MongoDB.Driver;
 using Hinet.Repository;
 using Hinet.Service.SubjectService.Dto;
+using Hinet.Repository.KhoaRepository;
 
 namespace Hinet.Service.SubjectService
 {
     public class SubjectService : Service<Subject>, ISubjectService
     {
+        private readonly IKhoaRepository _khoaRepository;
+         
         public SubjectService(IRepository<Subject> repository) : base(repository)
         {
 
         }
+
+        public async Task<List<DropdownOption>> GetDropDownSubject()
+        {
+            var query = await GetQueryable()
+                         .Select(t => new DropdownOption
+                         {
+                             Label = t.Name,
+                             Value = t.Code,
+                         }).ToListAsync();
+            return query;
+        }
+
         public async Task<PagedList<SubjectDto>> GetData(SubjectSearch search)
         {
             try
             {
                 var query = from q in GetQueryable()
+
+
+
                             select new SubjectDto()
                             {
                                 Id = q.Id,

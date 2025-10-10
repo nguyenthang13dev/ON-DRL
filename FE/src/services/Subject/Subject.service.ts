@@ -1,10 +1,10 @@
-import { Response } from "@/types/general";
+import { DropdownOption, Response } from "@/types/general";
 import
-    {
-        SearchSubjectData,
-        SubjectCreateVM,
-    } from "@/types/Subject/Subject";
-import { apiService } from "../index";
+  {
+    SearchSubjectData,
+    SubjectCreateVM,
+  } from "@/types/Subject/Subject";
+import { ApiResponse, apiService } from "../index";
 
 class SubjectService {
   private static _instance: SubjectService;
@@ -96,6 +96,19 @@ class SubjectService {
       throw error;
     }
   }
+
+
+  public async GetDropDownSubject( selected?: string ): Promise<ApiResponse<DropdownOption[]>>
+  {
+    try {
+      const response = await apiService.get<ApiResponse<DropdownOption[]>>( `/Subject/GetDropDownSubject?selected=${ selected ?? "" }` );      
+      return response.data;
+    } catch (error) {
+      throw error;
+    }  
+
+  }
+
 
   public async export(searchData: SearchSubjectData): Promise<Response> {
     try {

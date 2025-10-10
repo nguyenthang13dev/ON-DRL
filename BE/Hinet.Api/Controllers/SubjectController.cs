@@ -8,6 +8,8 @@ using Hinet.Api.Dto;
 using Hinet.Service.SubjectService;
 using Hinet.Service.SubjectService.ViewModels;
 using Hinet.Service.SubjectService.Dto;
+using Google.Protobuf;
+using Grpc.Core;
 
 namespace Hinet.Controllers
 {
@@ -81,6 +83,21 @@ namespace Hinet.Controllers
                 Message = "Get TypeDanhMucDto thành công",
                 Status = true
             };
+        }
+
+
+        [HttpGet("GetDropDownSubject")]
+        public async Task<DataResponse<List<DropdownOption>>> GetDropDownSubject()
+        {
+            try
+            {
+                var result = await _subjectService.GetDropDownSubject();
+                return  DataResponse<List<DropdownOption>>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         [HttpPost("GetData")]
