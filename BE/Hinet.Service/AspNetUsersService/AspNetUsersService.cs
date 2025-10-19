@@ -14,6 +14,7 @@ using Hinet.Service.DepartmentService;
 using CommonHelper.Extenions;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver;
+using Hinet.Service.AspNetUsersService.ViewModels;
 
 namespace Hinet.Service.AspNetUsersService
 {
@@ -42,6 +43,9 @@ namespace Hinet.Service.AspNetUsersService
             _groupUserService = groupUserService;
             _departmentService = departmentService;
         }
+
+
+   
 
         public async Task<PagedList<UserDto>> GetData(AspNetUsersSearch search, UserDto userDto = null)
         {
@@ -197,6 +201,7 @@ namespace Hinet.Service.AspNetUsersService
                                       TenDonVi_txt = donvi.Name,
                                       NgaySinh = q.NgaySinh,
                                       DiaChi = q.DiaChi,
+                                      OTP = q.OTP
                                   }).FirstOrDefaultAsync();
 
 

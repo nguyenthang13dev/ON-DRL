@@ -21,12 +21,9 @@ export interface SubjectType {
 }
 
 export interface SearchSubjectData extends SearchBase {
-    code?: string;
+    subjectCode?: string;
     name?: string;
     department?: string;
-    semester?: number;
-    isElective?: boolean;
-    credits?: number;
 }
 
 export interface TableSubjectDataType {
@@ -36,6 +33,7 @@ export interface TableSubjectDataType {
     description?: string | null;
     credits?: number | null;
     department?: string | null;
+    departmentName?: string | null;
     semester?: number | null;
     prerequisites?: string | null;
     corequisites?: string | null;

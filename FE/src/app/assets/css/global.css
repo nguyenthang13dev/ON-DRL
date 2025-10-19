@@ -3,9 +3,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #2a5da3;
-  --color-primary-hover: #4a8fd6;
-  --color-primary-100: rgba(206, 17, 39, 0.1);
+  --color-primary: #7c3aed;
+  --color-primary-hover: #8b5cf6;
+  --color-primary-100: rgba(124, 58, 237, 0.1);
 }
 
 html {

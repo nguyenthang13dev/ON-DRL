@@ -47,5 +47,12 @@ namespace Hinet.Model.Entities
         // ko dùng
         [DisplayName("GroupRole")]
         public string? GroupRole { get; set; }
+
+        public string? OTP { get; set; }
+
+        // Thông tin khác
+        public string MaSv { get; set; }
+
+
     }
 }

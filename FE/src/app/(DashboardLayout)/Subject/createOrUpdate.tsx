@@ -82,7 +82,7 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
   useEffect( () => {
     handleGetDropDownData();
     handleGetDropDownSubject();
-  }, [] );
+  }, [handleGetDropDownData, handleGetDropDownSubject] );
 
   useEffect(() => {
     if (isOpen) {
@@ -198,10 +198,6 @@ const CreateOrUpdate: React.FC<CreateOrUpdateProps> = ({
               name="code"
               rules={[
                 { required: true, message: "Vui lòng nhập mã môn học!" },
-                {
-                  pattern: /^[A-Z]{2,4}[0-9]{3,4}$/,
-                  message: "Mã môn học không đúng định dạng (VD: CS101, MATH1001)!",
-                },
               ]}
             >
               <Input

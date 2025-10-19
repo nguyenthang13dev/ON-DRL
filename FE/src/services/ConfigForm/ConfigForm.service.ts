@@ -2,6 +2,7 @@ import
   {
     ConfigFormCreateVM,
     SearchConfigFormData,
+    SearchConfigFormDataByUser,
   } from "@/types/ConfigForm/ConfigForm";
 import { Response } from "@/types/general";
 import { apiService } from "../index";
@@ -42,6 +43,13 @@ class ConfigFormService {
     } catch (error) {
       throw error;
     }
+  }
+  public async GetFormByUser(model: SearchConfigFormDataByUser): Promise<Response> {
+    const response = await apiService.post<Response>(
+      "/ConfigForm/GetFormByUser",
+      model
+    );
+    return response.data;
   }
 
   public async getByName(name: string): Promise<Response> {

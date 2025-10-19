@@ -8,11 +8,8 @@
 
   <ItemGroup>
     <Compile Remove="GroupRoleRepository\**" />
-    <Compile Remove="NewFolder\**" />
     <EmbeddedResource Remove="GroupRoleRepository\**" />
-    <EmbeddedResource Remove="NewFolder\**" />
     <None Remove="GroupRoleRepository\**" />
-    <None Remove="NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>

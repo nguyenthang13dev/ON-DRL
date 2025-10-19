@@ -12,6 +12,7 @@ namespace Hinet.Service.ConfigFormService
         Task<PagedList<ConfigFormDto>> GetData(ConfigFormSearchVM search);
 
         Task<ConfigFormDto> GetDto(Guid id);
+        Task<List<DanhSachFormDto>> GetKeKhaiByUser(ConfigFormSearchVM search);
         Task<TaiLieuDinhKem> GetTaiLieuDinhKem(Guid Id);
     }
 }

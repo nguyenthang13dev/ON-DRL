@@ -292,6 +292,7 @@ const ConfigForm: React.FC = () => {
           <Button
             type="primary"
             size="small"
+            className="ml-2"
             icon={<PlusCircleOutlined />}
             onClick={handleAdd}
           >

@@ -3,7 +3,7 @@ import { ResetPassword as ResetPasswordAuth } from '@/components/auth-components
 import { Card, Col, Row, Image, Divider } from 'antd';
 import React from 'react';
 const backgroundStyle = {
-  backgroundImage: 'url(/img/background.jpg)',
+  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
 };
@@ -21,11 +21,11 @@ const ResetPassword: React.FC = () => {
               preview={false}
             />
           </div>
-          <div className="uppercase text-3xl font-bold text-primary">
-            Hệ thống quản lý
+          <div className="uppercase text-3xl font-bold text-white text-center">
+            Hệ thống đánh giá điểm rèn luyện sinh viên
           </div>
-          <div className="uppercase text-3xl font-bold  text-primary">
-            Đơn thư khiếu nại, tố cáo
+          <div className="uppercase text-3xl font-bold text-white text-center">
+            Đại học Thủy Lợi
           </div>
         </div>
         <Row justify="center">
@@ -34,16 +34,16 @@ const ResetPassword: React.FC = () => {
             sm={20}
             md={20}
             lg={8}
-            className="bg-[#FEF6DF] rounded-lg"
+            className="bg-white rounded-xl shadow-2xl"
           >
-            <div className="font-bold text-2xl text-center p-2 pt-3">
+            <div className="font-bold text-2xl text-center p-2 pt-6 text-[#7c3aed]">
               Thay đổi mật khẩu
             </div>
             <Divider
               className="my-2"
-              style={{ borderBlockStart: '2px solid var(--color-primary)' }}
+              style={{ borderBlockStart: '3px solid #7c3aed' }}
             />
-            <div className="py-3 px-16 pb-4">
+            <div className="py-6 px-8 pb-8">
               <ResetPasswordAuth />
             </div>
           </Col>

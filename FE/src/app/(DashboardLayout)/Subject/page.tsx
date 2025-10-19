@@ -120,10 +120,10 @@ const Subject: React.FC = () => {
     },
     {
       title: "Khoa/Bộ môn",
-      dataIndex: "department",
+      dataIndex: "departmentName",
       width: 200,
       ellipsis: true,
-      render: (department: string | null) => getDepartmentName(department),
+      render: (departmentName: string | null) => <Tag>{departmentName}</Tag>,
     },
     {
       title: "Học kỳ",
@@ -133,18 +133,18 @@ const Subject: React.FC = () => {
       render: (semester: number) => (semester ? `HK${semester}` : "-"),
     },
     {
-      title: "Lý thuyết",
+      title: "Lý thuyết (tiết)",
       dataIndex: "theoryHours",
       width: 90,
       align: "center",
-      render: (hours: number) => (hours ? `${hours}h` : "-"),
+      render: (hours: number) => (hours ? `${hours}` : "-"),
     },
     {
-      title: "Thực hành",
+      title: "Thực hành (tiết)",
       dataIndex: "practiceHours",
       width: 90,
       align: "center",
-      render: (hours: number) => (hours ? `${hours}h` : "-"),
+      render: (hours: number) => (hours ? `${hours}` : "-"),
     },
     {
       title: "Loại môn",

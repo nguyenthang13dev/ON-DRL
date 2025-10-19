@@ -41,7 +41,7 @@
     <PackageReference Include="OpenXmlPowerTools" Version="4.5.3.2" />
     <PackageReference Include="PdfiumViewer" Version="2.13.0" />
     <PackageReference Include="PdfPig" Version="0.1.10" />
-    <PackageReference Include="QRCoder" Version="1.4.1" />
+    <PackageReference Include="QRCoder" Version="1.7.0" />
     <PackageReference Include="RestSharp" Version="112.1.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.9.0" />
     <PackageReference Include="Tesseract" Version="5.2.0" />

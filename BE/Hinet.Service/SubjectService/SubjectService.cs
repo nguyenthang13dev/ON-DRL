@@ -9,26 +9,26 @@ using MongoDB.Driver;
 using Hinet.Repository;
 using Hinet.Service.SubjectService.Dto;
 using Hinet.Repository.KhoaRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hinet.Service.SubjectService
 {
     public class SubjectService : Service<Subject>, ISubjectService
     {
         private readonly IKhoaRepository _khoaRepository;
-         
-        public SubjectService(IRepository<Subject> repository) : base(repository)
+
+        public SubjectService(IRepository<Subject> repository, IKhoaRepository khoaRepository) : base(repository)
         {
-
+            _khoaRepository = khoaRepository;
         }
-
         public async Task<List<DropdownOption>> GetDropDownSubject()
         {
-            var query = await GetQueryable()
+            var query = GetQueryable()
                          .Select(t => new DropdownOption
                          {
                              Label = t.Name,
-                             Value = t.Code,
-                         }).ToListAsync();
+                             Value = t.Id.ToString()
+                         }).ToList();
             return query;
         }
 
@@ -37,15 +37,14 @@ namespace Hinet.Service.SubjectService
             try
             {
                 var query = from q in GetQueryable()
-
-
-
+                            join khoa in _khoaRepository.GetQueryable() on q.Department equals khoa.Id
                             select new SubjectDto()
                             {
                                 Id = q.Id,
                                 Name = q.Name,
                                 AssessmentMethod = q.AssessmentMethod,
                                 Code = q.Code,  
+                                DepartmentName = khoa != null ? khoa.TenKhoa : "Ch?a có thông tin",
                                 Corequisites = q.Corequisites,
                                 Department = q.Department,
                                 Description = q.Description,
@@ -61,7 +60,18 @@ namespace Hinet.Service.SubjectService
 
                 if (search != null)
                 {
-                    
+                    if (!string.IsNullOrEmpty(search.SubjectCode))
+                    {
+                        query = query.Where(t => t.Code.Contains(search.SubjectCode));
+                    }
+                    if (!string.IsNullOrEmpty(search.Name))
+                    {
+                        query = query.Where(t => t.Name.Contains(search.Name));      
+                    }
+                    if (search.Department != null)
+                    {
+                        query = query.Where(t => t.Department == search.Department);
+                    }
                 }
 
                 query = query.OrderByDescending(x => x.CreatedDate);
@@ -92,22 +102,6 @@ namespace Hinet.Service.SubjectService
                 throw new Exception($"Failed to retrieve Tinh with ID {id}: " + ex.Message, ex);
             }
         }
-
-        public async Task<List<DropdownOption>> GetDropdown()
-        {
-            try
-            {
-                var datas = await (from q in GetQueryable()
-                                   select new DropdownOption()
-                                   {
-                                   }).ToListAsync();
-
-                return datas;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to retrieve dropdown options: " + ex.Message, ex);
-            }
-        }
+       
     }
 }

@@ -1,11 +1,13 @@
 "use client";
+import Flex from "@/components/shared-components/Flex";
 import RenderHtmlWithSettings from "@/components/shared-components/renderHtmlWithSettings ";
+import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import { configFormKeyService } from "@/services/configFormKey/configFormKey.service";
 import { tableConfigFormKeyEditVMData } from "@/types/ConfigFormKey/ConfigFormKey";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import {
     Button,
-    Card,
     Form,
     Input,
     InputNumber,
@@ -57,38 +59,81 @@ const PreviewConfigForm = () => {
         }
     }, [Id]);
 
+    const handleGetAllConfigField = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await configFormKeyService.GetAllConfigByForm(Id ?? "");
+            if (res.status && res.data) {
+                setFieldConfig(res.data);
+            } else {
+            }
+            setLoading(false);
+        } catch (error) {
+            message.error("Lỗi khi lấy dữ liệu xem trước");
+        } finally {
+            setLoading(false);
+        }
+    }, [Id]);
+
     useEffect(() => {
         if (!Id) return;
         setError("");
         handleGetPreViewConfig();
+        handleGetAllConfigField();
     }, [Id, handleGetPreViewConfig]);
 
     // Handle field click from renderHtmlWithSettings
-    const handleFieldClick = (field: string) => {
-        setCurrentField(field);
-        // Load config if exists
-        if (field && fieldConfig[field]) {
-            form.setFieldsValue(fieldConfig[field]);
-        } else {
-            form.resetFields();
-            form.setFieldsValue({
-                kTT_KEY: field,
-                type: "text",
-                isRequired: false,
-                isSystem: false,
-                defaultKey: undefined,
-                configId: Id || "",
-            });
-        }
-        setModalOpen(true);
-    };
+    const handleFieldClick = useCallback(
+        async (field: string) => {
+            try {
+                setCurrentField(field);
+                // Load config if exists
+                const res = await configFormKeyService.GetFormByKey(Id!, field);
+                if (res.status && res.data) {
+                    setFieldConfig((prev: any) => ({
+                        ...prev,
+                        [field]: res.data,
+                    }));
+
+                    console.log(fieldConfig);
+
+                    // Map API fields -> Form field names
+                    form.setFieldsValue({
+                        ktT_KEY: res.data.ktT_KEY,
+                        type: res.data.ktT_TYPE || "text",
+                        isRequired: res.data.isRequired || false,
+                        isSystem: res.data.isSystem || false,
+                        defaultKey: res.data.defaultKey || undefined,
+                        min: res.data.min,
+                        max: res.data.max,
+                        configId: Id || "",
+                    });
+                } else {
+                    // No existing config -> reset and prefill key & configId
+                    form.resetFields();
+                    form.setFieldsValue({
+                        ktT_KEY: field,
+                        type: "text",
+                        isRequired: false,
+                        isSystem: false,
+                        defaultKey: undefined,
+                        configId: Id || "",
+                    });
+                }
+                setModalOpen(true);
+            } catch (error) {
+                message.error("Lỗi khi lấy cấu hình trường");
+            }
+        },
+        [Id, form],
+    );
 
     const handleSaveConfig = async () => {
         const values = form.getFieldsValue();
         const payload: tableConfigFormKeyEditVMData = {
             id: values.id,
-            kTT_KEY: values.kTT_KEY,
-            type: values.type,
+            ktT_KEY: values.ktT_KEY,
+            ktT_TYPE: values.type,
             min: values.min,
             max: values.max,
             isSystem: !!values.isSystem,
@@ -102,7 +147,7 @@ const PreviewConfigForm = () => {
                 message.success("Lưu cấu hình thành công");
                 setFieldConfig((prev: any) => ({
                     ...prev,
-                    [payload.kTT_KEY!]: payload,
+                    [payload.ktT_KEY!]: payload,
                 }));
                 setModalOpen(false);
             } else {
@@ -114,19 +159,18 @@ const PreviewConfigForm = () => {
     };
 
     return (
-        <Card
-            title="Cấu hình nội dung biểu mẫu"
-            extra={
-                <Button
-                    onClick={() => router.back()}
-                    size="small"
-                    type="primary"
-                >
-                    Quay lại
-                </Button>
-            }
-            style={{ margin: 24 }}
-        >
+        <div>
+            <Flex>
+                <AutoBreadcrumb />
+            </Flex>
+            <Button
+                onClick={() => router.back()}
+                type="primary"
+                icon={<ArrowLeftOutlined />}
+            >
+                Quay lại
+            </Button>
+
             {loading ? (
                 <Spin />
             ) : error ? (
@@ -163,7 +207,7 @@ const PreviewConfigForm = () => {
                     form={form}
                     layout="vertical"
                     initialValues={{
-                        kTT_KEY: currentField,
+                        ktT_KEY: currentField,
                         type: "text",
                         isRequired: false,
                         isSystem: false,
@@ -173,7 +217,7 @@ const PreviewConfigForm = () => {
                 >
                     <Form.Item<tableConfigFormKeyEditVMData>
                         label="Tên key"
-                        name="kTT_KEY"
+                        name="ktT_KEY"
                     >
                         <Input disabled />
                     </Form.Item>
@@ -279,11 +323,11 @@ const PreviewConfigForm = () => {
                         name="isRequired"
                         valuePropName="checked"
                     >
-                        <Switch />
+                        <Switch checked={form.getFieldValue("isRequired")} />
                     </Form.Item>
                 </Form>
             </Modal>
-        </Card>
+        </div>
     );
 };
 

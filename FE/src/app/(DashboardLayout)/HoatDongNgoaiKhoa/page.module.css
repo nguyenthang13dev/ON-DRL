@@ -1,0 +1,136 @@
+/* Custom card shadow */
+.customCardShadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+}
+
+/* Margin right for buttons */
+.mgright5 {
+  margin-right: 5px;
+}
+
+/* Table responsive wrapper */
+.table-responsive {
+  overflow-x: auto;
+}
+
+/* Status tags */
+.status-active {
+  background-color: #f6ffed;
+  border-color: #b7eb8f;
+  color: #52c41a;
+}
+
+.status-inactive {
+  background-color: #fff2f0;
+  border-color: #ffccc7;
+  color: #ff4d4f;
+}
+
+.status-pending {
+  background-color: #fff7e6;
+  border-color: #ffd591;
+  color: #fa8c16;
+}
+
+/* QR Code button */
+.qr-button {
+  padding: 0;
+  height: auto;
+}
+
+/* Search form */
+.search-form {
+  background: #fafafa;
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+/* Detail drawer */
+.detail-drawer .ant-drawer-header {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-drawer .ant-descriptions-item-label {
+  font-weight: 600;
+  color: #262626;
+}
+
+/* Participant list */
+.participant-list {
+  background: #fafafa;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.participant-list .ant-list-item {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.participant-list .ant-list-item:last-child {
+  border-bottom: none;
+}
+
+/* QR Code modal */
+.qr-modal {
+  text-align: center;
+}
+
+.qr-modal .ant-qrcode {
+  margin: 0 auto;
+}
+
+/* Form styles */
+.form-drawer .ant-form-item-label > label {
+  font-weight: 600;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons button {
+    width: 100%;
+  }
+  
+  .search-form .ant-row {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  .customCardShadow {
+    margin: 0 -16px;
+    border-radius: 0;
+  }
+  
+  .table-responsive {
+    margin: 0 -16px;
+  }
+}

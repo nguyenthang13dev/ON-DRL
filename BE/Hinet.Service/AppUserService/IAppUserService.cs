@@ -2,6 +2,7 @@
 using Hinet.Service.AppUserService.Dto;
 using Hinet.Service.AppUserService.ViewModels;
 using Hinet.Service.AspNetUsersService.Dto;
+using Hinet.Service.AspNetUsersService.ViewModels;
 using Hinet.Service.Common.Service;
 using Hinet.Service.Dto;
 
@@ -28,5 +29,6 @@ namespace Hinet.Service.AppUserService
         Task<AppUserDto> RegisterUser(RegisterViewModel model);
         Task<List<UserDto>?> GetUsersByRoleIds(List<Guid> idsVaiTroTiepNhan, Guid? donviId = null);
         Task<List<DropdownOption>> GetDropDownUser(Guid? id);
+        Task<bool> ChangePassOtp(EditOtp otp);
     }
 }

@@ -1,4 +1,3 @@
-import { Footer } from '@/types/footer/footer';
 import { v4 as uuidv4 } from 'uuid';
 
 function createSlug(title: string): string {
@@ -33,6 +32,22 @@ function createSlugPage(title: string): string {
   return slug;
 }
 
+export const extractBodyWithStyle = (htmlContent: string) => {
+    if ( !htmlContent ) return "";
+    try
+    {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, "text/html");
+        const styles = Array.from(doc.querySelectorAll("style"))
+      .map((el) => el.outerHTML)
+      .join("\n");
+        const body = doc.body ? doc.body.innerHTML : htmlContent;
+        return `<style>${styles}</style>\n${body}`;
+    } catch ( error )
+    {
+        return "";
+    }
+}
 
 
 function createCode(title: string): string {
@@ -113,13 +128,11 @@ class StringBuilder {
   }
 }
 
-export {
+export
+{
   createCode,
   createSlug,
-  createSlugPage,
-  removeVietnameseTones,
-  highlightText,
-  formatLowerFirst,
-  GUIDConverterRaw16,
-  StringBuilder,
+  createSlugPage, formatLowerFirst,
+  GUIDConverterRaw16, highlightText, removeVietnameseTones, StringBuilder
 };
+

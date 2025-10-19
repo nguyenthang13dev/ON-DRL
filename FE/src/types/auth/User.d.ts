@@ -66,6 +66,7 @@ export interface tableUserDataType {
   nhomNguoi?: string[];
   nhomNguoi_txt?: string[];
   listRole?: string[];
+  otp?: string | null;
 }
 
 export interface createEditType {
@@ -141,4 +142,10 @@ export interface ResetPasswordType {
   password?: string;
   confirmPassowrd?: string;
   token?: string;
+}
+export interface OtpType {
+  appUserId?: string;
+  otpCodeOld?: string;
+  otpCodeConfirm?: string;
+  otpCode?: string;
 }

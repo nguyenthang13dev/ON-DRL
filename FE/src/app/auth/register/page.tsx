@@ -4,11 +4,11 @@ import RegisterForm from "@/components/auth-components/RegisterForm";
 import { Card, Row, Col, Image } from "antd";
 
 const backgroundStyle = {
-    backgroundImage: "url(/img/others/img-17.jpg)",
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
-    backgroundAttachment: "fixed", // Giữ background cố định
-    height: "100vh", // Đảm bảo trang có độ cao đầy đủ
+    backgroundAttachment: "fixed",
+    height: "100vh",
 };
 
 const Register: React.FC = () => {
@@ -40,13 +40,13 @@ const Register: React.FC = () => {
                         lineHeight: 1.5,
                         marginLeft: "10px"
                     }}>
-                        <div>{process.env.NEXT_PUBLIC_LOGO_TITLE}</div>
-                        <div>{process.env.NEXT_PUBLIC_HEADER_TITLE}</div>
+                        <div>Hệ thống đánh giá điểm rèn luyện sinh viên</div>
+                        <div>Đại học Thủy Lợi</div>
                     </div>
                 </div>
                 <Row justify="center">
                     <Col xs={20} sm={20} md={20} lg={8}>
-                        <Card className="custom-card">
+                        <Card className="custom-card bg-white rounded-xl shadow-2xl">
                             <div className="my-4">
                                 {/* <div className="text-center">
                                     <Image
@@ -58,7 +58,7 @@ const Register: React.FC = () => {
                                     </div> */}
                                 <Row justify="center">
                                     <p style={{
-                                        color: "rgb(76 88 94)",
+                                        color: "#7c3aed",
                                         fontWeight: 'bold',
                                         fontSize: 25,
                                         textTransform: 'uppercase',
@@ -68,8 +68,8 @@ const Register: React.FC = () => {
                                 <Row justify="center">
                                     <div style={{
                                         width: "90%",
-                                        height: "2px",
-                                        backgroundColor: "rgba(76, 88, 94, 0.1)",
+                                        height: "3px",
+                                        backgroundColor: "#7c3aed",
                                         marginTop: "10px"
                                     }}></div>
                                 </Row>

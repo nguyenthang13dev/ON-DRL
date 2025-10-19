@@ -1,4 +1,4 @@
-import { ForgotPasswordType, LoginType, ResetPasswordType, UserType, createEditType } from '@/types/auth/User';
+import { ForgotPasswordType, LoginType, OtpType, ResetPasswordType, UserType, createEditType } from '@/types/auth/User';
 import { apiService } from '../index';
 import { Response } from '@/types/general';
 
@@ -60,6 +60,15 @@ class AuthService {
       throw error;
     }
   }
+
+
+  public async Edit2FA(formData: OtpType): Promise<Response> {
+    const response = await apiService.post<Response>(
+      '/User/AddOrEditOtp', formData
+    );
+    return response.data;
+  }
+
 }
 
 export const authService = new AuthService();

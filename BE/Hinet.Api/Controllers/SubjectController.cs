@@ -128,16 +128,5 @@ namespace Hinet.Controllers
             }
         }
 
-        [HttpGet("GetDropdown")]
-        public async Task<DataResponse<List<DropdownOption>>> GetDropdown()
-        {
-            var result = await _subjectService.GetDropdown();
-            return new DataResponse<List<DropdownOption>>
-            {
-                Data = result,
-                Message = "GetDropdown List<DropdownOption> thành công",
-                Status = true
-            };
-        }
     }
 }

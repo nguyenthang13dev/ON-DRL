@@ -12,9 +12,12 @@ namespace Hinet.Model.Entities.ConfigAssign
     {
 
         public bool IsSystem { get; set; }
-        public string DefautKey { get; set; }
+        public string DefaultKey { get; set; }
+        public int? Min { get; set; }
+        public int? Max { get; set; }
+
         // Có bắt buộc
-        public bool IsRquired { get; set; }
+        public bool IsRequired { get; set; }
         // Lưu key nội dung
         public string KTT_KEY { get; set; }
         // Lưu type

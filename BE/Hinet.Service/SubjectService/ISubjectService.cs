@@ -12,7 +12,6 @@ namespace Hinet.Service.SubjectService
 
         Task<SubjectDto> GetDto(Guid id);
 
-        Task<List<DropdownOption>> GetDropdown();
         Task<List<DropdownOption>> GetDropDownSubject();
     }
 }

@@ -21,12 +21,14 @@ using Microsoft.AspNetCore.Mvc;
 using Hinet.Model.Entities;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver;
+using Hinet.Service.AppUserService;
 
 namespace Hinet.Controllers
 {
     [Route("api/User")]
     public class AspNetUsersController : HinetController
     {
+
         private readonly IAspNetUsersService _aspNetUsersService;
         private readonly IMapper _mapper;
         private readonly ILogger<AspNetUsersController> _logger;
@@ -35,6 +37,7 @@ namespace Hinet.Controllers
         private readonly IUserRoleService _userRoleService;
         private readonly ITaiLieuDinhKemService _taiLieuDinhKemService;
         private readonly IDepartmentService _departmentService;
+        private readonly IAppUserService _appUserService;
 
         public AspNetUsersController(
             IAspNetUsersService aspNetUsersService,
@@ -43,9 +46,11 @@ namespace Hinet.Controllers
             UserManager<AppUser> userManager,
             IRoleService roleService,
             IUserRoleService userRoleService,
-            ITaiLieuDinhKemService taiLieuDinhKemService
-,
-            IDepartmentService departmentService)
+            ITaiLieuDinhKemService taiLieuDinhKemService,
+            IDepartmentService departmentService
+            ,
+            IAppUserService appUserService
+            )
         {
             _aspNetUsersService = aspNetUsersService;
             _mapper = mapper;
@@ -55,7 +60,18 @@ namespace Hinet.Controllers
             _userRoleService = userRoleService;
             _taiLieuDinhKemService = taiLieuDinhKemService;
             _departmentService = departmentService;
+            this._appUserService = appUserService;
         }
+
+
+        [HttpPost("AddOrEditOtp")]
+        public async Task<DataResponse<bool>> EditOtp([FromBody] EditOtp model)
+        {
+            model.AppUserId = UserId.Value;
+            var res = await _appUserService.ChangePassOtp(model);
+            return DataResponse<bool>.Success(res);
+        }
+
 
 
         [HttpGet("GetChuKySo/{id}")]
@@ -146,7 +162,7 @@ namespace Hinet.Controllers
                     if (Guid.TryParse(model.DepartmentId, out var departmentId))
                     {
                         entity.DonViId = departmentId;
-                    }
+                    }         
 
                     var result = await _userManager.CreateAsync(entity, model.MatKhau);
 
@@ -161,7 +177,7 @@ namespace Hinet.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return DataResponse<AppUser>.False("Error", new string[] { ex.Message });
+                    return DataResponse<AppUser>.False("Error", new string[] { ex.Message });           
                 }
             }
             return DataResponse<AppUser>.False("Some properties are not valid", ModelStateError);

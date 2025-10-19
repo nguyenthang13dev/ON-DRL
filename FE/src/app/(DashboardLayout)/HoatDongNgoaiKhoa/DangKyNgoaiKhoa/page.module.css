@@ -1,0 +1,335 @@
+/* Activity Card Styles */
+.activityCard {
+  height: 100%;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
+}
+
+.activityCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: #40a9ff;
+}
+
+.activityCard .ant-card-body {
+  padding: 16px;
+  height: calc(100% - 60px); /* Subtract actions height */
+  display: flex;
+  flex-direction: column;
+}
+
+.activityCard .ant-card-actions {
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+}
+
+.activityCard .ant-card-actions > li {
+  margin: 8px 0;
+}
+
+.activityCard .ant-card-actions > li > span {
+  transition: all 0.2s ease;
+}
+
+.activityCard .ant-card-actions > li:hover > span {
+  color: #40a9ff;
+  transform: scale(1.1);
+}
+
+/* Card Cover Styles */
+.cardCover {
+  position: relative;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.statusTag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
+.statusTag .ant-tag {
+  border: none;
+  font-weight: 500;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.registeredBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(82, 196, 26, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.registeredBadge .anticon {
+  font-size: 12px;
+}
+
+/* Activity Content Styles */
+.activityTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.activityDescription {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.activityDescription .ant-typography {
+  margin-bottom: 8px !important;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.activityDescription .ant-space {
+  margin-top: auto;
+}
+
+.activityDescription .ant-typography-caption {
+  font-size: 11px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.activityDescription .anticon {
+  font-size: 12px;
+}
+
+/* Grid Layout Improvements */
+.activityGrid {
+  min-height: 400px;
+}
+
+.activityGrid .ant-col {
+  margin-bottom: 16px;
+}
+
+/* Status Colors */
+.status-active {
+  background: linear-gradient(135deg, #52c41a, #73d13d) !important;
+  color: white !important;
+}
+
+.status-pending {
+  background: linear-gradient(135deg, #fa8c16, #ffa940) !important;
+  color: white !important;
+}
+
+.status-inactive {
+  background: linear-gradient(135deg, #ff4d4f, #ff7875) !important;
+  color: white !important;
+}
+
+/* Registration Status */
+.registration-info {
+  padding: 2px 6px;
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 6px;
+  font-size: 10px;
+  color: #52c41a;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.registrationCount {
+  font-size: 11px;
+  font-weight: 500;
+  color: #666;
+}
+
+.registrationCount .anticon {
+  color: #40a9ff;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .activityCard .ant-card-body {
+    padding: 12px;
+  }
+  
+  .activityTitle {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .activityCard {
+    margin-bottom: 12px;
+  }
+  
+  .cardCover {
+    height: 60px;
+  }
+  
+  .activityCard .ant-card-body {
+    padding: 10px;
+  }
+  
+  .activityTitle {
+    font-size: 12px;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+  
+  .activityDescription .ant-typography {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 576px) {
+  .activityGrid .ant-col {
+    padding: 0 4px;
+  }
+  
+  .activityCard {
+    border-radius: 8px;
+  }
+}
+
+/* Loading State */
+.activityCard.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.activityCard.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 2px dashed #d9d9d9;
+}
+
+.emptyState .anticon {
+  color: #d9d9d9;
+  margin-bottom: 16px;
+}
+
+.emptyState .ant-typography-title {
+  color: #8c8c8c !important;
+  margin-bottom: 8px !important;
+}
+
+.emptyState .ant-typography {
+  color: #bfbfbf !important;
+}
+
+/* Filter Section */
+.filterCard {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  box-shadow: none;
+}
+
+.filterCard .ant-card-body {
+  padding: 16px;
+}
+
+.filterCard .ant-form-item {
+  margin-bottom: 0;
+}
+
+.filterCard .ant-form-item-label > label {
+  font-weight: 500;
+  color: #495057;
+}
+
+/* Pagination */
+.paginationContainer {
+  text-align: center;
+  margin-top: 24px;
+  padding: 16px 0;
+}
+
+.paginationContainer .ant-pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.activityCard {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.activityCard:nth-child(1) { animation-delay: 0.1s; }
+.activityCard:nth-child(2) { animation-delay: 0.2s; }
+.activityCard:nth-child(3) { animation-delay: 0.3s; }
+.activityCard:nth-child(4) { animation-delay: 0.4s; }
+
+/* Hover Effects for Actions */
+.activityCard .ant-btn[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.activityCard .ant-btn:not([disabled]):hover {
+  background-color: #40a9ff;
+  color: white;
+  border-color: #40a9ff;
+}
+
+.activityCard .ant-btn.ant-btn-dangerous:not([disabled]):hover {
+  background-color: #ff4d4f;
+  color: white;
+  border-color: #ff4d4f;
+}

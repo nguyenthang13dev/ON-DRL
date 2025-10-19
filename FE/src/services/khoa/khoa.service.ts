@@ -15,6 +15,11 @@ class KhoaService {
     }
   }
 
+
+
+
+
+
   public async GetById(id: string): Promise<Response> {
     try {
       const response = await apiService.get<Response>(`/Khoa/${id}`);

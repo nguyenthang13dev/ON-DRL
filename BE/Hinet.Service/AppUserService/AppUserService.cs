@@ -30,6 +30,7 @@ using System.Text;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver;
 using Microsoft.EntityFrameworkCore;
+using Hinet.Service.AspNetUsersService.ViewModels;
 
 namespace Hinet.Service.AppUserService
 {
@@ -80,6 +81,26 @@ namespace Hinet.Service.AppUserService
             _groupUserRoleService = groupUserRoleService;
             _departmentRepository = departmentRepository;
         }
+
+        public async Task<bool> ChangePassOtp(EditOtp otp)
+        {
+            if (string.IsNullOrEmpty(otp.OtpCode))
+                throw new Exception("Otp không được để trống");
+            if (otp.OtpCode != otp.OtpCodeConfirm)
+                throw new Exception("Mật khẩu nhập lại không trùng khớp với mật khẩu mới");
+            var user = await _userManager.FindByIdAsync(otp.AppUserId.ToString()) ??
+                       throw new Exception("Không tìm thấy tài khoản");
+            if (user.OTP != null && user.OTP != otp.OtpCodeOld)
+                throw new Exception("Mật khẩu OTP cũ không chính xác");
+
+            if (user.OTP == otp.OtpCode)
+                throw new Exception("Mật khẩu mới phải khác mật khẩu hiện tại");
+
+            user.OTP = otp.OtpCode;
+            await _userManager.UpdateAsync(user);
+            return true;
+        }
+
 
         public async Task<AppUserDto> ChangePassword(Guid? id, string oldPassword, string newPassword,
             string confirmPassword)

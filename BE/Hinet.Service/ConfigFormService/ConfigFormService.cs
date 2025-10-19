@@ -12,19 +12,30 @@ using System.Reflection;
 using Hinet.Model.Entities.ConfigAssign;
 using Hinet.Service.NotificationService.Dto;
 using MongoDB.Driver.Linq;
+using Hinet.Repository.SoLieuKeKhaiRepostiory;
+using Hinet.Model.MongoEntities;
+using Hinet.Service.KeKhaiSumaryService.Dto;
+using Hinet.Repository.KeKhaiSumaryRepository;
+using Hinet.Service.Constant;
 
 namespace Hinet.Service.ConfigFormService
 {
     public class ConfigFormService : Service<ConfigForm>, IConfigFormService
     {
       
-        private readonly IConfigFormRepository _configFormRepository;   
+        private readonly IConfigFormRepository _configFormRepository;
+        private readonly IKeKhaiSumaryRepository _keKhaiSumaryRepository;
+        private readonly ISoLieuKeKhaiRepository _soLieuKeKhaiRepostiory;
 
         public ConfigFormService(
-            IConfigFormRepository ConfigFormRepository) : base(ConfigFormRepository)
+            IConfigFormRepository ConfigFormRepository, ISoLieuKeKhaiRepository soLieuKeKhaiRepostiory, IKeKhaiSumaryRepository keKhaiSumaryRepository) : base(ConfigFormRepository)
         {
             _configFormRepository = ConfigFormRepository;
+            _soLieuKeKhaiRepostiory = soLieuKeKhaiRepostiory;
+            _keKhaiSumaryRepository = keKhaiSumaryRepository;
         }
+
+
 
         public async Task<TaiLieuDinhKem> GetTaiLieuDinhKem(Guid Id)
         {
@@ -43,7 +54,30 @@ namespace Hinet.Service.ConfigFormService
             {
                 throw new Exception(ex.Message);
             }
-        } 
+        }
+        public async Task<List<DanhSachFormDto>> GetKeKhaiByUser(ConfigFormSearchVM search)
+        {
+            var listConf = _configFormRepository.GetQueryable().ToList();
+
+            var keKhaiSummarys = _keKhaiSumaryRepository.GetQueryable().Where(t => t.UserId == search.UserId);
+
+            var query = listConf.Select(t => new DanhSachFormDto
+            {
+                Name = t.Name,
+                Description = t.Description,
+                Status = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.Status ?? StatusConstant.CHUAKEKHAI,
+                IsDanhGia = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.IsDanhGia ?? false,
+                Processs = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.Processs ?? 0,
+                CreateDate = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.CreatedDate ?? null,
+                FormId = t.Id,
+            }).ToList();
+
+            return query;
+
+
+        }
+
+
         public async Task<PagedList<ConfigFormDto>> GetData(ConfigFormSearchVM search)
         {
             try

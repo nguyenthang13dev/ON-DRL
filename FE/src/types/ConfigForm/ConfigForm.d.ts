@@ -18,6 +18,12 @@ export interface SearchConfigFormData extends SearchBase {
     isActive?: boolean;
 }
 
+
+export interface SearchConfigFormDataByUser extends SearchBase {
+    userId?: string | null;
+    formId?: string | null;
+}
+
 export interface TableConfigFormDataType {
     id?: string;
     name?: string | null;
@@ -36,4 +42,17 @@ export interface ConfigFormCreateVM {
     description: string;
     isActive: boolean;
     fileDinhKems?: string | null;
+}
+
+export interface FormAssignByUser
+{
+    name: string;
+    description: string;
+    formId: string;
+    userId: string;
+    isDanhGia: boolean;
+    processs?: undefined;
+    createDate?: Date;
+    status: number;
+    id: string;
 }
