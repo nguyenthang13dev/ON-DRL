@@ -1,12 +1,17 @@
-﻿// Hinet.Api/Controllers/SinhVienController.cs
-using Hinet.Api.Dto;
+﻿using Hinet.Api.Dto;
+using Hinet.Model.Entities;
 using Hinet.Model.MongoEntities;
+using Hinet.Service.AspNetUsersService;
+using Hinet.Service.AspNetUsersService.ViewModels;
 using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
 using Hinet.Service.SinhVienService;
 using Hinet.Service.SinhVienService.Dto;
+using Hinet.Service.SinhVienService.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace Hinet.Controllers
 {
@@ -16,15 +21,28 @@ namespace Hinet.Controllers
         private readonly ISinhVienService _sinhVienService;
         private readonly IMapper _mapper;
         private readonly ILogger<SinhVienController> _logger;
+        private readonly UserManager<AppUser> _userManager;
 
         public SinhVienController(
             ISinhVienService sinhVienService,
             IMapper mapper,
-            ILogger<SinhVienController> logger)
+            ILogger<SinhVienController> logger,
+            UserManager<AppUser> userManager)
         {
             _sinhVienService = sinhVienService;
             _mapper = mapper;
             _logger = logger;
+            _userManager = userManager;
+        }
+
+        private string RandomPassWMa(string MaSv)
+        {
+            const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var ramdom = new Random();
+            var kitu = new string(Enumerable.Range(0, 2)
+                    .Select(_ => chars[ramdom.Next(chars.Length)])
+                    .ToArray());
+            return MaSv + kitu;
         }
 
         [HttpPost("GetData")]
@@ -52,12 +70,27 @@ namespace Hinet.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<DataResponse<SinhVien>> Create([FromBody] SinhVien model)
+        public async Task<DataResponse<SinhVien>> Create([FromBody] SinhVienCreateVM model)
         {
             try
             {
-                await _sinhVienService.CreateAsync(model);
-                return DataResponse<SinhVien>.Success(model);
+                var sinhVien = _mapper.Map<SinhVienCreateVM, SinhVien>(model);
+                //Tạo tk
+                var entity = new AppUser {
+                    UserName =  model.MaSV,
+                    MaSv = model.MaSV,
+                    Gender = model.GioiTinh ? 1 : 0,
+                    Email = model.Email,
+                    NgaySinh = model.NgaySinh
+                };
+                string newPass = RandomPassWMa(model.MaSV);
+                var ísSuccess = await _userManager.CreateAsync(entity, newPass);
+                if (ísSuccess.Succeeded)
+                {
+                    sinhVien.User = entity;
+                }
+                await _sinhVienService.CreateAsync(sinhVien);
+                return DataResponse<SinhVien>.Success(sinhVien);
             }
             catch (Exception ex)
             {

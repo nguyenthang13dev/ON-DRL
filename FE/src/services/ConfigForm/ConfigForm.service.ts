@@ -111,10 +111,36 @@ class ConfigFormService {
     }
   }
 
+  public async UpdateStatus(model: any): Promise<Response>
+  {
+    try {
+      const response = await apiService.post<Response>(
+        "/ConfigForm/UpdateStatus",
+        model
+      );
+      return response.data;
+    } catch (error) {
+       throw error;
+    }
+  }
+
+
   public async export(searchData: SearchConfigFormData): Promise<Response> {
     try {
       const response = await apiService.post<Response>(
         "/ConfigForm/Export",
+        searchData
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async GetDanhSachKeKhaiByUser(searchData: SearchConfigFormDataByUser): Promise<Response> {
+    try {
+      const response = await apiService.post<Response>(
+        "/ConfigForm/GetDanhSachKeKhaiByUser",
         searchData
       );
       return response.data;

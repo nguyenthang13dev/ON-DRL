@@ -9,6 +9,7 @@ namespace Hinet.Service.ConfigFormService
 {
     public interface IConfigFormService : IService<ConfigForm>
     {
+        Task<List<ListAssignConfig>> GetDanhSachKeKhaiByUser(ConfigFormSearchVM search);
         Task<PagedList<ConfigFormDto>> GetData(ConfigFormSearchVM search);
 
         Task<ConfigFormDto> GetDto(Guid id);

@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { SearchBase } from '../general';
 import { MenuDataType } from '../menu/menu';
 import { PermissionType } from '../role/role';
@@ -67,6 +66,8 @@ export interface tableUserDataType {
   nhomNguoi_txt?: string[];
   listRole?: string[];
   otp?: string | null;
+  qrcccd?: string | null;
+
 }
 
 export interface createEditType {
@@ -148,4 +149,10 @@ export interface OtpType {
   otpCodeOld?: string;
   otpCodeConfirm?: string;
   otpCode?: string;
+}
+
+export interface tableCheckAuthDataType { 
+  id? : string;
+  appUserId?: string;
+  otpCode: string;
 }

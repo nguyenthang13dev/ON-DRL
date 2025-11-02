@@ -1,6 +1,6 @@
 "use client";
 import Flex from "@/components/shared-components/Flex";
-import RenderHtmlWithSettings from "@/components/shared-components/renderHtmlWithSettings ";
+import RenderHtmlWithSettings from "@/components/shared-components/renderHtmlWithSettings";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import { configFormKeyService } from "@/services/configFormKey/configFormKey.service";

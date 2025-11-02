@@ -1,4 +1,4 @@
-using Hinet.Model.Entities;
+﻿using Hinet.Model.Entities;
 using Hinet.Repository.ConfigFormRepository;
 using Hinet.Service.Common.Service;
 using Hinet.Service.ConfigFormService.Dto;
@@ -17,6 +17,7 @@ using Hinet.Model.MongoEntities;
 using Hinet.Service.KeKhaiSumaryService.Dto;
 using Hinet.Repository.KeKhaiSumaryRepository;
 using Hinet.Service.Constant;
+using Hinet.Repository.SinhVienRepository;
 
 namespace Hinet.Service.ConfigFormService
 {
@@ -26,13 +27,15 @@ namespace Hinet.Service.ConfigFormService
         private readonly IConfigFormRepository _configFormRepository;
         private readonly IKeKhaiSumaryRepository _keKhaiSumaryRepository;
         private readonly ISoLieuKeKhaiRepository _soLieuKeKhaiRepostiory;
+        private readonly ISinhVienRepository _sinhVienRepository;
 
         public ConfigFormService(
-            IConfigFormRepository ConfigFormRepository, ISoLieuKeKhaiRepository soLieuKeKhaiRepostiory, IKeKhaiSumaryRepository keKhaiSumaryRepository) : base(ConfigFormRepository)
+            IConfigFormRepository ConfigFormRepository, ISoLieuKeKhaiRepository soLieuKeKhaiRepostiory, IKeKhaiSumaryRepository keKhaiSumaryRepository, ISinhVienRepository sinhVienRepository) : base(ConfigFormRepository)
         {
             _configFormRepository = ConfigFormRepository;
             _soLieuKeKhaiRepostiory = soLieuKeKhaiRepostiory;
             _keKhaiSumaryRepository = keKhaiSumaryRepository;
+            _sinhVienRepository = sinhVienRepository;
         }
 
 
@@ -55,6 +58,8 @@ namespace Hinet.Service.ConfigFormService
                 throw new Exception(ex.Message);
             }
         }
+
+
         public async Task<List<DanhSachFormDto>> GetKeKhaiByUser(ConfigFormSearchVM search)
         {
             var listConf = _configFormRepository.GetQueryable().ToList();
@@ -69,11 +74,33 @@ namespace Hinet.Service.ConfigFormService
                 IsDanhGia = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.IsDanhGia ?? false,
                 Processs = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.Processs ?? 0,
                 CreateDate = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.CreatedDate ?? null,
+                Subject = t.Subject.Name ?? "",
                 FormId = t.Id,
             }).ToList();
-
             return query;
 
+        }
+
+        public async Task<List<ListAssignConfig>> GetDanhSachKeKhaiByUser(ConfigFormSearchVM search)
+        {
+            var listConf = _configFormRepository.GetQueryable().ToList();
+            // Lấy ra tổng số
+            var keKhaiSummarys = _keKhaiSumaryRepository.GetQueryable();
+            var querySinhVien = _sinhVienRepository.GetQueryable();
+            var LopHanhChinhId = _sinhVienRepository.GetQueryable().Where(x => x.User.Id == search.UserId).FirstOrDefault()?.LopHanhChinhId ?? Guid.Empty;
+            int tongSoHocSinh = querySinhVien.Where(t => t.LopHanhChinhId == LopHanhChinhId).Count();
+            var query = listConf.Select(t => new ListAssignConfig
+            {
+                Name = t.Name,
+                Description = t.Description,
+                Processs = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.Processs ?? 0,
+                CreateDate = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.CreatedDate ?? null,
+                SubjectName = t.Subject.Name ?? "",
+                FormId = t.Id,
+                SoHocSinh = keKhaiSummarys.Where(x => x.FormId == t.Id).DistinctBy(x => x.UserId).Count(),
+                TongSoHocSinh = tongSoHocSinh
+            }).ToList();
+            return query;
 
         }
 

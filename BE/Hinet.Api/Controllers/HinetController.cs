@@ -51,6 +51,21 @@ namespace Hinet.Controllers
             }
         }
 
+        protected bool IsLopTruong
+        {
+            get
+            {
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+                var rs = new List<string>();
+                if (!string.IsNullOrWhiteSpace(role))
+                {
+                    rs = role.Split(",").ToList();
+                }
+
+                return rs.Contains("LOPTRUONG");
+            }
+        }
+
         protected bool HasRole(string role)
         {
             var lstRole = Roles;

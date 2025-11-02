@@ -22,6 +22,8 @@ using Hinet.Model.Entities;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver;
 using Hinet.Service.AppUserService;
+using Hinet.Service.AppUserService.ViewModels;
+using CommonHelper.QrHelper;
 
 namespace Hinet.Controllers
 {
@@ -453,6 +455,53 @@ namespace Hinet.Controllers
             await _aspNetUsersService.UpdateAsync(info);
             return DataResponse.Success(filePath);
         }
+
+
+        [HttpPost("UploadQRCCCD")]
+        public async Task<DataResponse> UploadQRCCCD(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return DataResponse.False("File không hợp lệ");
+            }
+            const string BASE_PATH = "wwwroot/uploads";
+            var info = await _aspNetUsersService.GetByIdAsync(UserId.Value);
+            if (!string.IsNullOrEmpty(info.QRCCCD))
+            {
+                var oldFilePath = Path.Combine(BASE_PATH, info.QRCCCD.TrimStart('/'));
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    System.IO.File.Delete(oldFilePath);
+                }
+            }
+            var filePath = UploadFileHelper.UploadFile(file, "QRCCCD");
+            info.QRCCCD = filePath;
+            await _aspNetUsersService.UpdateAsync(info);
+            return DataResponse.Success(filePath);
+        }
+
+        [HttpPost("CheckOtp")]       
+        public async Task<DataResponse<bool>> CheckOtp([FromBody] CheckAuth model)
+        {
+            model.AppUserId = UserId.Value;
+            var check = await _aspNetUsersService.CheckAuth(model.OtpCode, model.AppUserId.Value);
+            return DataResponse<bool>.Success(check);
+        }
+
+        [HttpPost("CheckQRCCCD")]
+        public async Task<DataResponse<bool>> CheckQRCCCD([FromForm] IFormFile file)
+        {
+            var user = await _aspNetUsersService.GetByIdAsync(UserId.Value);
+            if (string.IsNullOrEmpty(user.QRCCCD))
+            {
+                return DataResponse<bool>.Success(false, "Thất bại");
+            }
+            const string basePath = "wwwroot/uploads";
+            var check = QrHelper.CheckkDecode(file, basePath + user.QRCCCD);
+            return  DataResponse<bool>.Success(check);  
+        }
+
+
         [AllowAnonymous]
         [HttpGet("GenerateUsers")]
         public async Task<string> GenerateUsers()
@@ -519,7 +568,6 @@ namespace Hinet.Controllers
             return successMes + "--------------------- \n" + errorMess;
 
         }
-
         private string GetShortNameDeparment(string departmentName)
         {
             if (string.IsNullOrWhiteSpace(departmentName)) return string.Empty;
@@ -561,9 +609,5 @@ namespace Hinet.Controllers
 
             return result;
         }
-
-
-
-
     }
 }

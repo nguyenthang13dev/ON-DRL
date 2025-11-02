@@ -1,0 +1,494 @@
+/* Loading and Error States */
+.loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 16px;
+}
+
+.errorContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 40px;
+}
+
+/* Header Section */
+.headerSection {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.headerContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.backButton {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.backButton:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+.titleSection {
+    flex: 1;
+}
+
+.pageTitle {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.titleIcon {
+    font-size: 28px;
+    color: #fff;
+}
+
+.pageDescription {
+    font-size: 16px;
+    margin: 0;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.refreshButton {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.refreshButton:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+/* Form Info Card */
+.formInfoCard {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f0;
+}
+
+.formInfoContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.formInfoLeft {
+    flex: 1;
+}
+
+.formName {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 8px 0;
+}
+
+.formDescription {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+}
+
+.formMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.formMeta span {
+    font-size: 14px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.formInfoRight {
+    min-width: 300px;
+}
+
+.progressSection {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #e9ecef;
+}
+
+.progressHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.progressLabel {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.progressPercent {
+    font-size: 16px;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.progressBar {
+    width: 100%;
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Student Card */
+.studentCard {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f0;
+}
+
+.cardTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.cardTitleIcon {
+    color: #3b82f6;
+    font-size: 18px;
+}
+
+.cardExtra {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.studentCount {
+    font-size: 14px;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Student Table */
+.studentTable {
+    margin-top: 16px;
+}
+
+.studentTable .ant-table-thead > tr > th {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 600;
+    color: #374151;
+}
+
+.studentTable .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #f3f4f6;
+    padding: 12px 16px;
+}
+
+.studentTable .ant-table-tbody > tr:hover > td {
+    background-color: #f9fafb;
+}
+
+/* Student Info */
+.studentInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.studentName {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 14px;
+}
+
+.studentId {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.studentContact {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 4px;
+}
+
+.studentContact span {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+/* Progress Container */
+.progressContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 100px;
+}
+
+.progressText {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+    min-width: 35px;
+}
+
+/* Note Text */
+.noteText {
+    font-size: 12px;
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Action Button */
+.actionButton {
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.actionButton:hover {
+    background-color: #f3f4f6;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .formInfoContent {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    
+    .formInfoRight {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .headerSection {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .headerContent {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    
+    .headerLeft {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .pageTitle {
+        font-size: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .titleIcon {
+        font-size: 24px;
+    }
+    
+    .formInfoContent {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .formName {
+        font-size: 18px;
+    }
+    
+    .formDescription {
+        font-size: 14px;
+    }
+    
+    .progressSection {
+        padding: 12px;
+    }
+    
+    .studentTable .ant-table-thead > tr > th,
+    .studentTable .ant-table-tbody > tr > td {
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .headerSection {
+        padding: 16px;
+    }
+    
+    .pageTitle {
+        font-size: 18px;
+    }
+    
+    .pageDescription {
+        font-size: 14px;
+    }
+    
+    .formName {
+        font-size: 16px;
+    }
+    
+    .formDescription {
+        font-size: 13px;
+    }
+    
+    .progressSection {
+        padding: 10px;
+    }
+    
+    .studentTable .ant-table-thead > tr > th,
+    .studentTable .ant-table-tbody > tr > td {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    .studentName {
+        font-size: 13px;
+    }
+    
+    .studentId {
+        font-size: 11px;
+    }
+    
+    .studentContact span {
+        font-size: 10px;
+    }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.formInfoCard {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.studentCard {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* Hover Effects */
+.formInfoCard:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.studentCard:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+/* Table Customization */
+.studentTable .ant-table-pagination {
+    margin-top: 16px;
+    text-align: right;
+}
+
+.studentTable .ant-pagination-item {
+    border-radius: 6px;
+}
+
+.studentTable .ant-pagination-item-active {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.studentTable .ant-pagination-item-active a {
+    color: white;
+}
+
+/* Status Tags */
+.ant-tag {
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 8px;
+}
+
+/* Loading States */
+.ant-spin-container {
+    min-height: 200px;
+}
+
+/* Card Headers */
+.ant-card-head {
+    border-bottom: 1px solid #f0f0f0;
+    background: #fafafa;
+}
+
+.ant-card-head-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+}

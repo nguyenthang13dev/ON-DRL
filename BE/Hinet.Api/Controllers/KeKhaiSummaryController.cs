@@ -31,9 +31,9 @@ namespace Hinet.Api.Controllers
             if (response == null)
                 return DataResponse<KeKhaiSummary>.False("Error extisting");
             response.Status = model.Redirect;
+            await _keKhaiSumaryService.UpdateAsync(response);
             return DataResponse<KeKhaiSummary>.Success(response);
         }
-
 
 
 

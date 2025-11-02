@@ -53,6 +53,8 @@ namespace Hinet.Model.Entities
         // Thông tin khác
         public string MaSv { get; set; }
 
+        [DisplayName("Ảnh QRCCCD")]
+        public string? QRCCCD { get; set; }
 
     }
 }

@@ -1,6 +1,6 @@
-import { ForgotPasswordType, LoginType, OtpType, ResetPasswordType, UserType, createEditType } from '@/types/auth/User';
-import { apiService } from '../index';
+import { ForgotPasswordType, LoginType, OtpType, ResetPasswordType, UserType, createEditType, tableCheckAuthDataType } from '@/types/auth/User';
 import { Response } from '@/types/general';
+import { apiService } from '../index';
 
 class AuthService {
   public async login(formData: LoginType): Promise<Response> {
@@ -60,6 +60,20 @@ class AuthService {
       throw error;
     }
   }
+
+
+  public async CheckOtp(formData: tableCheckAuthDataType ): Promise<Response>
+  {
+    try {
+      const response = await apiService.post<Response>(
+        '/User/CheckOtp', formData
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 
 
   public async Edit2FA(formData: OtpType): Promise<Response> {

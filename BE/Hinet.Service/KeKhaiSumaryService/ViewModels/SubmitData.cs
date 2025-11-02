@@ -10,8 +10,6 @@ namespace Hinet.Service.KeKhaiSumaryService.ViewModels
     {
         public Guid? UserId { get; set; }
         public Guid? FormId { get; set; }
-
         public int Redirect { get; set; }
-
     }
 }

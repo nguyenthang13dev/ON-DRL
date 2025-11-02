@@ -28,13 +28,6 @@ class ConfigFormKeyService {
   }
 
 
-  public async GetFormByUser(model: SearchConfigFormDataByUser): Promise<Response> {
-    const response = await apiService.post<Response>(
-      "/ConfigFormKey/GetFormByUser",
-      model
-    );
-    return response.data;
-  }
 
   
 

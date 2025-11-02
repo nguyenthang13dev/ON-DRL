@@ -1,45 +1,41 @@
 "use client";
-import { tableUserDataType } from "@/types/auth/User";
-import React, { useEffect, useState } from "react";
-import classes from "./page.module.css";
-import {
-    Button,
-    Card,
-    message,
-    Modal,
-    Row,
-    Col,
-    Descriptions,
-    Tooltip,
-    Popconfirm,
-} from "antd";
 import Flex from "@/components/shared-components/Flex";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
+import { userService } from "@/services/user/user.service";
+import { tableUserDataType } from "@/types/auth/User";
 import {
     EditOutlined,
-    UserOutlined,
-    InfoCircleOutlined,
-    PhoneOutlined,
-    MailOutlined,
     HomeOutlined,
-    TeamOutlined,
-    DeleteOutlined,
+    InfoCircleOutlined,
     LockOutlined,
+    MailOutlined,
+    PhoneOutlined,
     SafetyOutlined,
+    TeamOutlined,
+    UserOutlined,
 } from "@ant-design/icons";
-import UpdateProfile from "./updateProfile";
-import { userService } from "@/services/user/user.service";
+import { Button, Card, Col, Descriptions, message, Row } from "antd";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import Avatar from "./Components/avatar";
 import ChangeAvatar from "./Components/changeAvatar";
 import PasswordModal from "./Components/password";
+import ChangeQRCCCD from "./Components/QRCCCD";
+import QRCCCD_view from "./Components/QRCCCD_view";
+import classes from "./page.module.css";
+import UpdateProfile from "./updateProfile";
+import ScanQRCCD from "./Components/ScanQRCCD";
 
 dayjs.extend(utc);
 const Profile = () => {
     const [userInfo, getUserInfo] = useState<tableUserDataType>();
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [isOpenModalAvatar, setIsOpenModalAvatar] = useState<boolean>(false);
+
+    const [isOpenModalQRCCCD, setIsOpenModalQRCCCD] = useState<boolean>(false);
+
     const [isOpenModalPassword, setIsOpenModalPassword] =
         useState<boolean>(false);
     const [messageApi, contextHolder] = message.useMessage();
@@ -80,10 +76,21 @@ const Profile = () => {
         setIsOpenModalPassword(false);
     };
 
+    const handleQRCCCDSuccess = () => {
+        try {
+            setIsOpenModalQRCCCD(false);
+            messageApi.success("Cập nhật QR CCCD thành công!");
+            loadData();
+        } catch (error) {
+            toast.error("Có lỗi xảy ra khi cập nhật QR CCCD");
+        }
+    };
+    const handleCloseQRCCCD = () => {
+        setIsOpenModalQRCCCD(false);
+    };
     const loadData = async () => {
         const response = await userService.GetProfile();
         if (response.status) {
-            console.log(response.data);
             getUserInfo(response.data);
         }
     };
@@ -357,6 +364,24 @@ const Profile = () => {
                                     </span>
                                 )}
                             </Descriptions.Item>
+
+                            <Descriptions.Item
+                                label={
+                                    <span className="flex items-center">
+                                        <SafetyOutlined className="mr-2 text-rose-500" />{" "}
+                                        QR CCCD
+                                    </span>
+                                }
+                            >
+                                <QRCCCD_view
+                                    src={`${StaticFileUrl}${
+                                        userInfo?.qrcccd ?? ""
+                                    }`}
+                                    onOpen={() => {
+                                        setIsOpenModalQRCCCD(true);
+                                    }}
+                                />
+                            </Descriptions.Item>
                         </Descriptions>
                     </Col>
                 </Row>
@@ -380,6 +405,13 @@ const Profile = () => {
                     open={isOpenModalPassword}
                     onClose={handleClosePassword}
                     onSuccess={handlePasswordSuccess}
+                />
+            )}
+
+            {isOpenModalQRCCCD && (
+                <ChangeQRCCCD
+                    onSuccess={handleQRCCCDSuccess}
+                    onClose={handleCloseQRCCCD}
                 />
             )}
         </>

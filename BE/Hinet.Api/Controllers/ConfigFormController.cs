@@ -189,6 +189,8 @@ namespace Hinet.Controllers
         public async Task<DataResponse<List<DanhSachFormDto>>> GetFormByUser([FromBody] ConfigFormSearchVM search)
         {
             search.UserId = UserId.Value;
+            var isLopTruong = IsLopTruong;
+            search.IsLopTruong = isLopTruong;
             var result = await _ConfigFormService.GetKeKhaiByUser(search);
             return new DataResponse<List<DanhSachFormDto>>
             {
@@ -197,8 +199,20 @@ namespace Hinet.Controllers
                 Status = true
             };
         }
-
-       
+        [HttpPost("GetDanhSachKeKhaiByUser")]
+        public async Task<DataResponse<List<ListAssignConfig>>> GetDanhSachKeKhaiByUser([FromBody] ConfigFormSearchVM search)
+        {
+            search.UserId = UserId.Value;
+            var isLopTruong = IsLopTruong;
+            search.IsLopTruong = isLopTruong;
+            var result = await _ConfigFormService.GetDanhSachKeKhaiByUser(search);
+            return new DataResponse<List<ListAssignConfig>>
+            {
+                Data = result,
+                Message = "GetData PagedList<ConfigFormDto> thành công",
+                Status = true
+            };
+        }
 
 
     }

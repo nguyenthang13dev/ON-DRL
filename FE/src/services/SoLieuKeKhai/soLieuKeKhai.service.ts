@@ -15,18 +15,22 @@ class SoLieuKeKhaiService
         }
         return SoLieuKeKhaiService._instance;
     }
-
     public async KeKhaiSoLieu( formData: SoLieuKeKhaiType ): Promise<Response>
     {
         const response = await apiService.post<Response>( "SoLieuKeKhai/KeKhaiForm", formData );
         return response.data;
     }
-
     public async GetSoLieuKeKhaiByFormAndUser( formId: string ): Promise<Response<SoLieuKeKhaiUserDto[]>>
     {
         const response = await apiService.get<Response<SoLieuKeKhaiUserDto[]>>( `SoLieuKeKhai/GetSoLieuKeKhai?Id=${formId}` );
         return response.data;
     }
+    public async UpdateSoLieuKeKhai(): Promise<Response>
+    {
+        const response = await apiService.post<Response>("SoLieuKeKhai/UpdateSoLieuKeKhai");
+        return response.data;
+    }
+
 
 }
 

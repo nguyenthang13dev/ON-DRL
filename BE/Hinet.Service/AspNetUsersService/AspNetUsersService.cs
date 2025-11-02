@@ -167,6 +167,24 @@ namespace Hinet.Service.AspNetUsersService
             }
         }
 
+
+
+        public async Task<bool> CheckAuth(string code, Guid UserId)
+        {
+            var appUser = GetQueryable()
+                            .Where(t => t.Id == UserId)
+                            .FirstOrDefault();
+
+            if (appUser == null)
+                throw new Exception("Không tìm thấy người dùng");
+
+            if (appUser.OTP != code)
+                throw new Exception("Mã 2FA không chính xác");
+            return true;
+        }
+
+
+
         public async Task<AspNetUsersDto> GetDto(Guid id)
         {
             try
@@ -201,7 +219,8 @@ namespace Hinet.Service.AspNetUsersService
                                       TenDonVi_txt = donvi.Name,
                                       NgaySinh = q.NgaySinh,
                                       DiaChi = q.DiaChi,
-                                      OTP = q.OTP
+                                      OTP = q.OTP,
+                                      QRCCCD = q.QRCCCD
                                   }).FirstOrDefaultAsync();
 
 

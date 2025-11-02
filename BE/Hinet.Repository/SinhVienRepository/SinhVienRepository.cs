@@ -14,5 +14,8 @@ namespace Hinet.Repository.SinhVienRepository
         public SinhVienRepository(HinetMongoContext context) : base(context)
         {
         }
+
+
+
     }
 }

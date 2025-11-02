@@ -1,12 +1,12 @@
-import { Form, FormProps, Input, Modal, Radio, Select, DatePicker } from "antd";
-import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
-import { toast } from "react-toastify";
-import { SinhVien, createEditType } from "@/types/sinhVien/sinhVien";
-import { sinhVienService } from "@/services/sinhVien/sinhVien.service";
 import { khoaService } from "@/services/khoa/khoa.service";
 import { lopHanhChinhService } from "@/services/lopHanhChinh/lopHanhChinh.service";
+import { sinhVienService } from "@/services/sinhVien/sinhVien.service";
 import { DropdownOption } from "@/types/general";
+import { SinhVien, createEditType } from "@/types/sinhVien/sinhVien";
+import { DatePicker, Form, FormProps, Input, Modal, Radio, Select } from "antd";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
   isOpen: boolean;

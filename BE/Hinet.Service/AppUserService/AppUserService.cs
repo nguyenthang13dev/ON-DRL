@@ -22,7 +22,6 @@ using Hinet.Service.OperationService;
 using Hinet.Service.OperationService.Dto;
 using Hinet.Service.User_GroupUserService;
 using Microsoft.AspNetCore.Identity;
-using Hinet.Model.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -100,6 +99,8 @@ namespace Hinet.Service.AppUserService
             await _userManager.UpdateAsync(user);
             return true;
         }
+
+   
 
 
         public async Task<AppUserDto> ChangePassword(Guid? id, string oldPassword, string newPassword,

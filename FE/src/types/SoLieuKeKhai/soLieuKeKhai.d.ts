@@ -1,3 +1,6 @@
+import { ConfigFormType } from "../ConfigForm/ConfigForm";
+import { ConfigFormKeyType } from "../ConfigFormKey/ConfigFormKey";
+
 export interface tableSoLieuKeKhaiCreateVMDataType
 { 
     kTT_KEY: string;
@@ -5,9 +8,9 @@ export interface tableSoLieuKeKhaiCreateVMDataType
 }
 
 export interface SoLieuKeKhaiUserDto {
-    KTT_VALUE: string;
-    KTT_KEY: ConfigFormKeyType;
-    configForm: ConfigFormKeyType;
+    ktT_VALUE: string;
+    ktT_KEY: ConfigFormKeyType;
+    configForm: ConfigFormType;
 }
 
 

@@ -16,5 +16,6 @@ namespace Hinet.Service.AspNetUsersService
         Task<AppUser> GetUserByCanBoId(Guid? canboId);
         Task<List<AppUser>> GetUserByIdDonVi(Guid IdDonVi);
         Task<List<AppUser>> GetUserByIdDonViAndIdRole(Guid IdDonVi, Guid IdRole);
+        Task<bool> CheckAuth(string code, Guid UserId);
     }
 }

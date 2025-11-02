@@ -1,13 +1,14 @@
-import {
-  anhChuKySoType,
-  ChangePasswordType,
-  createEditType,
-  DataToSend,
-  searchUserData,
-  tableUserDataType,
-} from "@/types/auth/User";
-import { apiService } from "../index";
+import
+  {
+    anhChuKySoType,
+    ChangePasswordType,
+    createEditType,
+    DataToSend,
+    searchUserData,
+    tableUserDataType,
+  } from "@/types/auth/User";
 import { DropdownOption, Response, ResponsePageList } from "@/types/general";
+import { apiService } from "../index";
 
 class UserService {
   public async getDataByPage(
@@ -179,6 +180,39 @@ class UserService {
       return response.data;
     }
     catch (error) {
+      throw error;
+    }
+  }
+
+
+  public async UpdateQRCCD( file: File ): Promise<Response>
+  {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await apiService.post<Response>("/User/UploadQRCCCD", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async CheckQRCCCD( file: File ): Promise<Response>
+  {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await apiService.post<Response>("/User/CheckQRCCCD", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
       throw error;
     }
   }

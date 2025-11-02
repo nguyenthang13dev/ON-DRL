@@ -122,8 +122,5 @@ namespace Hinet.Api.Controllers
             var res = await _soLieuKeKhaiService.GetConfsByFormIdAndUser(Id, UserId.Value);
             return DataResponse<List<SoLieuKeKhai>>.Success(res);
         }
-
-
-
     }
 }

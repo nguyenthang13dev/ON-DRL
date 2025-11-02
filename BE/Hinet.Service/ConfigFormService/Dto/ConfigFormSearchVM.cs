@@ -7,5 +7,6 @@ namespace Hinet.Service.ConfigFormService.Dto
     {
         public  Guid? FormId { get; set; }
         public Guid? UserId { get; set; }
+        public bool? IsLopTruong { get; set; }
     }
 }
