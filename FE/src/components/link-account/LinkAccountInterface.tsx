@@ -1,12 +1,11 @@
 "use client";
-import React, { useState, useCallback } from 'react';
+import
+  {
+    ArrowLeftOutlined
+  } from '@ant-design/icons';
 import { Button, Typography } from 'antd';
-import {
-  ArrowLeftOutlined,
-  LinkOutlined
-} from '@ant-design/icons';
+import React, { useCallback, useState } from 'react';
 import ModernProviderSelection from './ModernProviderSelection';
-import TelegramAccountManager from './TelegramAccountManager';
 
 const { Title, Text } = Typography;
 
@@ -69,9 +68,7 @@ const LinkAccountInterface: React.FC<LinkAccountInterfaceProps> = ({
     switch (currentView) {
       case 'telegram':
         return (
-          <TelegramAccountManager
-            onBack={handleBackToSelection}
-          />
+          <></>
         );
       
       case 'selection':
