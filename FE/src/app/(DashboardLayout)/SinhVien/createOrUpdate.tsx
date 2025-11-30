@@ -1,3 +1,4 @@
+
 import { khoaService } from "@/services/khoa/khoa.service";
 import { lopHanhChinhService } from "@/services/lopHanhChinh/lopHanhChinh.service";
 import { sinhVienService } from "@/services/sinhVien/sinhVien.service";
@@ -201,7 +202,7 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
           </Select>
         </Form.Item>
 
-        <Form.Item
+        <Form.Item 
           label="Khoa"
           name="khoaId"
           rules={[{ required: true, message: "Vui lòng chọn khoa!" }]}

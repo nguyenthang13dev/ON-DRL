@@ -30,5 +30,6 @@ namespace Hinet.Service.AppUserService
         Task<List<UserDto>?> GetUsersByRoleIds(List<Guid> idsVaiTroTiepNhan, Guid? donviId = null);
         Task<List<DropdownOption>> GetDropDownUser(Guid? id);
         Task<bool> ChangePassOtp(EditOtp otp);
+        Task<AppUser> CreateUserByRole(string Role, AppUser user);
     }
 }

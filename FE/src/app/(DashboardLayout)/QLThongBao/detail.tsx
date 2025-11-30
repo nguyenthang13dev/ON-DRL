@@ -1,14 +1,15 @@
-import React from "react";
-import { Drawer } from "antd";
 import { QLThongBaoType } from "@/types/QLThongBao/QLThongBao";
+import
+  {
+    CalendarOutlined,
+    CodeOutlined,
+    InfoCircleOutlined,
+    NumberOutlined,
+    SnippetsOutlined,
+  } from "@ant-design/icons";
+import { Drawer } from "antd";
 import dayjs from "dayjs";
-import {
-  CalendarOutlined,
-  CodeOutlined,
-  InfoCircleOutlined,
-  NumberOutlined,
-  SnippetsOutlined,
-} from "@ant-design/icons";
+import React from "react";
 
 interface Props {
   item?: QLThongBaoType | null;

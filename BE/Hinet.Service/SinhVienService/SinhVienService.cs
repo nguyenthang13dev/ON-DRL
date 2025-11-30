@@ -94,6 +94,26 @@ namespace Hinet.Service.SinhVienService
             return await PagedList<SinhVienDto>.CreateAsync(query, search);
         }
 
+
+        public async Task<List<SinhVienDto>> GetDanhSachSinhVien(Guid LopHanhChinhId)
+        {
+            var sinhViens = _sinhVienRepository.GetQueryable()
+                                        .Where(t => t.LopHanhChinhId == LopHanhChinhId)
+                                        .Select(t => new SinhVienDto
+                                        {
+                                            NgaySinh = t.NgaySinh,
+                                            Email = t.Email,
+                                            GioiTinh = t.GioiTinh,
+                                            Id = t.Id,
+                                            KhoaId = t.KhoaId,
+                                            MaSV = t.MaSV,
+                                            LopHanhChinhId = t.LopHanhChinhId,
+                                            HoTen = t.HoTen,
+                                            TrangThai = t.TrangThai,
+                                        }).ToList();
+            return sinhViens;
+        }
+
         public async Task<SinhVienDto> GetDto(Guid id)
         {
             var sv = await GetByIdAsync(id);

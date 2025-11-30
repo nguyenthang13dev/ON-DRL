@@ -18,12 +18,17 @@ namespace Hinet.Model.MongoEntities
         
         [BsonElement("soDienThoai")]
         public string? SoDienThoai { get; set; }
-        
+
+        [BsonElement]
+        public int GioiTinh { get; set; }
+
         [BsonElement("khoaId")]
         public Guid KhoaId { get; set; }
         
         [BsonElement("trangThai")]
         public string TrangThai { get; set; } // DangLam, NghiViec, etc.
+
+        public AppUser? User { get; set; }
     }
 }
 

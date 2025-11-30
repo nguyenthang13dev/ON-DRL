@@ -2,11 +2,6 @@
 
 import { duLieuDanhMucService } from '@/services/duLieuDanhMuc/duLieuDanhMuc.service';
 import { Button, message } from 'antd';
-import React from 'react';
-import {
-  searchDuLieuDanhMucData,
-  createEditType,
-} from '@/types/duLieuDanhMuc/duLieuDanhMuc';
 import danTocVietNam from './datajson/dantocVietNam';
 import quocTinh from './datajson/quocTich';
 

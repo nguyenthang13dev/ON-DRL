@@ -165,6 +165,16 @@ namespace CommonHelper.String
             return new List<string>();
         }
 
+        public static string RandomPassWMa(string MaSv)
+        {
+            const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var ramdom = new Random();
+            var kitu = new string(Enumerable.Range(0, 2)
+                    .Select(_ => chars[ramdom.Next(chars.Length)])
+                    .ToArray());
+            return MaSv + kitu;
+        }
+
         public static string GetEditMessage(string objectName, int type)
         {
             if (type == 1)

@@ -12,5 +12,6 @@ namespace Hinet.Service.SinhVienService
         Task<SinhVienDto> GetDto(Guid id);
         Task<List<DropdownOption>> GetDropdownByLopHanhChinh(Guid lopHanhChinhId);
         Task<List<DropdownOption>> GetDropdownByKhoa(Guid khoaId);
+        Task<List<SinhVienDto>> GetDanhSachSinhVien(Guid LopHanhChinhId);
     }
 }

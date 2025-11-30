@@ -1,4 +1,22 @@
-export interface createEditType {
+export interface StudentInforDto
+{
+  id?: string;
+  maSV: string;
+  hoTen: string;
+  ngaySinh: string;
+  gioiTinh: boolean;
+  email: string;
+  trangThai: string;
+  khoaId: string;
+  lopId: string;
+  tenTrangThai?: string;
+  tenKhoa?: string;
+  tenLopHanhChinh?: string;
+}
+
+
+export interface createEditType
+{
   maSV: string;
   hoTen: string;
   ngaySinh: string;

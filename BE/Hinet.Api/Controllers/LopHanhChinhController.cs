@@ -6,6 +6,8 @@ using Hinet.Service.Core.Mapper;
 using Hinet.Service.Dto;
 using Hinet.Service.LopHanhChinhService;
 using Hinet.Service.LopHanhChinhService.Dto;
+using Hinet.Service.SinhVienService;
+using Hinet.Service.SinhVienService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +16,8 @@ namespace Hinet.Controllers
     [Route("api/[controller]")]
     public class LopHanhChinhController : HinetController
     {
+
+        private readonly ISinhVienService _sinhVienService;
         private readonly ILopHanhChinhService _lopHanhChinhService;
         private readonly IMapper _mapper;
         private readonly ILogger<LopHanhChinhController> _logger;
@@ -21,11 +25,13 @@ namespace Hinet.Controllers
         public LopHanhChinhController(
             ILopHanhChinhService lopHanhChinhService,
             IMapper mapper,
-            ILogger<LopHanhChinhController> logger)
+            ILogger<LopHanhChinhController> logger,
+            ISinhVienService sinhVienService)
         {
             _lopHanhChinhService = lopHanhChinhService;
             _mapper = mapper;
             _logger = logger;
+            _sinhVienService = sinhVienService;
         }
 
         [HttpPost("GetData")]
@@ -100,6 +106,23 @@ namespace Hinet.Controllers
             {
                 _logger.LogError(ex, "Error deleting LopHanhChinh");
                 return DataResponse.False("Có lỗi xảy ra khi xóa lớp hành chính");
+            }
+        }
+        
+
+
+        [HttpGet("GetListStudentByClass")]
+        public async Task<DataResponse<List<SinhVienDto>>> GetListStudentByClass([FromQuery] Guid Id)
+        {
+            try
+            {
+                var listStudents = await _sinhVienService.GetDanhSachSinhVien(Id);
+                return DataResponse<List<SinhVienDto>>.Success(listStudents);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error get list table");
+                return DataResponse<List<SinhVienDto>>.False("Có lỗi xảy ra khi lấy danh sách");
             }
         }
 

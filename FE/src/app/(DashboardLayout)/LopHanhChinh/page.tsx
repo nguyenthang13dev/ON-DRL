@@ -7,31 +7,34 @@ import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
 import { ResponsePageInfo } from "@/types/general";
-import {
-  searchLopHanhChinh,
-  LopHanhChinh,
-} from "@/types/lopHanhChinh/lopHanhChinh";
-import {
-  CloseOutlined,
-  DeleteOutlined,
-  DownOutlined,
-  EditOutlined,
-  EyeOutlined,
-  PlusCircleOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Dropdown,
-  FormProps,
-  MenuProps,
-  Pagination,
-  Popconfirm,
-  Space,
-  Table,
-  TableProps,
-} from "antd";
+import
+  {
+    LopHanhChinh,
+    searchLopHanhChinh,
+  } from "@/types/lopHanhChinh/lopHanhChinh";
+import
+  {
+    CloseOutlined,
+    DeleteOutlined,
+    DownOutlined,
+    EditOutlined,
+    EyeOutlined,
+    PlusCircleOutlined,
+    SearchOutlined,
+  } from "@ant-design/icons";
+import
+  {
+    Button,
+    Card,
+    Dropdown,
+    FormProps,
+    MenuProps,
+    Pagination,
+    Popconfirm,
+    Space,
+    Table,
+    TableProps,
+  } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -39,6 +42,9 @@ import CreateOrUpdate from "./createOrUpdate";
 import LopHanhChinhDetail from "./detail";
 import classes from "./page.module.css";
 import Search from "./search";
+
+import { useRouter } from "next/navigation";
+
 
 const QLLopHanhChinh: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -50,6 +56,10 @@ const QLLopHanhChinh: React.FC = () => {
   const [searchValues, setSearchValues] = useState<searchLopHanhChinh | null>(
     null
   );
+
+  const router = useRouter();
+
+
   const loading = useSelector((state) => state.general.isLoading);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
@@ -100,6 +110,14 @@ const QLLopHanhChinh: React.FC = () => {
             },
           },
           {
+            label: "Danh sách sinh viên",
+            key: "1",
+            icon: <EyeOutlined />,
+            onClick: () => {
+              router.push(`/LopHanhChinh/${record.id}`);
+            },
+          }
+,          {
             label: "Chỉnh sửa",
             key: "2",
             icon: <EditOutlined />,

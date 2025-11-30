@@ -1,10 +1,16 @@
-﻿using Hinet.Api.Dto;
+﻿using CommonHelper.String;
+using Hinet.Api.Dto;
 using Hinet.Model.Entities;
 using Hinet.Model.MongoEntities;
+using Hinet.Repository.RoleRepository;
+using Hinet.Service.AppUserService;
 using Hinet.Service.AspNetUsersService;
 using Hinet.Service.AspNetUsersService.ViewModels;
 using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
+using Hinet.Service.KhoaService;
+using Hinet.Service.LopHanhChinhService;
+using Hinet.Service.RoleService;
 using Hinet.Service.SinhVienService;
 using Hinet.Service.SinhVienService.Dto;
 using Hinet.Service.SinhVienService.ViewModels;
@@ -13,12 +19,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
+
+
 namespace Hinet.Controllers
 {
     [Route("api/[controller]")]
     public class SinhVienController : HinetController
     {
+        private readonly IRoleService _roleService; 
         private readonly ISinhVienService _sinhVienService;
+        private readonly ILopHanhChinhService _lopHanhChinhService;
+        private readonly IAppUserService _appUserService;
+        private readonly IKhoaService _khoaService;
         private readonly IMapper _mapper;
         private readonly ILogger<SinhVienController> _logger;
         private readonly UserManager<AppUser> _userManager;
@@ -27,22 +39,20 @@ namespace Hinet.Controllers
             ISinhVienService sinhVienService,
             IMapper mapper,
             ILogger<SinhVienController> logger,
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager,
+            IRoleService roleService,
+            IAppUserService appUserService,
+            IKhoaService khoaService,
+            ILopHanhChinhService lopHanhChinhService)
         {
             _sinhVienService = sinhVienService;
             _mapper = mapper;
             _logger = logger;
             _userManager = userManager;
-        }
-
-        private string RandomPassWMa(string MaSv)
-        {
-            const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-            var ramdom = new Random();
-            var kitu = new string(Enumerable.Range(0, 2)
-                    .Select(_ => chars[ramdom.Next(chars.Length)])
-                    .ToArray());
-            return MaSv + kitu;
+            _roleService = roleService;
+            _appUserService = appUserService;
+            _khoaService = khoaService;
+            _lopHanhChinhService = lopHanhChinhService;
         }
 
         [HttpPost("GetData")]
@@ -74,6 +84,8 @@ namespace Hinet.Controllers
         {
             try
             {
+                var Khoa = await _khoaService.GetByIdAsync(model.KhoaId);
+                var LopHanhChinh = await _lopHanhChinhService.GetByIdAsync(model.LopHanhChinhId);
                 var sinhVien = _mapper.Map<SinhVienCreateVM, SinhVien>(model);
                 //Tạo tk
                 var entity = new AppUser {
@@ -81,13 +93,15 @@ namespace Hinet.Controllers
                     MaSv = model.MaSV,
                     Gender = model.GioiTinh ? 1 : 0,
                     Email = model.Email,
-                    NgaySinh = model.NgaySinh
+                    NgaySinh = model.NgaySinh,
+                    Khoa = Khoa,
+                    Lop = LopHanhChinh
                 };
-                string newPass = RandomPassWMa(model.MaSV);
-                var ísSuccess = await _userManager.CreateAsync(entity, newPass);
-                if (ísSuccess.Succeeded)
+                //
+                var user = await _appUserService.CreateUserByRole("SINHVIEN", entity);
+                if (user != null)
                 {
-                    sinhVien.User = entity;
+                    sinhVien.User = user;
                 }
                 await _sinhVienService.CreateAsync(sinhVien);
                 return DataResponse<SinhVien>.Success(sinhVien);
@@ -124,8 +138,14 @@ namespace Hinet.Controllers
             try
             {
                 var entity = await _sinhVienService.GetByIdAsync(id);
+
+                // delete user
                 if (entity == null)
                     return DataResponse.False("Không tìm thấy sinh viên");
+
+                var user = entity.User;
+                await _appUserService.DeleteAsync(user);
+
                 await _sinhVienService.DeleteAsync(entity);
                 return DataResponse.Success(null);
             }

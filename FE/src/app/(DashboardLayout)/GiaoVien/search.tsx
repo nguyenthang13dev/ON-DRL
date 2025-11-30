@@ -11,7 +11,6 @@ interface SearchProps {
 const Search: React.FC<SearchProps> = ({ onFinish }) => {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const handleSubmit = async (values: searchGiaoVien) => {
     setIsLoading(true);
     try {

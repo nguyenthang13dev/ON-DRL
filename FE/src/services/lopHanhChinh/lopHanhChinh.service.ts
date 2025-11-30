@@ -1,6 +1,6 @@
-import { apiService } from '../index'
-import { Response, DropdownOption } from '@/types/general'
+import { Response } from '@/types/general'
 import { createEditType, searchLopHanhChinh } from '@/types/lopHanhChinh/lopHanhChinh'
+import { apiService } from '../index'
 
 class LopHanhChinhService {
   public async getDataByPage(searchData: searchLopHanhChinh): Promise<Response> {
@@ -49,6 +49,19 @@ class LopHanhChinhService {
       throw error
     }
   }
+
+
+  public async GetListStudentByClass(id: string): Promise<Response> {
+    try {
+      const response = await apiService.get<Response>(
+        `/LopHanhChinh/GetListStudentByClass/?id=${id}`
+      )
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  }
+
 
   public async Delete(id: string): Promise<Response> {
     try {

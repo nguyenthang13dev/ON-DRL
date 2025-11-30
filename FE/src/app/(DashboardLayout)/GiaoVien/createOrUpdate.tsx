@@ -1,11 +1,11 @@
 "use client";
-import { Form, FormProps, Input, Modal, Select } from "antd";
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { GiaoVien, createEditType } from "@/types/giaoVien/giaoVien";
 import { giaoVienService } from "@/services/giaoVien/giaoVien.service";
 import { khoaService } from "@/services/khoa/khoa.service";
 import { DropdownOption } from "@/types/general";
+import { GiaoVien, createEditType } from "@/types/giaoVien/giaoVien";
+import { DatePicker, Form, FormProps, Input, Modal, Radio, Select } from "antd";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
   isOpen: boolean;
@@ -101,6 +101,30 @@ const CreateOrUpdate: React.FC<Props> = (props: Props) => {
         >
           <Input placeholder="Nhập mã giáo viên" />
         </Form.Item>
+
+       <Form.Item
+          label="Giới tính"
+          name="gioiTinh"
+          rules={[{ required: true, message: "Vui lòng chọn giới tính!" }]}
+        >
+          <Radio.Group>
+            <Radio value={true}>Nam</Radio>
+            <Radio value={false}>Nữ</Radio>
+          </Radio.Group>
+        </Form.Item>
+
+        
+        <Form.Item
+          name="NgaySinh"
+          label="Ngày sinh"
+        >
+          <DatePicker
+            placeholder="Chọn ngày sinh"
+            style={{ width: "100%" }}
+            format="DD/MM/YYYY"
+          />
+        </Form.Item>
+          
 
         <Form.Item
           label="Họ tên"

@@ -1,44 +1,47 @@
-"use client";
-import { useCallback, useEffect, useState } from "react";
+"use client"
 import Flex from "@/components/shared-components/Flex";
-import { ResponsePageList } from "@/types/general";
+import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import withAuthorization from "@/libs/authentication";
+import activitiesService from "@/services/activities/activitiesService";
 import { setIsLoading } from "@/store/general/GeneralSlice";
 import { useSelector } from "@/store/hooks";
 import { AppDispatch } from "@/store/store";
+import
+  {
+    ActivitiesSearchType,
+    ActivitiesType,
+  } from "@/types/activities/activities";
+import { ResponsePageList } from "@/types/general";
 import * as extensions from "@/utils/extensions";
-import {
-  CloseOutlined,
-  DeleteOutlined,
-  DownOutlined,
-  EditOutlined,
-  EyeOutlined,
-  PlusCircleOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Dropdown,
-  FormProps,
-  MenuProps,
-  Modal,
-  Pagination,
-  Space,
-  Table,
-  TableProps,
-} from "antd";
+import
+  {
+    CloseOutlined,
+    DeleteOutlined,
+    DownOutlined,
+    EditOutlined,
+    EyeOutlined,
+    PlusCircleOutlined,
+    SearchOutlined,
+  } from "@ant-design/icons";
+import
+  {
+    Button,
+    Card,
+    Dropdown,
+    FormProps,
+    MenuProps,
+    Modal,
+    Pagination,
+    Space,
+    Table,
+    TableProps,
+  } from "antd";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import Search from "./search";
-import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
-import {
-  ActivitiesSearchType,
-  ActivitiesType,
-} from "@/types/activities/activities";
-import activitiesService from "@/services/activities/activitiesService";
 import ActivitiesCreateOrUpdate from "./createOrUpdate";
-import { useRouter } from "next/navigation";
+import Search from "./search";
 
 const ActivitiesPage: React.FC = () => {
   const router = useRouter();

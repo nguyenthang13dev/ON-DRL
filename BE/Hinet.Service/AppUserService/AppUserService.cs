@@ -30,6 +30,8 @@ using MongoDB.Driver.Linq;
 using MongoDB.Driver;
 using Microsoft.EntityFrameworkCore;
 using Hinet.Service.AspNetUsersService.ViewModels;
+using System.DirectoryServices;
+using CommonHelper.String;
 
 namespace Hinet.Service.AppUserService
 {
@@ -48,6 +50,10 @@ namespace Hinet.Service.AppUserService
         private readonly IGroupUserService _groupUserService;
         private readonly IGroupUserRoleService _groupUserRoleService;
         private readonly IDepartmentRepository _departmentRepository;
+
+
+
+
 
         public AppUserService(
             UserManager<AppUser> userManager,
@@ -212,6 +218,25 @@ namespace Hinet.Service.AppUserService
             return password;
         }
 
+
+        public async Task<AppUser> CreateUserByRole(string Role, AppUser user)
+        {
+            string passWord = StringUtilities.RandomPassWMa(user.MaSv);
+            user.Password = passWord;
+            var userExist = await _userManager.CreateAsync(user, passWord);
+            // Taoj Role
+            var role =  _roleRepository.FindBy(q => q.Code == Role).Result.FirstOrDefault();
+            if (role != null)
+            {
+                await _userRoleRepository.CreateAsync(new UserRole
+                {
+                    RoleId = role.Id,
+                    UserId = user.Id
+                });
+            }
+            return user;
+        }
+
         public async Task LogoutUser()
         {
             try
@@ -315,6 +340,13 @@ namespace Hinet.Service.AppUserService
                 Expire = token.ValidTo
             };
         }
+        
+        //public async Task<List<UserRole>> GetRoleByUser(Guid UserId)
+        //{
+        //    var userRoles = _userRoleRepository.GetQueryable()
+        //                        .Where(t => t.UserId == UserId).ToList();
+        //    return userRoles;
+        //}
 
         private string GenRefreshToken(Guid? userId)
         {

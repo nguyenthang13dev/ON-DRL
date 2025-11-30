@@ -1,8 +1,6 @@
 "use client";
 import LoginForm from "@/components/auth-components/LoginForm";
-import SignaturePad from "@/components/signature/SignaturePad";
-import KySoInfo from "@/components/signature/SisnatureInfo";
-import { Col, Divider, Image, Row } from "antd";
+import { Col, Divider, Row } from "antd";
 import React, { useState } from "react";
 
 const backgroundStyle = {
@@ -13,7 +11,6 @@ const backgroundStyle = {
 
 const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
-
   const handleLoginStart = () => setIsLoading(true);
   const handleLoginEnd = () => setIsLoading(false);
 
