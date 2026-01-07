@@ -4,52 +4,55 @@ import { uploadFileService } from "@/services/File/uploadFile.service";
 import kySoCauHinhService from "@/services/kySoCauHinh/kySoCauHinhService";
 import kySoInfoService from "@/services/kySoInfo/kySoInfoService";
 import { useSelector } from "@/store/hooks";
-import {
-  KySoCauHinhType,
-  PdfDisplayType,
-} from "@/types/kySoCauHinh/kySoCauHinh";
+import { ChuKyType } from "@/types/kySoCauHinh/chuKy";
+import
+  {
+    KySoCauHinhType,
+    PdfDisplayType,
+  } from "@/types/kySoCauHinh/kySoCauHinh";
+import
+  {
+    DEFAULT_CAU_HINH_IMAGE,
+    DEFAULT_CAU_HINH_TEXT,
+  } from "@/types/kySoCauHinh/kySoCauHinh.constant";
 import { KySoInfoType } from "@/types/kySoInfo/kySoInfo";
-import {
-  AppstoreAddOutlined,
-  CheckCircleOutlined,
-  CloseOutlined,
-  DownloadOutlined,
-  FileTextOutlined,
-  PictureOutlined,
-  SafetyCertificateOutlined,
-  SignatureOutlined,
-  SyncOutlined,
-  UploadOutlined,
-  WarningOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
-import SignaturePad from "react-signature-canvas";
+import
+  {
+    AppstoreAddOutlined,
+    CheckCircleOutlined,
+    CloseOutlined,
+    DeleteOutlined,
+    DownloadOutlined,
+    EditOutlined,
+    PictureOutlined,
+    SafetyCertificateOutlined,
+    SignatureOutlined,
+    SyncOutlined,
+    UploadOutlined,
+    WarningOutlined
+  } from "@ant-design/icons";
 import { PdfJs, Viewer, Worker } from "@react-pdf-viewer/core";
-import {
-  Button,
-  Col,
-  ColorPicker,
-  Dropdown,
-  Form,
-  Input,
-  message,
-  Modal,
-  Progress,
-  Row,
-  Tag,
-  Upload,
-} from "antd";
+import
+  {
+    Button,
+    Col,
+    ColorPicker,
+    Dropdown,
+    Form,
+    Input,
+    message,
+    Modal,
+    Progress,
+    Row,
+    Tag,
+    Upload,
+  } from "antd";
 import { MenuProps } from "antd/lib";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
+import SignaturePad from "react-signature-canvas";
 import { v4 as uuidv4 } from "uuid";
 import { addImageAndTextToPdf, extractFilePath } from "./utils/KySoHelper";
-import {
-  DEFAULT_CAU_HINH_IMAGE,
-  DEFAULT_CAU_HINH_TEXT,
-} from "@/types/kySoCauHinh/kySoCauHinh.constant";
-import { ChuKyType } from "@/types/kySoCauHinh/chuKy";
 const StaticFileUrl = process.env.NEXT_PUBLIC_STATIC_FILE_BASE_URL;
 const workerUrl = "/pdf.worker.min.js";
 const primaryColor = "#CE1127";

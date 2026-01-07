@@ -19,7 +19,7 @@ const Data = () => {
       }
 
       message.success('Thêm toàn bộ dân tộc thành công!');
-    } catch (error) {
+    } catch (error) { 
       console.error(error);
       message.error('Có lỗi xảy ra khi thêm dân tộc!');
     }
