@@ -36,6 +36,5 @@ namespace Hinet.Model.MongoEntities
 
         public AppUser User { get; set; }
 
-        
     }
 }
