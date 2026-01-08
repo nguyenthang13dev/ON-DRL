@@ -82,7 +82,7 @@ namespace Hinet.Api.Controllers
 
                 if (lstKeys.Any())
                 {
-                    lstKeys.ForEach(t =>
+                    lstKeys.Where(x => x.KTT_KEY != null).ToList().ForEach(t =>
                     {
                         t.KTT_VALUE = model.Lst_KeKhai.FirstOrDefault(x => x.KTT_KEY == t.KTT_KEY.KTT_KEY)?.KTT_VALUE ?? t.KTT_VALUE;
                     });

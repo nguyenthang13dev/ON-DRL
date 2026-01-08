@@ -41,9 +41,8 @@ const renderHtmlWithSettings = (
             )
             {
                 const field = domNode.attribs["data-field"];
-                const fieldConf = fieldConfig?.find((item) => item.ktT_KEY === field);
-                const value = defaultValues?.find((item) => item.ktT_KEY.ktT_KEY === field)?.ktT_VALUE ?? "";
-                console.log(defaultValues?.find((item) => item.ktT_KEY.ktT_KEY === field));
+                const fieldConf = fieldConfig?.find((item) => item?.ktT_KEY === field);
+                const value = defaultValues?.find((item) => item?.ktT_KEY?.ktT_KEY === field)?.ktT_VALUE ?? "";
 
                 return (
                     <Form.Item

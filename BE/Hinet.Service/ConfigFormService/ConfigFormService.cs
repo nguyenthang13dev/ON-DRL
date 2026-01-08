@@ -70,11 +70,11 @@ namespace Hinet.Service.ConfigFormService
             {
                 Name = t.Name,
                 Description = t.Description,
-                Status = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.Status ?? StatusConstant.CHUAKEKHAI,
-                IsDanhGia = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.IsDanhGia ?? false,
-                Processs = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.Processs ?? 0,
-                CreateDate = keKhaiSummarys.FirstOrDefault(x => x.FormId == t.Id)?.CreatedDate ?? null,
-                Subject = t.Subject.Name ?? "",
+                Status = keKhaiSummarys?.FirstOrDefault(x => x.FormId == t.Id)?.Status ?? StatusConstant.CHUAKEKHAI,
+                IsDanhGia = keKhaiSummarys?.FirstOrDefault(x => x.FormId == t.Id)?.IsDanhGia ?? false,
+                Processs = keKhaiSummarys?.FirstOrDefault(x => x.FormId == t.Id)?.Processs ?? 0,
+                CreateDate = keKhaiSummarys?.FirstOrDefault(x => x.FormId == t.Id)?.CreatedDate ?? null,
+                Subject = t.Subject?.Name ?? "",
                 FormId = t.Id,
             }).ToList();
             return query;

@@ -10,15 +10,27 @@
     <Compile Remove="Controllers\Telegram\**" />
     <Compile Remove="Logs\**" />
     <Compile Remove="Root\**" />
+    <Compile Remove="wwwroot\uploads\UC_UseCase\**" />
+    <Compile Remove="wwwroot\uploads\VanBanPhapLuat\**" />
+    <Compile Remove="wwwroot\uploads\ViewNghiPhep\**" />
     <Content Remove="Controllers\Telegram\**" />
     <Content Remove="Logs\**" />
     <Content Remove="Root\**" />
+    <Content Remove="wwwroot\uploads\UC_UseCase\**" />
+    <Content Remove="wwwroot\uploads\VanBanPhapLuat\**" />
+    <Content Remove="wwwroot\uploads\ViewNghiPhep\**" />
     <EmbeddedResource Remove="Controllers\Telegram\**" />
     <EmbeddedResource Remove="Logs\**" />
     <EmbeddedResource Remove="Root\**" />
+    <EmbeddedResource Remove="wwwroot\uploads\UC_UseCase\**" />
+    <EmbeddedResource Remove="wwwroot\uploads\VanBanPhapLuat\**" />
+    <EmbeddedResource Remove="wwwroot\uploads\ViewNghiPhep\**" />
     <None Remove="Controllers\Telegram\**" />
     <None Remove="Logs\**" />
     <None Remove="Root\**" />
+    <None Remove="wwwroot\uploads\UC_UseCase\**" />
+    <None Remove="wwwroot\uploads\VanBanPhapLuat\**" />
+    <None Remove="wwwroot\uploads\ViewNghiPhep\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -72,7 +84,6 @@
     <None Include="wwwroot\123.pdf" />
     <None Include="wwwroot\lib\signalr.js\jquery.signalR.js" />
     <None Include="wwwroot\lib\signalr.js\jquery.signalR.min.js" />
-    <None Include="wwwroot\uploads\0001.pdf" />
     <None Include="wwwroot\uploads\BaoCao\excel\BieuSo01-TCDEX\BieuSo01-TCDEX_24052025_110757.xlsx" />
     <None Include="wwwroot\uploads\BaoCao\excel\BieuSo02-TCDEX\BieuSo02-TCDEX_24052025_113531.xlsx" />
     <None Include="wwwroot\uploads\BaoCao\excel\BieuSo05-XLD\BieuSo05-XLD_20052025_165253.xlsx" />
@@ -169,8 +180,6 @@
     <None Include="wwwroot\uploads\DTDonThu\0c4def33-67d8-4424-8a71-4d0338167a08_TC-22.docx" />
     <None Include="wwwroot\uploads\DTDonThu\37362e04-4554-4702-b625-61741ebf957f_bieumau2.docx" />
     <None Include="wwwroot\uploads\DTDonThu\3e6aab3a-41fe-4497-a76d-d20237482ac1_BieuSo01-TCD_be507f47-85f1-48cd-8dc6-a91f89dc8ce4.docx" />
-    <None Include="wwwroot\uploads\DTDonThu\4857a9f7-fbc0-48eb-8832-dfda6b5ae3de_01. Tai lieu thiet ke co so du lieu.docx" />
-    <None Include="wwwroot\uploads\DTDonThu\d8ed5e8b-6eb4-4307-8a50-112081f41763_BieuSo01-TCD_be507f47-85f1-48cd-8dc6-a91f89dc8ce4.docx" />
     <None Include="wwwroot\uploads\dTHoSoXuLy\00851b48-4cb2-4852-a56b-c2aaff887f5d_99907145-ccca-4e3e-8a50-0b588c033be5_Quá trình xử lý đơn thư.docx" />
     <None Include="wwwroot\uploads\dTHoSoXuLy\04e33664-bb2f-4505-8e62-92f759919531_99907145-ccca-4e3e-8a50-0b588c033be5_Quá trình xử lý đơn thư.docx" />
     <None Include="wwwroot\uploads\dTHoSoXuLy\1409cc43-b2f3-4cad-8a6a-d67babe0717b_Quá trình xử lý đơn thư.docx" />
@@ -522,7 +531,6 @@
     <None Include="wwwroot\uploads\HoSoDichVuCong\22_05_2025_17_04_24.gz" />
     <None Include="wwwroot\uploads\icons\125dcd9c-f067-4c2d-b043-7ef05b59fe59_ImportTemplate_Module1.xlsx" />
     <None Include="wwwroot\uploads\icons\a248e28b-5c24-4393-97b5-83d522d9839d_ImportTemplate_Module1.xlsx" />
-    <None Include="wwwroot\uploads\ImportCoCauToChuc.xlsx" />
     <None Include="wwwroot\uploads\ImportDonThu\0ead87af-84d9-4290-a252-11866dd91a73_import.xlsx" />
     <None Include="wwwroot\uploads\ImportDonThu\12e86572-c5cf-41bf-bb93-477ed7700ab7_import.xlsx" />
     <None Include="wwwroot\uploads\ImportDonThu\3af2bff2-dc15-4a7e-bed5-c0ce6a3e94c8_Test01.docx" />
@@ -569,51 +577,6 @@
     <None Include="wwwroot\uploads\ImportFile\WebCrawlImport.xlsx" />
     <None Include="wwwroot\uploads\ImportFile\WebTMDTBanHangImport.xlsx" />
     <None Include="wwwroot\uploads\ImportFile\WidgetImport.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\055cc775-631c-4b02-b979-4f6dfffe8724_Danh sách người dùng %287%29.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\14bdb51a-f1f7-4dcd-b1ab-21d33d6188ad_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\194bed31-ebc0-4832-811a-a7918de5d296_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\210ae6cb-2a12-4a4e-b7fd-5da73bba9635_Danh sách người dùng %287%29.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\2711c121-b4fe-46fb-957e-32e8f155e139_Danh sách người dùng %287%29.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\30d2ac5f-82e9-4239-827d-afb1edfec6bb_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\31f542b6-443c-458a-bc00-add4e888efbd_Bảng 6.3. Tổng hợp đánh giá hàng quý người đứng đầu.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\356072ea-b65b-4682-91d6-ae3ead5713ec_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\36a84d8b-eed7-45b0-841d-222510ac84d8_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\3b232929-1b20-4001-8487-f8060ba9f26e_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\52933d03-6963-48da-9b32-9810c14ff716_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\563114ff-9a05-4a14-9b24-13a4a93ea8ca_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\5eb7e6cf-886c-4057-a4fa-61e5f86d304c_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\60ddfefd-f41b-4a66-8221-4ed420e82658_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\7c85f68e-4ea0-40bc-bb0b-e9f5af743809_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\8002901a-183c-42f7-b178-08a02a6730fa_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\803262d4-6959-455e-8942-d12a53b911e6_BaoCao0907 %282%29.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\84945f92-b6c8-4fad-aa55-c1e8a1c991a6_Danh sách người dùng %287%29.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\8aff1785-aff0-45c1-9344-4e5f37c96e4c_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\8b9f9ce6-0db1-42a7-bf00-4f2f56ecb8aa_03qd-phe-duyet-dieu-chinh-bo-sung-kh-wd-cntt-va-cds-2024-2025.docx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\8bce53d5-77b6-4466-a588-df84778c41bb_BaoCao0907 %283%29.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\944780e9-7e3a-48f5-9b74-05366fdf16f6_03qd-phe-duyet-dieu-chinh-bo-sung-kh-wd-cntt-va-cds-2024-2025.pdf" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\9b5911d0-395c-480b-b784-bd361ceffe50_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\9da3c4e1-17a2-4293-a25e-e69a5365a70b_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\a207c8a2-0f02-421f-b8d0-df14291216c5_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\a320e96e-c222-4807-bf00-4a561d3f2c37_Danh sách người dùng %287%29.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\ae13ceac-914c-4420-8a73-536074144f24_03qd-phe-duyet-dieu-chinh-bo-sung-kh-wd-cntt-va-cds-2024-2025.docx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\b3164388-476c-4eef-a164-50ffcfcbbb8c_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\b3d5cca2-c3f9-41e7-99b7-2e9011dbe9ac_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\b9ea4b27-ad82-4fc4-9cd7-92b00b3a199e_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\c3c91b3b-286d-4050-a2be-47b305994706_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\c43a5ba5-b1cb-44c2-a502-54ee295f7a11_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\cf1b65a3-ad93-4548-bbec-90531114c0a5_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\e38ea1e1-01ba-4039-8170-aa5e6f725af5_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\e9ce15a1-30de-49ff-9dab-8880629063d6_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\eb9276eb-0b1b-4db8-bb97-faf13095997d_Danh sách người dùng %287%29.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\eb978118-6be6-4642-bb61-938c741c1152_ImportQlNguoiDung %281%29.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\ec09fdfa-8cf9-41e3-9ae8-1a9b19a8972e_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\ec670cb0-f3d7-4bcd-9603-9f09db9f6156_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\ef2821ea-e7f6-45c5-b06e-50c612e51ba4_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\f3a41780-b569-49b4-8443-acb3a3dd3b38_Danh sách người dùng %287%29.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\f59d8bd7-8fd3-4505-b40e-c87650bb0ff5_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\f5d7fc34-6f17-4949-a2f8-e14fcc8a0e8e_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\fb9a37b7-e059-44a9-9139-ba9df93ca5a5_ImportQlNguoiDung.xlsx" />
-    <None Include="wwwroot\uploads\ImportNguoiDung\fd023494-e7fc-4d64-bb45-0f9b63f54c7d_Danh sách người dùng %286%29.xlsx" />
     <None Include="wwwroot\uploads\Import\00d89430-f7db-474d-b467-254b4d1de423_New Microsoft Excel Worksheet %282%29.xlsx" />
     <None Include="wwwroot\uploads\Import\07fef775-f5b6-4513-8579-82d54330a862_DanhSachChiTietDanhGia.xlsx" />
     <None Include="wwwroot\uploads\Import\0ab693af-4850-4cdf-ad58-17b3a66b42e5_New Microsoft Excel Worksheet %282%29.xlsx" />
@@ -1312,43 +1275,6 @@
     <None Include="wwwroot\uploads\TD_UngVien\ff2144cc-8063-43be-a7b9-e6d3f2c8316e_Pham-The-Tung_InternDevOps.pdf" />
     <None Include="wwwroot\uploads\TEMP\22_05_2025_15_27_42.gz" />
     <None Include="wwwroot\uploads\TEMP\22_05_2025_15_27_42\7ec92e89-911f-4bff-bb75-bb93e4f9ec57_12a350e4-d28f-469a-ae90-e5a54cc323a3_TT12.docx" />
-    <None Include="wwwroot\uploads\UC_UseCase\ExportUsecase0b4f895e-cd7d-4362-9e02-2ea0202200e5.xlsx" />
-    <None Include="wwwroot\uploads\UC_UseCase\ExportUsecase3633c505-f46b-429e-9804-9bb6f6074fd9.xlsx" />
-    <None Include="wwwroot\uploads\UC_UseCase\ExportUsecase3d06d954-5a00-44e9-b778-2c2fdc0a4f8c.xlsx" />
-    <None Include="wwwroot\uploads\UC_UseCase\ExportUsecase5c2d77da-a36a-44a9-9ec7-e63c15a1f96a.xlsx" />
-    <None Include="wwwroot\uploads\UC_UseCase\ExportUsecase6e337a14-5677-4cd7-94a3-4adbc9d053f8.xlsx" />
-    <None Include="wwwroot\uploads\UC_UseCase\ExportUsecase9f6dd53e-6601-49b5-9d7d-83e8a32ad4bc.xlsx" />
-    <None Include="wwwroot\uploads\UC_UseCase\ExportUsecasec30cdee0-f875-48f5-a283-9fa8124fbe30.xlsx" />
-    <None Include="wwwroot\uploads\UC_UseCase\Template\TemplateEportUsecase.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\02c5fa09-98e7-494f-8a48-1da8b7f2fd34_Biểu mẫu 04.TKLN-THADS, công thức, kỳ báo cáo ngày 05.3.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\0862e6c1-07f4-4bf6-89b5-b63cdf93e0d2_Danh sách RaSoat.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\0c96ed09-11eb-4621-9791-db083e961736_0862e6c1-07f4-4bf6-89b5-b63cdf93e0d2_Danh sách RaSoat.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\12a350e4-d28f-469a-ae90-e5a54cc323a3_TT12.docx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\161ef73f-cfd5-44a7-b1aa-1d5031b27224_2025.3.5 Bieu 11- BBCB - VA.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\16fc96f7-c35e-4ae7-a0be-34321e253e58_TT12.docx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\2f4bcaf0-b63f-4cc1-a02b-48ac4d188b48_Biểu mẫu 04.TKLN-THADS, công thức, kỳ báo cáo ngày 05.3.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\5a2ccb26-b7f0-409a-8754-cea752fde80d_0862e6c1-07f4-4bf6-89b5-b63cdf93e0d2_Danh sách RaSoat.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\6adf8fc1-bc7f-4e6b-8b9d-1b5e3121fd43_ThaiNGUYEN %281%29.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\71554937-0088-4cbc-bd85-ede986a7ad5e_2025.3.5 Bieu 11- BBCB - VA.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\74690323-c6fd-4855-a3da-e2f914e37907_ThaiNGUYEN.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\8ed14d74-a328-45f4-924a-236db2e94d33_0862e6c1-07f4-4bf6-89b5-b63cdf93e0d2_Danh sách RaSoat.xlsx" />
-    <None Include="wwwroot\uploads\VanBanPhapLuat\a9996fae-6bc9-4497-a08a-e660057d5ce1_ModuleImport.xlsx" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\545b2581-0c53-4b05-ad01-126b15d84087_3584b9a5-6a7e-48f6-9b87-81837b47f0c5.docx" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\545b2581-0c53-4b05-ad01-126b15d84087_3584b9a5-6a7e-48f6-9b87-81837b47f0c5.pdf" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\8685f30f-4075-4f76-884e-7e7fb24372ae_a582aa84-ed29-4c86-95c9-887a7455afe7.docx" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\8685f30f-4075-4f76-884e-7e7fb24372ae_a582aa84-ed29-4c86-95c9-887a7455afe7.pdf" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\bdf47c21-c137-449a-8f69-979bca7a7652_41b77155-7e68-4918-9cda-76e0bc9bc40e.docx" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\bdf47c21-c137-449a-8f69-979bca7a7652_41b77155-7e68-4918-9cda-76e0bc9bc40e.pdf" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\bdf47c21-c137-449a-8f69-979bca7a7652_92825ff2-be25-4e41-972e-7eadabcb5864.docx" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\bdf47c21-c137-449a-8f69-979bca7a7652_92825ff2-be25-4e41-972e-7eadabcb5864.pdf" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\bdf47c21-c137-449a-8f69-979bca7a7652_a0cc0b8c-bdf5-413f-8a6e-445e38b47bc9.docx" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\bdf47c21-c137-449a-8f69-979bca7a7652_a0cc0b8c-bdf5-413f-8a6e-445e38b47bc9.pdf" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\bdf47c21-c137-449a-8f69-979bca7a7652_a173a920-cadd-4eb0-aaff-e0dbbfe86c40.docx" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\bdf47c21-c137-449a-8f69-979bca7a7652_a173a920-cadd-4eb0-aaff-e0dbbfe86c40.pdf" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\bdf47c21-c137-449a-8f69-979bca7a7652_edf413e1-e7b3-432a-a421-5f98c034be75.docx" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\bdf47c21-c137-449a-8f69-979bca7a7652_edf413e1-e7b3-432a-a421-5f98c034be75.pdf" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\c45602ee-1801-4a95-bf15-4a815095ed60_a582aa84-ed29-4c86-95c9-887a7455afe7.docx" />
-    <None Include="wwwroot\uploads\ViewNghiPhep\c45602ee-1801-4a95-bf15-4a815095ed60_a582aa84-ed29-4c86-95c9-887a7455afe7.pdf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -1374,6 +1300,7 @@
     <Folder Include="Core\Attributes\" />
     <Folder Include="Core\Common\" />
     <Folder Include="wwwroot\htmloutput\" />
+    <Folder Include="wwwroot\uploads\ImportNguoiDung\" />
   </ItemGroup>
 
   <ItemGroup>
