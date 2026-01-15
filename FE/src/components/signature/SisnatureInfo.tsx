@@ -52,7 +52,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import SignaturePad from "react-signature-canvas";
 import { v4 as uuidv4 } from "uuid";
-import { addImageAndTextToPdf, extractFilePath } from "./utils/KySoHelper";
+import { addImageAndTextToPdf } from "./utils/KySoHelper";
 const StaticFileUrl = process.env.NEXT_PUBLIC_STATIC_FILE_BASE_URL;
 const workerUrl = "/pdf.worker.min.js";
 const primaryColor = "#CE1127";
@@ -210,7 +210,7 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
       // if (responseDuLieuBieuMau?.status && responseDuLieuBieuMau.data?.path) {
       //   setPdfTempLink(extractFilePath(responseDuLieuBieuMau.data.path));
       // }
-      setPdfTempLink(extractFilePath("0002.pdf"));
+      // setPdfTempLink(extractFilePath("0002.pdf"));
       const responseKySoInfo = await kySoInfoService.GetByThongTin(
         idBieuMau,
         "DTHoSoXuLy",

@@ -2,6 +2,7 @@
 
 import Flex from "@/components/shared-components/Flex";
 import RenderHtmlWithInput from "@/components/shared-components/renderHtmlFormKeKhai";
+import KySoInfo from "@/components/signature/SisnatureInfo";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import { configFormKeyService } from "@/services/configFormKey/configFormKey.service";
@@ -101,9 +102,13 @@ const KeKhaiDanhGia = () => {
         <Flex>
 
           <AutoBreadcrumb /> 
+          <KySoInfo idBieuMau={id} idDTTienTrinhXuLy={id} />
+
 
         </Flex>
 
+
+        
         <div
       className="safe-html-renderer"
       style={{
