@@ -1,4 +1,6 @@
-﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
+﻿using CommonHelper.Extenions;
+using CommonHelper.Word;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using Hinet.Api.Dto;
 using Hinet.Controllers;
 using Hinet.Model.MongoEntities;
@@ -10,6 +12,7 @@ using Hinet.Service.Core.Mapper;
 using Hinet.Service.KeKhaiSumaryService;
 using Hinet.Service.SoLieuKeKhaiService;
 using Hinet.Service.SoLieuKeKhaiService.ViewModels;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -122,5 +125,43 @@ namespace Hinet.Api.Controllers
             var res = await _soLieuKeKhaiService.GetConfsByFormIdAndUser(Id, UserId.Value);
             return DataResponse<List<SoLieuKeKhai>>.Success(res);
         }
+
+
+        [HttpGet("PreviewSoLieuFilePdf")]
+        public async Task<DataResponse<string>> GetPreviewFile([FromQuery] Guid Id)
+        {
+            string outputDir = "wwwroot/previews";
+
+            var ListSoLieuKeKhai = await _soLieuKeKhaiService.GetConfsByFormIdAndUser(Id, UserId.Value);
+            var configForm = await _configFormService.GetByIdAsync(Id);
+            var ListConfigsForm = await _configFormKeyService.GetConfig(Id);
+            // Tạo file mới 
+            var rootPathPreview = $"wwwroot/PreViewTailieu/{Id}";
+            if (!Directory.Exists(Path.Combine(rootPathPreview)))
+            {
+                Directory.CreateDirectory(rootPathPreview);
+            }
+            // 
+            string sourceDestination = configForm.FileDinhKems.DuongDanFile;
+            // Copy file từ src cũ qua src mói
+            string newFileCopyName = $"{UserId.Value}_{Id}_{DateTime.Now.ToString("dd_MM_yyyy_HH_ss_mm")}.docx";
+            byte[] fileBytes = System.IO.File.ReadAllBytes(Path.Combine("wwwroot/uploads", sourceDestination.Substring(1)));
+            using (FileStream file =  new FileStream(Path.Combine(rootPathPreview, newFileCopyName) , FileMode.Create, FileAccess.Write))
+            {
+                file.Write(fileBytes, 0, fileBytes.Length);
+            }
+            var dictObj = ListSoLieuKeKhai.Where(t => !string.IsNullOrEmpty(t.KTT_VALUE)).ToDictionary(x => x.KTT_KEY.KTT_KEY, y => (object)y.KTT_VALUE);
+            var newPathCopy = Path.Combine(rootPathPreview, newFileCopyName);
+            if (System.IO.File.Exists(newPathCopy))
+            {
+                WordHelper.ReplacePlaceholdersWithDictionary(newPathCopy, dictObj);
+            }
+            WordHelper.ConvertDocxToPdf(newPathCopy, outputDir);
+            // Tên Fiel sau khi parse
+            string outputFileName =  Path.GetFileNameWithoutExtension(newPathCopy) + ".pdf";
+            string finalPdfPath = Path.Combine(outputDir, outputFileName);
+            return DataResponse<string>.Success(finalPdfPath);
+        }
+
     }
 }

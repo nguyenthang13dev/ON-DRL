@@ -450,7 +450,44 @@ namespace Hinet.Controllers
                 return DataResponse<byte[]>.False("Lỗi khi đọc tệp", new[] { ex.Message });
             }
         }
-    
+        
+        
+        [HttpGet("UpdateStatus")]
+        public async Task<DataResponse<bool>> UpdateStatus([FromQuery] Guid Id)
+        {
+            try
+            {
+                var kySoInfor = _kySoInfoService.GetQueryable().Where(t => t.IdDoiTuong == Id && t.UserId == UserId.Value).FirstOrDefault();
+                if (kySoInfor != null)
+                {
+                    kySoInfor.TrangThai = "DAKYSO";
+                }
+                // 
+                var listKySoCauHinh = _kySoCauHinhService.GetQueryable().Where(t => t.IdBieuMau == Id && t.UpdatedId == UserId.Value).ToList();
+                // Update =
+                if (listKySoCauHinh.Any())
+                {
+                    listKySoCauHinh.ForEach(x =>
+                    {
+                        x.IdDTTienTrinhXuLy = kySoInfor.Id;
+                    });
+
+                    await _kySoCauHinhService.UpdateAsync(listKySoCauHinh);
+                }
+                return DataResponse<bool>.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return DataResponse<bool>.False(ex.Message);
+            }
+            
+        
+        }
+
+
+        
+        
+
         
     }
 

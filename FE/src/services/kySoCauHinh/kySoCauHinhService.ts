@@ -168,6 +168,8 @@ class KySoCauHinhService {
     }
   }
 
+
+
   public async deleteChuKy(id: string): Promise<Response> {
     const response = await apiService.delete<Response>("/chuKy/delete/" + id);
     return response.data;

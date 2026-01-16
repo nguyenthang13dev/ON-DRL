@@ -32,6 +32,14 @@ class SoLieuKeKhaiService
     }
 
 
+    public async PreSoLieuKeKhai(Id: string): Promise<Response> {
+        const response = await apiService.get<Response>(`SoLieuKeKhai/PreviewSoLieuFilePdf?Id=${Id}`);
+        return response.data;
+    }
+
+
+
+
 }
 
 export const soLieuKeKhaiService = SoLieuKeKhaiService.instance;
