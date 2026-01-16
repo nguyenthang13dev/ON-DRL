@@ -50,6 +50,25 @@ namespace CommonHelper.Word
             }
         }
 
+
+        // Nếu method ReplacePlaceholders hỗ trợ IDictionary<string, object>
+        public static void ReplacePlaceholdersWithDictionary(string filePath, Dictionary<string, object>? data)
+        {
+            using (var document = DocX.Load(filePath))
+            {
+                foreach (var kvp in data)
+                {
+                    var placeholder = "[[" + kvp.Key + "]]";
+                    var rawValue = kvp.Value?.ToString();
+                    var value = string.IsNullOrEmpty(rawValue) ? "........................." : rawValue;
+                    document.ReplaceText(placeholder, value);
+                }
+
+                document.Save();
+            }
+        }
+
+
         public static void ReplacePlaceholdersAsync(string filePath, object data)
         {
             using (var document = DocX.Load(filePath))

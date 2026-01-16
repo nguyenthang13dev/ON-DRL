@@ -1300,6 +1300,7 @@
     <Folder Include="Core\Attributes\" />
     <Folder Include="Core\Common\" />
     <Folder Include="wwwroot\htmloutput\" />
+    <Folder Include="wwwroot\PreViewTailieu\86325ccb-acf2-4fb0-b99c-244675bde4c3\" />
     <Folder Include="wwwroot\uploads\ImportNguoiDung\" />
   </ItemGroup>
 

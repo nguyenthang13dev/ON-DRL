@@ -2,6 +2,7 @@
 import Loading from "@/components/effect-components/Loading";
 import { uploadFileService } from "@/services/File/uploadFile.service";
 import kySoCauHinhService from "@/services/kySoCauHinh/kySoCauHinhService";
+import { soLieuKeKhaiService } from "@/services/SoLieuKeKhai/soLieuKeKhai.service";
 import kySoInfoService from "@/services/kySoInfo/kySoInfoService";
 import { useSelector } from "@/store/hooks";
 import { ChuKyType } from "@/types/kySoCauHinh/chuKy";
@@ -203,24 +204,26 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
     setIsLoading(true);
     cleanUp();
     try {
-      // const responseDuLieuBieuMau = await bMDuLieuBieuMauService.exportPdf(
-      //   idBieuMau,
-      //   idDTTienTrinhXuLy
-      // );
-      // if (responseDuLieuBieuMau?.status && responseDuLieuBieuMau.data?.path) {
-      //   setPdfTempLink(extractFilePath(responseDuLieuBieuMau.data.path));
-      // }
-      // setPdfTempLink(extractFilePath("0002.pdf"));
-      const responseKySoInfo = await kySoInfoService.GetByThongTin(
-        idBieuMau,
-        "DTHoSoXuLy",
-        idDTTienTrinhXuLy
-      );
-      if (responseKySoInfo?.status) {
-        setKySoInfo(responseKySoInfo.data);
+      // Try to generate/preview the PDF via SoLieuKeKhai preview API
+      try {
+        // const responseDuLieuBieuMau = await soLieuKeKhaiService.PreSoLieuKeKhai(
+        //   idBieuMau
+        // );
+        setPdfTempLink('/SoTiepCongDan/pdf/PhieuTiepCongDan_1032594b-3dfd-490c-8f33-c800a1e3fe87.pdf');
+        // if (responseDuLieuBieuMau?.status && responseDuLieuBieuMau.data?.path) {
+        //   // setPdfTempLink(extractFilePath(responseDuLieuBieuMau.data.path));
+        // } else {
+        //   message.error("Không thể tải trước file PDF");
+        // }
+      } catch (err) {
+        console.error("Lỗi khi gọi PreviewSoLieuFilePdf:", err);
+        message.error("Lỗi khi tải trước file PDF");
       }
+      
     } catch (error) {
       console.error("Lỗi khi kết xuất PDF:", error);
+      setIsLoading(false);
+
     } finally {
       setIsLoading(false);
     }
@@ -512,17 +515,19 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
     try {
       setUploadProgress(0);
       setIsModalUploadProgressOpen(true);
-      const listKySoInfo = [
-        {
-          userName: user?.userName,
-          idDoiTuong: idBieuMau,
-          thongTin: idDTTienTrinhXuLy,
-          loaiDoiTuong: "DTHoSoXuLy",
-          duongDanFile: pdfKySoLink,
-          trangThai: "CHUAKYSO",
-        },
-      ];
-      setIsModalUploadProgressOpen(false);
+      try {
+        const res = await kySoInfoService.updateStatus(idBieuMau);
+        if (res?.status) {
+          message.success("Gửi yêu cầu ký số thành công");
+        } else {
+          message.error("Gửi yêu cầu ký số thất bại");
+        }
+      } catch (err) {
+        console.error("Lỗi khi gọi updateStatus:", err);
+        message.error("Lỗi khi gửi yêu cầu ký số");
+      } finally {
+        setIsModalUploadProgressOpen(false);
+      }
     } catch (error) {
       console.error("Lỗi khi gửi yêu cầu ký số:", error);
     }

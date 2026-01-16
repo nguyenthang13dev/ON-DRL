@@ -47,7 +47,6 @@ const KeKhaiDanhGia = () => {
     }, [ id ] );
   
 
-
     const handleGetSoLieuKeKhaiByFormAndUser = useCallback(async () => {
         try {
             const res = await soLieuKeKhaiService.GetSoLieuKeKhaiByFormAndUser(id ?? "");
@@ -62,10 +61,6 @@ const KeKhaiDanhGia = () => {
             setLoading(false);
         }
     }, [ id ] );
-  
-  
-  
-
   
   const handleSubmitEvaluation = async (formData: SoLieuKeKhaiType) => {
     try {
@@ -120,7 +115,9 @@ const KeKhaiDanhGia = () => {
         boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
       }}
     >
-      {/* ✅ Bọc trong div riêng để không ảnh hưởng layout app */}
+      <KySoInfo idBieuMau={id} idDTTienTrinhXuLy="" />
+
+
       <div
         className="html-content"
         style={{

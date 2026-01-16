@@ -110,6 +110,11 @@ class KySoInfoService {
     );
     return response.data;
   }
+
+  public async updateStatus(model: string): Promise<Response> {
+    const response = await apiService.post<Response>(`/kySoCauHinh/UpdateStatus?Id=${model}`);
+    return response.data;
+  }
 }
 
 const kySoInfoService = KySoInfoService.instance;

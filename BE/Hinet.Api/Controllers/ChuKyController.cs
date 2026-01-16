@@ -215,20 +215,15 @@ namespace Hinet.Controllers
                 importHelper.ConfigColumn = ExcelImportExtention.GetConfigCol<ChuKy>(data.Collection);
                 #endregion
                 var rsl = importHelper.Import();
-
                 var listImportReponse = new List<ChuKy>();
                 if (rsl.ListTrue != null && rsl.ListTrue.Count > 0)
                 {
                     listImportReponse.AddRange(rsl.ListTrue);
                     await _chuKyService.CreateAsync(rsl.ListTrue);
                 }
-
                 var response = new ResponseImport<ChuKy>();
-
-
                 response.ListTrue = listImportReponse;
                 response.lstFalse = rsl.lstFalse;
-
                 return DataResponse.Success(response);
             }
             catch (Exception)
