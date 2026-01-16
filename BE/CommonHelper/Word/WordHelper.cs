@@ -42,7 +42,7 @@ namespace CommonHelper.Word
             {
                 string generatedPdfPath = Path.Combine(outputDir, Path.GetFileNameWithoutExtension(inputPath) + ".pdf");
                 string finalPdfPath = Path.Combine(outputDir, outputFileName);
-
+                
                 if (!System.IO.File.Exists(generatedPdfPath))
                     throw new Exception("Không tìm thấy file PDF sau khi chuyển đổi.");
 
@@ -52,7 +52,7 @@ namespace CommonHelper.Word
 
 
         // Nếu method ReplacePlaceholders hỗ trợ IDictionary<string, object>
-        public static void ReplacePlaceholdersWithDictionary(string filePath, Dictionary<string, object>? data)
+        public static void ReplacePlaceholdersWithDictionary(string filePath, Dictionary<string, string>? data)
         {
             using (var document = DocX.Load(filePath))
             {

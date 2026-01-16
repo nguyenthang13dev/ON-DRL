@@ -2,8 +2,8 @@
 import Loading from "@/components/effect-components/Loading";
 import { uploadFileService } from "@/services/File/uploadFile.service";
 import kySoCauHinhService from "@/services/kySoCauHinh/kySoCauHinhService";
-import { soLieuKeKhaiService } from "@/services/SoLieuKeKhai/soLieuKeKhai.service";
 import kySoInfoService from "@/services/kySoInfo/kySoInfoService";
+import { soLieuKeKhaiService } from "@/services/SoLieuKeKhai/soLieuKeKhai.service";
 import { useSelector } from "@/store/hooks";
 import { ChuKyType } from "@/types/kySoCauHinh/chuKy";
 import
@@ -53,7 +53,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import SignaturePad from "react-signature-canvas";
 import { v4 as uuidv4 } from "uuid";
-import { addImageAndTextToPdf } from "./utils/KySoHelper";
+import { addImageAndTextToPdf, extractFilePath } from "./utils/KySoHelper";
 const StaticFileUrl = process.env.NEXT_PUBLIC_STATIC_FILE_BASE_URL;
 const workerUrl = "/pdf.worker.min.js";
 const primaryColor = "#CE1127";
@@ -206,15 +206,14 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
     try {
       // Try to generate/preview the PDF via SoLieuKeKhai preview API
       try {
-        // const responseDuLieuBieuMau = await soLieuKeKhaiService.PreSoLieuKeKhai(
-        //   idBieuMau
-        // );
-        setPdfTempLink('/SoTiepCongDan/pdf/PhieuTiepCongDan_1032594b-3dfd-490c-8f33-c800a1e3fe87.pdf');
-        // if (responseDuLieuBieuMau?.status && responseDuLieuBieuMau.data?.path) {
-        //   // setPdfTempLink(extractFilePath(responseDuLieuBieuMau.data.path));
-        // } else {
-        //   message.error("Không thể tải trước file PDF");
-        // }
+        const responseDuLieuBieuMau = await soLieuKeKhaiService.PreSoLieuKeKhai(
+          idBieuMau
+        );
+        if (responseDuLieuBieuMau?.status && responseDuLieuBieuMau.data?.path) {
+          setPdfTempLink(extractFilePath(responseDuLieuBieuMau.data.path));
+        } else {
+          message.error("Không thể tải trước file PDF");
+        }
       } catch (err) {
         console.error("Lỗi khi gọi PreviewSoLieuFilePdf:", err);
         message.error("Lỗi khi tải trước file PDF");

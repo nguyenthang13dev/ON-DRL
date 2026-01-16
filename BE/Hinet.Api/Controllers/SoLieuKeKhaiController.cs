@@ -128,7 +128,7 @@ namespace Hinet.Api.Controllers
 
 
         [HttpGet("PreviewSoLieuFilePdf")]
-        public async Task<DataResponse<string>> GetPreviewFile([FromQuery] Guid Id)
+        public async Task<DataResponse<object>> GetPreviewFile([FromQuery] Guid Id)
         {
             string outputDir = "wwwroot/previews";
 
@@ -150,17 +150,36 @@ namespace Hinet.Api.Controllers
             {
                 file.Write(fileBytes, 0, fileBytes.Length);
             }
-            var dictObj = ListSoLieuKeKhai.Where(t => !string.IsNullOrEmpty(t.KTT_VALUE)).ToDictionary(x => x.KTT_KEY.KTT_KEY, y => (object)y.KTT_VALUE);
+            var dictObj = ListSoLieuKeKhai.Where(t => t.KTT_KEY != null && !string.IsNullOrEmpty(t.KTT_VALUE)).ToDictionary(x => x.KTT_KEY.KTT_KEY, y => y.KTT_VALUE);
             var newPathCopy = Path.Combine(rootPathPreview, newFileCopyName);
             if (System.IO.File.Exists(newPathCopy))
             {
                 WordHelper.ReplacePlaceholdersWithDictionary(newPathCopy, dictObj);
             }
-            WordHelper.ConvertDocxToPdf(newPathCopy, outputDir);
+            if (!Directory.Exists(Path.Combine(outputDir)))
+            {
+                Directory.CreateDirectory(Path.Combine(outputDir));
+            }
             // Tên Fiel sau khi parse
-            string outputFileName =  Path.GetFileNameWithoutExtension(newPathCopy) + ".pdf";
-            string finalPdfPath = Path.Combine(outputDir, outputFileName);
-            return DataResponse<string>.Success(finalPdfPath);
+            string outputFileName = Path.GetFileNameWithoutExtension(newPathCopy) + DateTime.Now.ToString("_dd_MM_yyyy_hh:mm:ss") + ".pdf";
+            var FileConversionResult = WordHelper.ToPDF(newPathCopy, outputDir);
+
+            if (FileConversionResult.Status)
+            {
+                return DataResponse<object>.Success(new
+                {
+                    Path = FileConversionResult.FilePath
+                });
+            }
+            else
+            {
+                return DataResponse<object>.Success(new
+                {
+                    Path = ""
+                });
+            }
+
+          
         }
 
     }
