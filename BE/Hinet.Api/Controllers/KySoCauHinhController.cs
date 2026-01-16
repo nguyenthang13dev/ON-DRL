@@ -86,8 +86,6 @@ namespace Hinet.Controllers
         }
 
 
-
-
         [HttpPost("Save")]
         public async Task<DataResponse<KySoInfoDto>> Save([FromForm] KySoCauHinhSaveVM model)
         {
