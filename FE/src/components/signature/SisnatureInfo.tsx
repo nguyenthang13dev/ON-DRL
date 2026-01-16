@@ -221,6 +221,8 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
       }
     } catch (error) {
       console.error("Lỗi khi kết xuất PDF:", error);
+      setIsLoading(false);
+
     } finally {
       setIsLoading(false);
     }

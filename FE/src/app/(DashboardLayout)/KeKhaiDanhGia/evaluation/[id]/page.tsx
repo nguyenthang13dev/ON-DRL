@@ -2,6 +2,7 @@
 
 import Flex from "@/components/shared-components/Flex";
 import RenderHtmlWithInput from "@/components/shared-components/renderHtmlFormKeKhai";
+import KySoInfo from "@/components/signature/SisnatureInfo";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import { configFormKeyService } from "@/services/configFormKey/configFormKey.service";
@@ -46,7 +47,6 @@ const KeKhaiDanhGia = () => {
     }, [ id ] );
   
 
-
     const handleGetSoLieuKeKhaiByFormAndUser = useCallback(async () => {
         try {
             const res = await soLieuKeKhaiService.GetSoLieuKeKhaiByFormAndUser(id ?? "");
@@ -61,10 +61,6 @@ const KeKhaiDanhGia = () => {
             setLoading(false);
         }
     }, [ id ] );
-  
-  
-  
-
   
   const handleSubmitEvaluation = async (formData: SoLieuKeKhaiType) => {
     try {
@@ -115,7 +111,9 @@ const KeKhaiDanhGia = () => {
         boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
       }}
     >
-      {/* ✅ Bọc trong div riêng để không ảnh hưởng layout app */}
+      <KySoInfo idBieuMau={id} idDTTienTrinhXuLy="" />
+
+
       <div
         className="html-content"
         style={{
