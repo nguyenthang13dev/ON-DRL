@@ -14,6 +14,7 @@ using Hinet.Service.LopHanhChinhService;
 using Hinet.Service.SinhVienService.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hinet.Controllers
 {
@@ -89,7 +90,8 @@ namespace Hinet.Controllers
                 var user = await _appUserService.CreateUserByRole("GIAOVIEN", entity);
                 //
                 giaoVien.User = user;
-                
+                giaoVien.Khoa = Khoa;
+
                 await _giaoVienService.CreateAsync(giaoVien);
                 return DataResponse<GiaoVien>.Success(giaoVien);
             }
@@ -101,16 +103,36 @@ namespace Hinet.Controllers
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<DataResponse<GiaoVien>> Update(Guid id, [FromBody] GiaoVien model)
+        public async Task<DataResponse<GiaoVien>> Update(Guid id, [FromBody] GiaoVienUpdate model)
         {
             try
             {
                 var entity = await _giaoVienService.GetByIdAsync(id);
                 if (entity == null)
                     return DataResponse<GiaoVien>.False("Không tìm thấy giáo viên");
-                model.Id = id;
-                await _giaoVienService.UpdateAsync(model);
-                return DataResponse<GiaoVien>.Success(model);
+                var Khoa = await _khoaService.GetByIdAsync(model.KhoaId);
+                entity.MaGiaoVien = model.MaGiaoVien;
+                entity.HoTen = model.HoTen;
+                entity.Email = model.Email;
+                entity.KhoaId = model.KhoaId;
+                entity.SoDienThoai = model.SoDienThoai;
+                entity.TrangThai = model.TrangThai;
+
+                entity.Khoa = Khoa;
+                await _giaoVienService.UpdateAsync(entity);
+
+                var user = await _appUserService.GetByIdAsync(entity.User.Id);
+
+                user.MaSv = model.MaGiaoVien;
+                user.Name = model.HoTen;
+                user.Email = model.Email;
+                user.Khoa = Khoa;
+                user.UserName = model.MaGiaoVien;
+                user.PhoneNumber = model.SoDienThoai;
+
+                await _appUserService.UpdateAsync(user);
+
+                return DataResponse<GiaoVien>.Success(entity);
             }
             catch (Exception ex)
             {

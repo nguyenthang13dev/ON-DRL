@@ -114,16 +114,19 @@ namespace Hinet.Controllers
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<DataResponse<SinhVien>> Update(Guid id, [FromBody] SinhVien model)
+        public async Task<DataResponse<SinhVien>> Update(Guid id, [FromBody] SinhVienUpdate model)
         {
             try
             {
                 var entity = await _sinhVienService.GetByIdAsync(id);
                 if (entity == null)
                     return DataResponse<SinhVien>.False("Không tìm thấy sinh viên");
-                model.Id = id;
-                await _sinhVienService.UpdateAsync(model);
-                return DataResponse<SinhVien>.Success(model);
+
+                entity = _mapper.Map<SinhVienUpdate, SinhVien>(model);
+                entity.Id = id;
+
+                await _sinhVienService.UpdateAsync(entity);
+                return DataResponse<SinhVien>.Success(entity);
             }
             catch (Exception ex)
             {

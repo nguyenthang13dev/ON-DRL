@@ -1,11 +1,11 @@
 ﻿// Hinet.Api/Controllers/LopHanhChinhController.cs
 using Hinet.Api.Dto;
-using Hinet.Model.Entities;
 using Hinet.Model.MongoEntities;
 using Hinet.Service.AspNetUsersService;
 using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
 using Hinet.Service.Dto;
+using Hinet.Service.GiaoVienService;
 using Hinet.Service.LopHanhChinhService;
 using Hinet.Service.LopHanhChinhService.Dto;
 using Hinet.Service.SinhVienService;
@@ -25,19 +25,22 @@ namespace Hinet.Controllers
         private readonly IMapper _mapper;
         private readonly IAspNetUsersService _aspNetUserService;
         private readonly ILogger<LopHanhChinhController> _logger;
+        private readonly IGiaoVienService _giaoVienService;
 
         public LopHanhChinhController(
             ILopHanhChinhService lopHanhChinhService,
             IMapper mapper,
             IAspNetUsersService aspNetUserService,
             ILogger<LopHanhChinhController> logger,
-            ISinhVienService sinhVienService)
+            ISinhVienService sinhVienService,
+            IGiaoVienService giaoVienService)
         {
             _lopHanhChinhService = lopHanhChinhService;
             _mapper = mapper;
             this._aspNetUserService = aspNetUserService;
             _logger = logger;
             _sinhVienService = sinhVienService;
+            _giaoVienService = giaoVienService;
         }
 
         [HttpPost("GetData")]
@@ -69,11 +72,11 @@ namespace Hinet.Controllers
         {
             try
             {
-                var appUser = await _aspNetUserService.GetByIdAsync(model.GiaoVienCoVanId);
-                model.AppUser = appUser;
+
+                var IdGv = await _giaoVienService.GetByIdAsync(model.GiaoVienCoVanId);
                 await _lopHanhChinhService.CreateAsync(model);
-                appUser.Lop = model;
-                await _aspNetUserService.UpdateAsync(appUser);
+                IdGv.User.Lop = model;
+                await _aspNetUserService.UpdateAsync(IdGv.User);
                 return DataResponse<LopHanhChinh>.Success(model);
             }
             catch (Exception ex)
@@ -88,20 +91,15 @@ namespace Hinet.Controllers
         {
             try
             {
-                var appUser = await _aspNetUserService.GetByIdAsync(model.GiaoVienCoVanId);
+
+                var IdGv = await _giaoVienService.GetByIdAsync(model.GiaoVienCoVanId);
                 var entity = await _lopHanhChinhService.GetByIdAsync(Id);
                 if (entity == null)
                     return DataResponse<LopHanhChinh>.False("Không tìm thấy lớp hành chính");
-
-
-                entity.AppUser = appUser;
                 await _lopHanhChinhService.UpdateAsync(model);
-
-                appUser.Lop = entity;
-                await _aspNetUserService.UpdateAsync(appUser);
-
-                return DataResponse<LopHanhChinh>.Success(model)
-                    ;
+                IdGv.User.Lop = entity;
+                await _aspNetUserService.UpdateAsync(IdGv.User);
+                return DataResponse<LopHanhChinh>.Success(model);
             }
             catch (Exception ex)
             {

@@ -32,8 +32,6 @@ namespace Hinet.Service.GiaoVienService
         public async Task<PagedList<GiaoVienDto>> GetData(GiaoVienSearch search)
         {
             var query = from q in GetQueryable()
-                        join khoa in _khoaRepository.GetQueryable() on q.KhoaId equals khoa.Id into khoaJoin
-                        from khoa in khoaJoin.DefaultIfEmpty()
 
                         select new GiaoVienDto
                         {
@@ -42,6 +40,7 @@ namespace Hinet.Service.GiaoVienService
                             HoTen = q.HoTen,
                             Email = q.Email,
                             SoDienThoai = q.SoDienThoai,
+                            GioiTinh = q.GioiTinh,
                             KhoaId = q.KhoaId,
                             TrangThai = q.TrangThai,
                             CreatedId = q.CreatedId,
@@ -53,7 +52,7 @@ namespace Hinet.Service.GiaoVienService
                             UpdatedDate = q.UpdatedDate,
                             DeleteTime = q.DeleteTime,
                             IsDelete = q.IsDelete,
-                            TenKhoa = khoa != null ? khoa.TenKhoa : ""
+                            TenKhoa = q.Khoa != null ? q.Khoa.TenKhoa : ""
                         };
 
             if (search != null)
@@ -111,7 +110,7 @@ namespace Hinet.Service.GiaoVienService
             var items = query.ToList();
             return items.Select(x => new DropdownOption
             {
-                Value = x.User.Id.ToString(),
+                Value = x.Id.ToString(),
                 Label = x.HoTen
             }).ToList();
         }

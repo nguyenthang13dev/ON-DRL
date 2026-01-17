@@ -29,6 +29,8 @@ namespace Hinet.Model.MongoEntities
         public string TrangThai { get; set; } // DangLam, NghiViec, etc.
 
         public AppUser? User { get; set; }
+        public Khoa? Khoa { get; set; }
+
     }
 }
 

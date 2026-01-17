@@ -16,7 +16,6 @@ namespace Hinet.Model.MongoEntities
         [BsonElement("giaoVienCoVanId")]
         public Guid? GiaoVienCoVanId { get; set; }
 
-        public AppUser? AppUser { get; set; }
 
     }
 }

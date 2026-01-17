@@ -37,7 +37,9 @@ namespace Hinet.Service.KeKhaiSumaryService
         public async Task<PagedList<StudentSubmission>> GetListStudentSubmission(SearchBase search, Guid IdForm, Guid? IdLop)
         {
             var query = from q in _keKhaiSumaryRepository.GetQueryable()
-                        .Where(t => t.AppUser != null && t.AppUser.Lop != null && t.FormId == IdForm && (t.Status == StatusConstant.GUILOPTRUONG || t.Status == StatusConstant.GUIGIAOVIEN) && t.AppUser.Lop.Id == IdLop)
+                        .Where(t => t.AppUser != null && t.AppUser.Lop != null && t.FormId == IdForm 
+                        && (t.Status == StatusConstant.GUILOPTRUONG || t.Status == StatusConstant.GUIGIAOVIEN) 
+                        && t.AppUser.Lop.Id == IdLop)
 
                         select new StudentSubmission
                         {
