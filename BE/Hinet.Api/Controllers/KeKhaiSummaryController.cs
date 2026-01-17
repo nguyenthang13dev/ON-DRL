@@ -44,12 +44,10 @@ namespace Hinet.Api.Controllers
             return DataResponse<KeKhaiSummary>.Success(response);
         }
         // Lấy danh sách sinh viên kê khai theo form biểu mẫu nhé
-
         [HttpPost("GetStudentSubmission")]
         public async Task<DataResponse<PagedList<StudentSubmission>>> GetStudentSubmission(Guid IdForm, [FromBody] SearchBase model)
         {
             var Lop = await _aspNetUsersService.GetByIdAsync(UserId.Value);
-
             var response = await _keKhaiSumaryService.GetListStudentSubmission(model, IdForm, Lop?.Lop?.Id ?? null);
             return DataResponse<PagedList<StudentSubmission>>.Success(response);
         }

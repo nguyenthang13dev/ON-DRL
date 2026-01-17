@@ -6,6 +6,7 @@ import { StatusConstant } from "@/constants/StatusConstant";
 import { keKhaiSummaryService } from "@/services/keKhaiSoLieu/KeKhaiSoLieuService.service";
 import { soLieuKeKhaiService } from "@/services/SoLieuKeKhai/soLieuKeKhai.service";
 import { useSelector } from "@/store/hooks";
+import { upDateKeKhaiSummaryVM } from "@/types/KeKhaiSummary/keKhaiSummary";
 import { PdfDisplayType } from "@/types/kySoCauHinh/kySoCauHinh";
 import
     {
@@ -165,8 +166,24 @@ const StudentListModal: React.FC<StudentListModalProps> = ({
         }
     };
 
-    const handleReturnSubmission = (student: StudentSubmission) => {
-    
+    const handleReturnSubmission = async (student: StudentSubmission) => {
+        try {
+            const response = await keKhaiSummaryService.UpdateStatus({
+                formId: student.formId!,
+                redirect: StatusConstant.TRAVESINHVIEN,
+            } as upDateKeKhaiSummaryVM);
+            
+            if (response.status) {
+                message.success(`Đã trả về kê khai cho ${student.studentName}`);
+                // Reload danh sách sau khi trả về thành công
+                handleGetStudentSubmission();
+            } else {
+                message.error("Không thể trả về kê khai");
+            }
+        } catch (error) {
+            console.error("Error returning submission:", error);
+            message.error("Có lỗi xảy ra khi trả về kê khai");
+        }
     };
 
     const studentColumns = [
