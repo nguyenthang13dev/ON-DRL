@@ -20,6 +20,13 @@ namespace Hinet.Service.KySoInfoService
             
         }
 
+
+        public async Task<KySoInfo> GetByForm(Guid IdUser, Guid IdForm)
+        {
+            var query = await GetQueryable().Where(t => t.UserId == IdUser && t.IdDoiTuong == IdForm).FirstOrDefaultAsync();
+            return query;
+        }
+
         public async Task<PagedList<KySoInfoDto>> GetData(KySoInfoSearch search)
         {
             var query = from q in GetQueryable()

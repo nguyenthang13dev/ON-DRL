@@ -10,6 +10,7 @@ using Hinet.Service.ConfigFormService;
 using Hinet.Service.Constant;
 using Hinet.Service.Core.Mapper;
 using Hinet.Service.KeKhaiSumaryService;
+using Hinet.Service.KySoInfoService;
 using Hinet.Service.SoLieuKeKhaiService;
 using Hinet.Service.SoLieuKeKhaiService.ViewModels;
 using Microsoft.AspNetCore.Components.Forms;
@@ -29,8 +30,9 @@ namespace Hinet.Api.Controllers
         private readonly IAppUserService _appUserService;
         private readonly IKeKhaiSumaryService _keKhaiSumaryService;
         private readonly IMapper _mapper;
+        private readonly IKySoInfoService _kySoInfoService;
 
-        public SoLieuKeKhaiController(ISoLieuKeKhaiService soLieuKeKhaiService, IMapper mapper, IConfigFormService configFormService, IAppUserService appUserService, IConfigFormKeyService configFormKeyService, IKeKhaiSumaryService keKhaiSumaryService)
+        public SoLieuKeKhaiController(ISoLieuKeKhaiService soLieuKeKhaiService, IMapper mapper, IConfigFormService configFormService, IAppUserService appUserService, IConfigFormKeyService configFormKeyService, IKeKhaiSumaryService keKhaiSumaryService, IKySoInfoService kySoInfoService)
         {
             _soLieuKeKhaiService = soLieuKeKhaiService;
             _mapper = mapper;
@@ -38,6 +40,7 @@ namespace Hinet.Api.Controllers
             _appUserService = appUserService;
             _configFormKeyService = configFormKeyService;
             _keKhaiSumaryService = keKhaiSumaryService;
+            _kySoInfoService = kySoInfoService;
         }
 
 
@@ -62,7 +65,7 @@ namespace Hinet.Api.Controllers
 
             if (model.Lst_KeKhai.Any())
             {
-                var lstKeys = await _soLieuKeKhaiService.GetConfsByFormId(configForm.Id);
+                var lstKeys = await _soLieuKeKhaiService.GetConfsByFormIdAndUser(configForm.Id, UserId.Value);
 
                 var keKhaiSum = _keKhaiSumaryService.GetQueryable().Where(x => x.UserId == UserId.Value && x.FormId == configForm.Id).FirstOrDefault();
                 if (keKhaiSum != null)
@@ -80,6 +83,8 @@ namespace Hinet.Api.Controllers
                         Processs = CheckProcess(model.Lst_KeKhai)
                     };
                     keKhaiSum.Status = StatusConstant.DANGKEKHAI;
+                    keKhaiSum.AppUser = user;
+                    keKhaiSum.FormCf = configForm;
                     await _keKhaiSumaryService.CreateAsync(keKhaiSum);
                 }
 
@@ -116,6 +121,24 @@ namespace Hinet.Api.Controllers
             }
 
         }
+
+
+        [HttpGet("GetDetail")]
+        public async Task<DataResponse<string>> GetDetail(Guid IdForm, Guid IdUser)
+        {
+            var fileDetail = await _kySoInfoService.GetByForm(IdUser, IdForm);
+
+            if (fileDetail != null)
+            {
+                return DataResponse<string>.Success(fileDetail.DuongDanFileTemp);
+            }
+            else
+            {
+                return DataResponse<string>.False("Có lỗi xảy ra");
+            }
+
+        }
+
 
 
         // Get số liệu kê khai

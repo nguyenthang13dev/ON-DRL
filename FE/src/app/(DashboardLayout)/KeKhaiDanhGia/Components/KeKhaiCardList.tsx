@@ -34,6 +34,7 @@ interface KeKhaiCardListProps {
     onViewDetail: (form: FormAssignByUser) => void;
     onKeKhai: (form: FormAssignByUser) => void;
     onSendToClassLeader: (form: FormAssignByUser) => void;
+    onSendToGV: (form: FormAssignByUser) => void;
     onViewStudents?: (form: FormAssignByUser) => void;
 }
 
@@ -43,61 +44,18 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
     onViewDetail,
     onKeKhai,
     onSendToClassLeader,
+    onSendToGV,
     onViewStudents,
 }) => {
 
     const user = useSelector((state) => state.auth.User);
     const roles = user?.listRole ?? [];
+    console.log(roles);
     
     const [selectedForm, setSelectedForm] = useState<FormAssignByUser | null>(
         null,
     );
     const [showStudentModal, setShowStudentModal] = useState(false);
-    const [studentList, setStudentList] = useState<StudentSubmission[]>([]);
-
-    // Mock data for student submissions - replace with actual API call
-    const mockStudentData: StudentSubmission[] = [
-        {
-            id: "1",
-            studentName: "Nguyễn Văn A",
-            studentId: "SV001",
-            className: "Lớp 10A1",
-            status: StatusConstant.GUIGIAOVIEN,
-            submitDate: "2024-01-15",
-            progress: 100,
-            note: "Hoàn thành tốt",
-        },
-        {
-            id: "2",
-            studentName: "Trần Thị B",
-            studentId: "SV002",
-            className: "Lớp 10A1",
-            status: StatusConstant.DANGKEKHAI,
-            submitDate: "2024-01-14",
-            progress: 75,
-            note: "Đang hoàn thiện",
-        },
-        {
-            id: "3",
-            studentName: "Lê Văn C",
-            studentId: "SV003",
-            className: "Lớp 10A1",
-            status: StatusConstant.TRAVESINHVIEN,
-            submitDate: "2024-01-13",
-            progress: 60,
-            note: "Cần chỉnh sửa",
-        },
-        {
-            id: "4",
-            studentName: "Phạm Thị D",
-            studentId: "SV004",
-            className: "Lớp 10A1",
-            status: StatusConstant.CHUAKEKHAI,
-            progress: 0,
-            note: "Chưa bắt đầu",
-        },
-    ];
-
     const getStatusTag = (status: number) => {
         if (
             status == StatusConstant.GUIGIAOVIEN ||
@@ -130,17 +88,12 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
     };
 
     const handleViewStudents = (form: FormAssignByUser) => {
-        if (onViewStudents) {
-            onViewStudents(form);
-        } else {
-            // Fallback to modal for backward compatibility
-            setSelectedForm(form);
-            setStudentList(mockStudentData);
-            setShowStudentModal(true);
-        }
+        setShowStudentModal(true);
+         setSelectedForm(form);
     };
 
-
+    console.log(roles.includes(  RoleConstant.GIAOVIEN ));
+    
 
     return (
         <>
@@ -160,7 +113,7 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
                               className={classes.evaluationCard}
                               hoverable
                             actions={[
-                                roles.includes( RoleConstant.LOPTRUONG || RoleConstant.GIAOVIEN ) ? (
+                                roles.includes( RoleConstant.LOPTRUONG ) || roles.includes(RoleConstant.GIAOVIEN) ? (
                                     <Tooltip
                                         title="Xem danh sách sinh viên"
                                         key="students"
@@ -177,11 +130,11 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
                                         </Button>
                                     </Tooltip>
                                     ) : (<></>)
-                                 ,
-                                  <Tooltip
-                                      title="Kê khai đánh giá"
-                                      key="declare"
-                                  >
+                                ,
+                                ( (form.status === StatusConstant.CHUAKEKHAI
+                                    || form.status === StatusConstant.DANGKEKHAI
+                                    || form.status == StatusConstant.TRAVESINHVIEN)
+                                && !roles.includes(RoleConstant.GIAOVIEN)) && ( <Tooltip title="Kê khai số liệu" key="kekhai">
                                       <Button
                                           type="primary"
                                           icon={<FileTextOutlined />}
@@ -191,8 +144,11 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
                                       >
                                           Kê khai
                                       </Button>
-                                  </Tooltip>,
-                                  <Tooltip title="Gửi lớp trưởng" key="send">
+                                </Tooltip>),
+                                ( (
+                                    form.status === StatusConstant.DANGKEKHAI
+                                    || form.status === StatusConstant.CHUAKEKHAI
+                                ) && !roles.includes(RoleConstant.GIAOVIEN)) && ( <Tooltip title="Gửi lớp trưởng" key="send">
                                       <Button
                                           type="primary"
                                           icon={<SendOutlined />}
@@ -204,7 +160,22 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
                                       >
                                           Gửi LTT
                                       </Button>
-                                  </Tooltip>,
+                                </Tooltip>),
+                                (roles.includes( RoleConstant.LOPTRUONG ) && form.status !== StatusConstant.GUIGIAOVIEN) ? (
+                                    <Tooltip title="Gửi giáo viên" key="sendGV">
+                                        <Button
+                                            type="primary"
+                                            icon={<SendOutlined />}
+                                            onClick={() =>
+                                                onSendToGV(form)
+                                            }
+                                            size="small"
+                                            className={classes.sendButton}
+                                        >
+                                            Gửi GV
+                                        </Button>
+                                    </Tooltip>
+                                ) : ( <></> ),
                               ]}
                           >
                               <div className={classes.cardContent}>
@@ -285,7 +256,10 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
                                               }}
                                           />
                                       </div>
-                                  </div>
+                                </div>
+                                
+
+                            
                               </div>
                           </Card>
                       ))}
@@ -296,7 +270,7 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
                 open={showStudentModal}
                 onCancel={() => setShowStudentModal(false)}
                 formName={selectedForm?.name}
-                studentList={studentList}
+                idForm={selectedForm?.formId}
             />
         </>
     );

@@ -7,6 +7,7 @@ namespace Hinet.Service.KySoInfoService
 {
     public interface IKySoInfoService : IService<KySoInfo>
     {
+        Task<KySoInfo> GetByForm(Guid IdUser, Guid IdForm);
         Task<PagedList<KySoInfoDto>> GetData(KySoInfoSearch search);
         Task<KySoInfoDto?> GetDto(Guid id);
     }

@@ -1,6 +1,8 @@
 ﻿// Hinet.Api/Controllers/LopHanhChinhController.cs
 using Hinet.Api.Dto;
+using Hinet.Model.Entities;
 using Hinet.Model.MongoEntities;
+using Hinet.Service.AspNetUsersService;
 using Hinet.Service.Common;
 using Hinet.Service.Core.Mapper;
 using Hinet.Service.Dto;
@@ -17,19 +19,23 @@ namespace Hinet.Controllers
     public class LopHanhChinhController : HinetController
     {
 
+
         private readonly ISinhVienService _sinhVienService;
         private readonly ILopHanhChinhService _lopHanhChinhService;
         private readonly IMapper _mapper;
+        private readonly IAspNetUsersService _aspNetUserService;
         private readonly ILogger<LopHanhChinhController> _logger;
 
         public LopHanhChinhController(
             ILopHanhChinhService lopHanhChinhService,
             IMapper mapper,
+            IAspNetUsersService aspNetUserService,
             ILogger<LopHanhChinhController> logger,
             ISinhVienService sinhVienService)
         {
             _lopHanhChinhService = lopHanhChinhService;
             _mapper = mapper;
+            this._aspNetUserService = aspNetUserService;
             _logger = logger;
             _sinhVienService = sinhVienService;
         }
@@ -63,7 +69,11 @@ namespace Hinet.Controllers
         {
             try
             {
+                var appUser = await _aspNetUserService.GetByIdAsync(model.GiaoVienCoVanId);
+                model.AppUser = appUser;
                 await _lopHanhChinhService.CreateAsync(model);
+                appUser.Lop = model;
+                await _aspNetUserService.UpdateAsync(appUser);
                 return DataResponse<LopHanhChinh>.Success(model);
             }
             catch (Exception ex)
@@ -73,16 +83,25 @@ namespace Hinet.Controllers
             }
         }
 
-        [HttpPut("Update")]
-        public async Task<DataResponse<LopHanhChinh>> Update([FromBody] LopHanhChinh model)
+        [HttpPut("Update/{Id}")]
+        public async Task<DataResponse<LopHanhChinh>> Update(Guid Id ,[FromBody] LopHanhChinh model)
         {
             try
             {
-                var entity = await _lopHanhChinhService.GetByIdAsync(model.Id);
+                var appUser = await _aspNetUserService.GetByIdAsync(model.GiaoVienCoVanId);
+                var entity = await _lopHanhChinhService.GetByIdAsync(Id);
                 if (entity == null)
                     return DataResponse<LopHanhChinh>.False("Không tìm thấy lớp hành chính");
+
+
+                entity.AppUser = appUser;
                 await _lopHanhChinhService.UpdateAsync(model);
-                return DataResponse<LopHanhChinh>.Success(model);
+
+                appUser.Lop = entity;
+                await _aspNetUserService.UpdateAsync(appUser);
+
+                return DataResponse<LopHanhChinh>.Success(model)
+                    ;
             }
             catch (Exception ex)
             {

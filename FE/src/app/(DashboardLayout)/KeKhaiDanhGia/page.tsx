@@ -7,7 +7,7 @@ import use2FA from "@/hooks/use2FA";
 import withAuthorization from "@/libs/authentication";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import { keKhaiSummaryService } from "@/services/keKhaiSoLieu/KeKhaiSoLieuService.service";
-import { AppDispatch } from "@/store/store";
+import { AppDispatch, AppState } from "@/store/store";
 import
     {
         FormAssignByUser,
@@ -16,6 +16,8 @@ import
 import { upDateKeKhaiSummaryVM } from "@/types/KeKhaiSummary/keKhaiSummary";
 import KeKhaiCardList from "./Components/KeKhaiCardList";
 
+import { RoleConstant } from "@/constants/RoleConstant";
+import { useSelector } from "@/store/hooks";
 import
     {
         CheckCircleOutlined,
@@ -45,6 +47,8 @@ const KeKhaiDanhGia: React.FC = () => {
         [],
     );
 
+    const [redirect, setRedirect] = useState<number>(0);
+
     const [selectedFormAssign, setSelectedFormAssign] =
         useState<FormAssignByUser | null>(null);
 
@@ -68,6 +72,8 @@ const KeKhaiDanhGia: React.FC = () => {
         }
     };
 
+    const user = useSelector((state: AppState) => state.auth.User);
+    const roles = user?.listRole as string[];
     // Load mock data
     useEffect(() => {
         handleGetListFormAssign();
@@ -90,11 +96,11 @@ const KeKhaiDanhGia: React.FC = () => {
     );
 
     const handleUpdate = useCallback(
-        async (record: FormAssignByUser) => {
+        async (record: FormAssignByUser, redirect: number) => {
             try {
                 const response = await keKhaiSummaryService.UpdateStatus({
                     formId: record.formId,
-                    redirect: StatusConstant.GUILOPTRUONG,
+                    redirect: redirect,
                 } as upDateKeKhaiSummaryVM);
                 if (response.status) {
                     message.success("Cập nhật biểu mẫu kê khai thành công");
@@ -148,7 +154,8 @@ const KeKhaiDanhGia: React.FC = () => {
     const pendingEvaluations = ListFormKeKhai.filter(
         (item) =>
             item.status == StatusConstant.DANGKEKHAI ||
-            item.status == StatusConstant.CHUAKEKHAI,
+            item.status == StatusConstant.CHUAKEKHAI
+        || (roles.includes(RoleConstant.GIAOVIEN) || roles.includes(RoleConstant.SINHVIEN) && item.isShowDuyet),
     );
     // Calculate statistics
     const totalEvaluations = ListFormKeKhai.length;
@@ -262,7 +269,7 @@ const KeKhaiDanhGia: React.FC = () => {
             <TwoAuthComponent
                 open={open2FA}
                 onVerify={() => {
-                    handleUpdate(selectedFormAssign as FormAssignByUser);
+                    handleUpdate(selectedFormAssign as FormAssignByUser, redirect);
                 }}
                 onCancel={() => {
                     closeModal();
@@ -298,7 +305,13 @@ const KeKhaiDanhGia: React.FC = () => {
                     onViewDetail={handleView}
                     onKeKhai={handleKeKhai}
                     onSendToClassLeader={(form) => {
+                        setSelectedFormAssign( form );
+                        setRedirect(StatusConstant.GUILOPTRUONG);
+                        openModal();
+                    }}
+                    onSendToGV={(form) => {
                         setSelectedFormAssign(form);
+                        setRedirect(StatusConstant.GUIGIAOVIEN);
                         openModal();
                     }}
                 />

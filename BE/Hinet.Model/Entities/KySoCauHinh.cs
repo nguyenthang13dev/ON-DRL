@@ -22,5 +22,7 @@ namespace Hinet.Model.Entities
         public int? FontSize { get; set; }
         public string? TextColor { get; set; }
         //Tọa độ thông tin ký số
+
+        public AppUser? appUser { get; set; }
     }
 }

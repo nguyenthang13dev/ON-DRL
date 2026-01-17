@@ -6,6 +6,7 @@ using Hinet.Api.Dto;
 using Hinet.Api.ViewModels.Import;
 using Hinet.Model.Entities;
 using Hinet.Model.MongoEntities;
+using Hinet.Service.AspNetUsersService;
 using Hinet.Service.Common;
 using Hinet.Service.Constant;
 using Hinet.Service.Core.Mapper;
@@ -30,18 +31,21 @@ namespace Hinet.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<KySoCauHinhController> _logger;
         private readonly IKySoInfoService _kySoInfoService;
+        private readonly IAspNetUsersService _aspNetUsersService;
         public KySoCauHinhController(
             IKySoCauHinhService kySoCauHinhService,
             ITaiLieuDinhKemService taiLieuDinhKemService,
             IMapper mapper,
             ILogger<KySoCauHinhController> logger,
-            IKySoInfoService kySoInfoService)
+            IKySoInfoService kySoInfoService,
+            IAspNetUsersService aspNetUsersService)
         {
             this._kySoCauHinhService = kySoCauHinhService;
             this._taiLieuDinhKemService = taiLieuDinhKemService;
             this._mapper = mapper;
             _logger = logger;
             _kySoInfoService = kySoInfoService;
+            _aspNetUsersService = aspNetUsersService;
         }
 
         [HttpPost("Create")]
@@ -91,8 +95,10 @@ namespace Hinet.Controllers
         {
             try
             {
+                var appUser = await _aspNetUsersService.GetByIdAsync(UserId.Value);
+
                 var listCauHinh = _kySoCauHinhService
-                    .FindBy(x => x.IdBieuMau == model.IdBieuMau && x.IdDTTienTrinhXuLy == model.IdDTTienTrinhXuLy)
+                    .FindBy(x => x.IdBieuMau == model.IdBieuMau && x.IdDTTienTrinhXuLy == model.IdDTTienTrinhXuLy && x.appUser.Id == UserId.Value)
                     .ToList();
                 //Xóa hết dữ liệu cũ
                 if (listCauHinh.Any())
@@ -110,6 +116,12 @@ namespace Hinet.Controllers
                         if (listCauHinhNew != null && listCauHinhNew.Any())
                         {
                             //var listCauHinhEntities = _mapper.Map<List<KySoCauHinhCreateVM>, List<KySoCauHinh>>(listCauHinhNew);
+
+                            listCauHinhNew.ForEach(x =>
+                            {
+                                x.appUser = appUser;
+                            });
+
                             await _kySoCauHinhService.CreateAsync(listCauHinhNew);
                         }
                     }
@@ -132,7 +144,7 @@ namespace Hinet.Controllers
                     {
                         await model.File.CopyToAsync(stream);
                     }
-                    var kySoInfo = _kySoInfoService.FindBy(x => x.IdDoiTuong == model.IdBieuMau && x.ThongTin == model.IdDTTienTrinhXuLy.ToString()).FirstOrDefault();
+                    var kySoInfo = _kySoInfoService.FindBy(x => x.IdDoiTuong == model.IdBieuMau && x.UserId == UserId.Value).FirstOrDefault();
                     if (kySoInfo != null)
                     {
                         //UploadFileHelper.RemoveFile(kySoInfo.DuongDanFileTemp);
@@ -459,10 +471,9 @@ namespace Hinet.Controllers
                 if (kySoInfor != null)
                 {
                     kySoInfor.TrangThai = "DAKYSO";
+                    await _kySoInfoService.UpdateAsync(kySoInfor);
                 }
 
-
-                await _kySoInfoService.UpdateAsync(kySoInfor);
                 // 
                 var listKySoCauHinh = _kySoCauHinhService.GetQueryable().Where(t => t.IdBieuMau == Id && t.UpdatedId == UserId.Value).ToList();
                 // Update =

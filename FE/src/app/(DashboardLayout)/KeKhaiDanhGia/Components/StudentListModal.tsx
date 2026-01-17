@@ -1,6 +1,12 @@
 "use client";
 
+import Loading from "@/components/effect-components/Loading";
+import { RoleConstant } from "@/constants/RoleConstant";
 import { StatusConstant } from "@/constants/StatusConstant";
+import { keKhaiSummaryService } from "@/services/keKhaiSoLieu/KeKhaiSoLieuService.service";
+import { soLieuKeKhaiService } from "@/services/SoLieuKeKhai/soLieuKeKhai.service";
+import { useSelector } from "@/store/hooks";
+import { PdfDisplayType } from "@/types/kySoCauHinh/kySoCauHinh";
 import
     {
         CheckCircleOutlined,
@@ -10,10 +16,12 @@ import
         UndoOutlined,
         UserOutlined,
     } from "@ant-design/icons";
-import { Button, Modal, Space, Table, Tag, Tooltip, message } from "antd";
-import React from "react";
+import { PdfJs, Viewer, Worker } from "@react-pdf-viewer/core";
+import { Button, message, Modal, Space, Spin, Table, Tag, Tooltip } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
 import classes from "./KeKhaiCardList.module.css";
-
+const StaticFileUrl = process.env.NEXT_PUBLIC_STATIC_FILE_BASE_URL;
+const workerUrl = "/pdf.worker.min.js";
 interface StudentSubmission {
     id: string;
     studentName: string;
@@ -23,21 +31,90 @@ interface StudentSubmission {
     submitDate?: string;
     progress: number;
     note?: string;
+    formId?: string;
+    userId?: string;
 }
 
 interface StudentListModalProps {
     open: boolean;
     onCancel: () => void;
     formName?: string;
-    studentList: StudentSubmission[];
+    idForm?: string;
 }
 
 const StudentListModal: React.FC<StudentListModalProps> = ({
     open,
     onCancel,
     formName,
-    studentList,
+    idForm,
 }) => {
+    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState<StudentSubmission[]>([]);
+    const [detailLoading, setDetailLoading] = useState(false);
+    const [detailModalOpen, setDetailModalOpen] = useState(false);
+    const [detailData, setDetailData] = useState<any>(null);
+  // PDF hiển thị
+  const [pdfDisplay, setPdfDisplay] = useState<PdfDisplayType>({
+    displayWidth: 0,
+    displayHeight: 0,
+    marginLeft: 0,
+    marginTop: 5,
+  });
+
+    // 3. Xử lý PDF và lấy dữ liệu
+      const handleDocumentLoad = useCallback((e: { doc: PdfJs.PdfDocument }) => {
+        const doc = e.doc;
+        doc.getPage(1).then((page) => {
+          const viewport = page.getViewport({ scale: 1 });
+          const pdfWidth = viewport.width;
+          const pdfHeight = viewport.height;
+          const containerWidth = 793;
+          const marginLeft = Math.floor((containerWidth - pdfWidth) / 2);
+          setPdfDisplay({
+            displayWidth: pdfWidth,
+            displayHeight: pdfHeight,
+            marginLeft,
+            marginTop: 5,
+          });
+        });
+      }, [] );
+    
+    
+        const user = useSelector((state) => state.auth.User);
+        const roles = user?.listRole ?? [];
+    // Gọi API để lấy danh sách sinh viên khi modal mở
+    useEffect(() => {
+        if (open && idForm) {
+            handleGetStudentSubmission();
+        }
+    }, [open, idForm]);
+
+    const handleGetStudentSubmission = async () => {
+        try {
+            setLoading(true);
+            const response = await keKhaiSummaryService.GetStudentSubmission(
+                {
+                    pageIndex: 1,
+                    pageSize: 20,
+                } as any,
+                idForm || ""
+            );
+            if (response.status && response.data) {
+                // API trả về object với cấu trúc { items: [], pageIndex, pageSize, totalCount, totalPage }
+                const items = response.data.items || response.data;
+                setData(Array.isArray(items) ? items : []);
+            } else {
+                message.error("Không thể tải danh sách sinh viên");
+                setData([]);
+            }
+        } catch (error) {
+            console.error("Error loading student submission:", error);
+            message.error("Có lỗi xảy ra khi tải dữ liệu");
+            setData([]);
+        } finally {
+            setLoading(false);
+        }
+    };
     const getStatusTag = (status: number) => {
         if (
             status == StatusConstant.GUIGIAOVIEN ||
@@ -69,14 +146,27 @@ const StudentListModal: React.FC<StudentListModalProps> = ({
         }
     };
 
-    const handleViewStudentDetail = (student: StudentSubmission) => {
-        message.info(`Xem chi tiết kê khai của ${student.studentName}`);
-        // Implement view student detail logic
+    const handleViewStudentDetail =  async (student: StudentSubmission) => {
+        try {
+            setDetailLoading(true);
+            const res = await soLieuKeKhaiService.GetDetail(student.formId!, student.userId!);
+            if (res.status) {
+                setDetailData(res.data);
+                setDetailModalOpen(true);
+                message.success( `Đã tải chi tiết kê khai của ${student.studentName}` );
+            } else {
+                message.error("Không thể xem chi tiết");
+            }
+        } catch (error) {
+            console.error("Error loading detail:", error);
+            message.error("Có lỗi xảy ra khi tải chi tiết");
+        } finally {
+            setDetailLoading(false);
+        }
     };
 
     const handleReturnSubmission = (student: StudentSubmission) => {
-        message.success(`Đã trả về kê khai cho ${student.studentName}`);
-        // Implement return submission logic
+    
     };
 
     const studentColumns = [
@@ -140,7 +230,7 @@ const StudentListModal: React.FC<StudentListModalProps> = ({
                             size="small"
                         />
                     </Tooltip>
-                    {record.status === StatusConstant.DANGKEKHAI && (
+                    {(record.status === StatusConstant.GUIGIAOVIEN  && roles.includes(RoleConstant.GIAOVIEN)) && (
                         <Tooltip title="Trả về">
                             <Button
                                 type="text"
@@ -156,34 +246,87 @@ const StudentListModal: React.FC<StudentListModalProps> = ({
         },
     ];
 
+
+
+
     return (
-        <Modal
-            title={
-                <div className={classes.modalHeader}>
-                    <UserOutlined className={classes.modalIcon} />
-                    <span>Danh sách sinh viên - {formName}</span>
-                </div>
-            }
-            open={open}
-            onCancel={onCancel}
-            width={1000}
-            footer={null}
-            className={classes.studentModal}
-        >
-            <Table
-                columns={studentColumns}
-                dataSource={studentList}
-                rowKey="id"
-                pagination={{
-                    pageSize: 10,
-                    showSizeChanger: true,
-                    showQuickJumper: true,
-                    showTotal: (total, range) =>
-                        `${range[0]}-${range[1]} của ${total} sinh viên`,
-                }}
-                className={classes.studentTable}
-            />
-        </Modal>
+        <>
+            {/* Main Student List Modal */}
+            <Modal
+                title={
+                    <div className={classes.modalHeader}>
+                        <UserOutlined className={classes.modalIcon} />
+                        <span>Danh sách sinh viên - {formName}</span>
+                    </div>
+                }
+                open={open}
+                onCancel={onCancel}
+                width={1000}
+                footer={null}
+                className={classes.studentModal}
+            >
+                {loading ? (
+                    <div style={{ textAlign: "center", padding: "50px" }}>
+                        <Spin size="large" />
+                        <p style={{ marginTop: "16px" }}>Đang tải dữ liệu...</p>
+                    </div>
+                ) : (
+                    <Table
+                        columns={studentColumns}
+                        dataSource={data}
+                        rowKey="id"
+                        pagination={{
+                            pageSize: 10,
+                            showSizeChanger: true,
+                            showQuickJumper: true,
+                            showTotal: (total, range) =>
+                                `${range[0]}-${range[1]} của ${total} sinh viên`,
+                        }}
+                        className={classes.studentTable}
+                    />
+                )}
+            </Modal>
+
+            {/* Detail Modal */}
+            <Modal
+                title={
+                    <div className={classes.modalHeader}>
+                        <FileTextOutlined className={classes.modalIcon} />
+                        <span>Chi tiết kê khai</span>
+                    </div>
+                }
+                open={detailModalOpen}
+                onCancel={() => setDetailModalOpen(false)}
+                width={1200}
+                footer={null}
+                className={classes.detailModal}
+            >
+                {detailLoading ? (
+                    <div style={{ textAlign: "center", padding: "50px" }}>
+                        <Spin size="large" />
+                        <p style={{ marginTop: "16px" }}>Đang tải chi tiết...</p>
+                    </div>
+                ) : (
+                    <div style={{ padding: "20px" }}>
+                        {detailData ? (
+                            <div>
+                                <Worker workerUrl={workerUrl}>
+                                               <Viewer
+                                                 fileUrl={`${StaticFileUrl}/${detailData}`}
+                                                 defaultScale={1}
+                                                 // defaultScale={scale}
+                                                 onDocumentLoad={handleDocumentLoad}
+                                                 renderLoader={() => <Loading className="mt-12" />}
+                                               />
+                                             </Worker>
+                            </div>
+                        ) : (
+                            <p>Không có dữ liệu</p>
+                        )}
+                    </div>
+                )}
+            </Modal>
+        </>
     );
 };
 

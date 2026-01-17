@@ -191,6 +191,7 @@ namespace Hinet.Controllers
             search.UserId = UserId.Value;
             var isLopTruong = IsLopTruong;
             search.IsLopTruong = isLopTruong;
+            search.IsGv = IsGV;
             var result = await _ConfigFormService.GetKeKhaiByUser(search);
             return new DataResponse<List<DanhSachFormDto>>
             {

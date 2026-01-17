@@ -55,4 +55,5 @@ export interface FormAssignByUser
     createDate?: Date;
     status: number;
     id: string;
+    isShowDuyet?: boolean;
 }

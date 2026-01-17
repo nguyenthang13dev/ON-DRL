@@ -111,7 +111,7 @@ namespace Hinet.Service.GiaoVienService
             var items = query.ToList();
             return items.Select(x => new DropdownOption
             {
-                Value = x.Id.ToString(),
+                Value = x.User.Id.ToString(),
                 Label = x.HoTen
             }).ToList();
         }

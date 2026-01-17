@@ -37,6 +37,11 @@ class SoLieuKeKhaiService
         return response.data;
     }
 
+    public async GetDetail(Id: string, IdUser: string): Promise<Response> {
+        const response = await apiService.get<Response>(`SoLieuKeKhai/GetDetail?IdForm=${Id}&IdUser=${IdUser}`);
+        return response.data;
+    }
+
 
 
 

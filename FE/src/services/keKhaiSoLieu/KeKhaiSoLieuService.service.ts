@@ -1,4 +1,4 @@
-import { Response } from "@/types/general";
+import { Response, SearchBase } from "@/types/general";
 import { upDateKeKhaiSummaryVM } from "@/types/KeKhaiSummary/keKhaiSummary";
 import { apiService } from "..";
 
@@ -19,6 +19,13 @@ class KeKhaiSummaryService
         const response = await apiService.post<Response>( "KeKhaiSummary/UpdateStatus", model );
         return response.data;
     }
+    
+    public async GetStudentSubmission(model: SearchBase, IdForm: string) : Promise<Response>
+    {
+        const response = await apiService.post<Response>( `KeKhaiSummary/GetStudentSubmission?IdForm=${IdForm}`, model );
+        return response.data;
+    }
+
 
 }
 

@@ -76,6 +76,7 @@ namespace Hinet.Service.ConfigFormService
                 CreateDate = keKhaiSummarys?.FirstOrDefault(x => x.FormId == t.Id)?.CreatedDate ?? null,
                 Subject = t.Subject?.Name ?? "",
                 FormId = t.Id,
+                IsShowDuyet = (search.IsGv.Value || search.IsLopTruong.Value)
             }).ToList();
             return query;
 

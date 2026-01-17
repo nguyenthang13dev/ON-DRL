@@ -8,14 +8,14 @@ import
 import { Button, Card, Input, Pagination, Select, message } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import { StatusConstant } from "@/constants/StatusConstant";
 import withAuthorization from "@/libs/authentication";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import { keKhaiSummaryService } from "@/services/keKhaiSoLieu/KeKhaiSoLieuService.service";
-import { AppDispatch } from "@/store/store";
+import { AppDispatch, AppState } from "@/store/store";
 import
     {
         FormAssignByUser,
@@ -39,6 +39,9 @@ const { Option } = Select;
 const DanhSachKeKhai: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
+
+    const user = useSelector((state: AppState) => state.auth.User);
+    const roles = user?.listRole as string[];
 
     // State management
     const [pageIndex, setPageIndex] = useState<number>(1);
@@ -108,6 +111,26 @@ const DanhSachKeKhai: React.FC = () => {
         [],
     );
 
+
+     const handleSendToGV = useCallback(
+        async (record: FormAssignByUser) => {
+            try {
+                const response = await keKhaiSummaryService.UpdateStatus({
+                    formId: record.formId,
+                    redirect: StatusConstant.GUIGIAOVIEN,
+                } as upDateKeKhaiSummaryVM);
+                if (response.status) {
+                    message.success("Cập nhật biểu mẫu kê khai thành công");
+                    handleGetListFormAssign(); // Refresh data
+                }
+            } catch (error) {
+                message.error("Lỗi khi cập nhật trạng thái");
+            }
+        },
+        [],
+    );
+
+
     const handleViewStudents = useCallback(
         (record: FormAssignByUser) => {
             router.push(`/DanhSachKeKhai/${record.formId}`);
@@ -137,6 +160,8 @@ const DanhSachKeKhai: React.FC = () => {
         setPageIndex(1);
     };
 
+    
+
     // Filter and search logic
     const filteredData = ListFormKeKhai.filter((item) => {
         const matchesSearch =
@@ -146,7 +171,7 @@ const DanhSachKeKhai: React.FC = () => {
 
         const matchesStatus =
             statusFilter === null || item.status === statusFilter;
-
+        
         return matchesSearch && matchesStatus;
     });
 
@@ -373,6 +398,7 @@ const DanhSachKeKhai: React.FC = () => {
                     onKeKhai={handleKeKhai}
                     onSendToClassLeader={handleSendToClassLeader}
                     onViewStudents={handleViewStudents}
+                    onSendToGV={handleSendToGV}
                 />
 
                 {/* Empty State */}

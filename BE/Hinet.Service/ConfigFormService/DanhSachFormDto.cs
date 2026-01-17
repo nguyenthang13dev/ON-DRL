@@ -20,5 +20,6 @@ namespace Hinet.Service.ConfigFormService
         public int? SoHocSinh { get; set; }
         public int? TongSoHocSinh { get; set; }
         public DateTime? CreateDate { get; set; }
+        public bool? IsShowDuyet { get; set; }
     }
 }
