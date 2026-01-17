@@ -130,7 +130,7 @@ namespace Hinet.Api.Controllers
         [HttpGet("PreviewSoLieuFilePdf")]
         public async Task<DataResponse<object>> GetPreviewFile([FromQuery] Guid Id)
         {
-            string outputDir = "wwwroot/previews";
+            string outputDir = "wwwroot/uploads/previews";
 
             var ListSoLieuKeKhai = await _soLieuKeKhaiService.GetConfsByFormIdAndUser(Id, UserId.Value);
             var configForm = await _configFormService.GetByIdAsync(Id);
@@ -151,7 +151,7 @@ namespace Hinet.Api.Controllers
                 file.Write(fileBytes, 0, fileBytes.Length);
             }
             var dictObj = ListSoLieuKeKhai.Where(t => t.KTT_KEY != null && !string.IsNullOrEmpty(t.KTT_VALUE)).ToDictionary(x => x.KTT_KEY.KTT_KEY, y => y.KTT_VALUE);
-            var newPathCopy = Path.Combine(rootPathPreview, newFileCopyName);
+            var newPathCopy = Path.Combine("wwwroot", "PreViewTailieu", Id.ToString(), newFileCopyName);
             if (System.IO.File.Exists(newPathCopy))
             {
                 WordHelper.ReplacePlaceholdersWithDictionary(newPathCopy, dictObj);
@@ -168,7 +168,7 @@ namespace Hinet.Api.Controllers
             {
                 return DataResponse<object>.Success(new
                 {
-                    Path = FileConversionResult.FilePath
+                    Path = Path.Combine("previews", Path.GetFileName(FileConversionResult.FilePath))
                 });
             }
             else

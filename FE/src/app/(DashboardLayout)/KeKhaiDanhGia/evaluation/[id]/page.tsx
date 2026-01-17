@@ -95,11 +95,7 @@ const KeKhaiDanhGia = () => {
       <>
         
         <Flex>
-
           <AutoBreadcrumb /> 
-          <KySoInfo idBieuMau={id} idDTTienTrinhXuLy={id} />
-
-
         </Flex>
 
 

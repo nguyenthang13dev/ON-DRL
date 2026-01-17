@@ -37,5 +37,8 @@ namespace Hinet.Api.Controllers
 
 
 
+        // Lấy danh sách sinh viên kê khai theo form biểu mẫu nhé
+
+
     }
 }

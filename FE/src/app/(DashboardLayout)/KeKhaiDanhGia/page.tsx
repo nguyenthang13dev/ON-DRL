@@ -2,35 +2,34 @@
 
 import TwoAuthComponent from "@/components/two_auth-components/twoAuthCompoent";
 import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
-import KeKhaiCardList from "./Components/KeKhaiCardList";
 import { StatusConstant } from "@/constants/StatusConstant";
 import use2FA from "@/hooks/use2FA";
 import withAuthorization from "@/libs/authentication";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import { keKhaiSummaryService } from "@/services/keKhaiSoLieu/KeKhaiSoLieuService.service";
 import { AppDispatch } from "@/store/store";
-import {
-    FormAssignByUser,
-    SearchConfigFormDataByUser,
-} from "@/types/ConfigForm/ConfigForm";
+import
+    {
+        FormAssignByUser,
+        SearchConfigFormDataByUser,
+    } from "@/types/ConfigForm/ConfigForm";
 import { upDateKeKhaiSummaryVM } from "@/types/KeKhaiSummary/keKhaiSummary";
+import KeKhaiCardList from "./Components/KeKhaiCardList";
 
-import {
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    EyeOutlined,
-    FileTextOutlined,
-    FormOutlined,
-} from "@ant-design/icons";
-import {
-    Button,
-    Card,
-    message,
-    Pagination,
-    Progress,
-    Tag,
-    Tooltip,
-} from "antd";
+import
+    {
+        CheckCircleOutlined,
+        ClockCircleOutlined,
+        FileTextOutlined,
+        FormOutlined
+    } from "@ant-design/icons";
+import
+    {
+        Card,
+        message,
+        Pagination,
+        Tag
+    } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -100,6 +99,7 @@ const KeKhaiDanhGia: React.FC = () => {
                 if (response.status) {
                     message.success("Cập nhật biểu mẫu kê khai thành công");
                     closeModal();
+                    handleGetListFormAssign();
                 }
             } catch (error) {
                 throw error;

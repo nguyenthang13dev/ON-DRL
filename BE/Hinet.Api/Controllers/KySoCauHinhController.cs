@@ -460,6 +460,9 @@ namespace Hinet.Controllers
                 {
                     kySoInfor.TrangThai = "DAKYSO";
                 }
+
+
+                await _kySoInfoService.UpdateAsync(kySoInfor);
                 // 
                 var listKySoCauHinh = _kySoCauHinhService.GetQueryable().Where(t => t.IdBieuMau == Id && t.UpdatedId == UserId.Value).ToList();
                 // Update =

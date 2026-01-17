@@ -1,19 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
-import { Card, Button, Modal, Table, Tag, Space, Tooltip, message } from "antd";
-import {
-    EyeOutlined,
-    UserOutlined,
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    FileTextOutlined,
-    SendOutlined,
-    UndoOutlined,
-} from "@ant-design/icons";
-import { FormAssignByUser } from "@/types/ConfigForm/ConfigForm";
+import { RoleConstant } from "@/constants/RoleConstant";
 import { StatusConstant } from "@/constants/StatusConstant";
+import { useSelector } from "@/store/hooks";
+import { FormAssignByUser } from "@/types/ConfigForm/ConfigForm";
+import
+    {
+        CheckCircleOutlined,
+        ClockCircleOutlined,
+        FileTextOutlined,
+        SendOutlined,
+        UserOutlined
+    } from "@ant-design/icons";
+import { Button, Card, Tag, Tooltip } from "antd";
+import React, { useState } from "react";
 import classes from "./KeKhaiCardList.module.css";
+import StudentListModal from "./StudentListModal";
 
 interface StudentSubmission {
     id: string;
@@ -43,6 +45,10 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
     onSendToClassLeader,
     onViewStudents,
 }) => {
+
+    const user = useSelector((state) => state.auth.User);
+    const roles = user?.listRole ?? [];
+    
     const [selectedForm, setSelectedForm] = useState<FormAssignByUser | null>(
         null,
     );
@@ -134,92 +140,7 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
         }
     };
 
-    const handleViewStudentDetail = (student: StudentSubmission) => {
-        message.info(`Xem chi tiết kê khai của ${student.studentName}`);
-        // Implement view student detail logic
-    };
 
-    const handleReturnSubmission = (student: StudentSubmission) => {
-        message.success(`Đã trả về kê khai cho ${student.studentName}`);
-        // Implement return submission logic
-    };
-
-    const studentColumns = [
-        {
-            title: "Tên sinh viên",
-            dataIndex: "studentName",
-            key: "studentName",
-            render: (text: string, record: StudentSubmission) => (
-                <div className={classes.studentInfo}>
-                    <div className={classes.studentName}>{text}</div>
-                    <div className={classes.studentId}>
-                        MSSV: {record.studentId}
-                    </div>
-                </div>
-            ),
-        },
-        {
-            title: "Lớp",
-            dataIndex: "className",
-            key: "className",
-        },
-        {
-            title: "Tình trạng",
-            dataIndex: "status",
-            key: "status",
-            render: (status: number) => getStatusTag(status),
-        },
-        {
-            title: "Ngày nộp",
-            dataIndex: "submitDate",
-            key: "submitDate",
-            render: (date: string) =>
-                date ? new Date(date).toLocaleDateString("vi-VN") : "Chưa nộp",
-        },
-        {
-            title: "Tiến độ",
-            dataIndex: "progress",
-            key: "progress",
-            render: (progress: number) => (
-                <div className={classes.progressContainer}>
-                    <div className={classes.progressBar}>
-                        <div
-                            className={classes.progressFill}
-                            style={{ width: `${progress}%` }}
-                        />
-                    </div>
-                    <span className={classes.progressText}>{progress}%</span>
-                </div>
-            ),
-        },
-        {
-            title: "Thao tác",
-            key: "actions",
-            render: (record: StudentSubmission) => (
-                <Space>
-                    <Tooltip title="Xem chi tiết">
-                        <Button
-                            type="text"
-                            icon={<EyeOutlined />}
-                            onClick={() => handleViewStudentDetail(record)}
-                            size="small"
-                        />
-                    </Tooltip>
-                    {record.status === StatusConstant.DANGKEKHAI && (
-                        <Tooltip title="Trả về">
-                            <Button
-                                type="text"
-                                icon={<UndoOutlined />}
-                                onClick={() => handleReturnSubmission(record)}
-                                size="small"
-                                danger
-                            />
-                        </Tooltip>
-                    )}
-                </Space>
-            ),
-        },
-    ];
 
     return (
         <>
@@ -238,32 +159,25 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
                               key={form.id}
                               className={classes.evaluationCard}
                               hoverable
-                              actions={[
-                                  <Tooltip
-                                      title="Xem danh sách sinh viên"
-                                      key="students"
-                                  >
-                                      <Button
-                                          type="text"
-                                          icon={<UserOutlined />}
-                                          onClick={() =>
-                                              handleViewStudents(form)
-                                          }
-                                          className={classes.studentButton}
-                                      >
-                                          Danh sách SV
-                                      </Button>
-                                  </Tooltip>,
-                                  <Tooltip title="Xem chi tiết" key="view">
-                                      <Button
-                                          type="text"
-                                          icon={<EyeOutlined />}
-                                          onClick={() => onViewDetail(form)}
-                                          className={classes.viewButton}
-                                      >
-                                          Xem chi tiết
-                                      </Button>
-                                  </Tooltip>,
+                            actions={[
+                                roles.includes( RoleConstant.LOPTRUONG || RoleConstant.GIAOVIEN ) ? (
+                                    <Tooltip
+                                        title="Xem danh sách sinh viên"
+                                        key="students"
+                                    >
+                                        <Button
+                                            type="text"
+                                            icon={<UserOutlined />}
+                                            onClick={() =>
+                                                handleViewStudents(form)
+                                            }
+                                            className={classes.studentButton}
+                                        >
+                                            Danh sách
+                                        </Button>
+                                    </Tooltip>
+                                    ) : (<></>)
+                                 ,
                                   <Tooltip
                                       title="Kê khai đánh giá"
                                       key="declare"
@@ -378,33 +292,12 @@ const KeKhaiCardList: React.FC<KeKhaiCardListProps> = ({
             </div>
 
             {/* Student List Modal */}
-            <Modal
-                title={
-                    <div className={classes.modalHeader}>
-                        <UserOutlined className={classes.modalIcon} />
-                        <span>Danh sách sinh viên - {selectedForm?.name}</span>
-                    </div>
-                }
+            <StudentListModal
                 open={showStudentModal}
                 onCancel={() => setShowStudentModal(false)}
-                width={1000}
-                footer={null}
-                className={classes.studentModal}
-            >
-                <Table
-                    columns={studentColumns}
-                    dataSource={studentList}
-                    rowKey="id"
-                    pagination={{
-                        pageSize: 10,
-                        showSizeChanger: true,
-                        showQuickJumper: true,
-                        showTotal: (total, range) =>
-                            `${range[0]}-${range[1]} của ${total} sinh viên`,
-                    }}
-                    className={classes.studentTable}
-                />
-            </Modal>
+                formName={selectedForm?.name}
+                studentList={studentList}
+            />
         </>
     );
 };

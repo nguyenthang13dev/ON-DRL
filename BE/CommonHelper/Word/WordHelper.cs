@@ -154,7 +154,7 @@ namespace CommonHelper.Word
                     }
                     else
                     {
-                        result.FilePath = null;
+                       result.FilePath = null;
                         result.Status = false;
                         result.ErrorMessage = string.IsNullOrEmpty(error) ? "Unknown error" : error.Trim();
                     }

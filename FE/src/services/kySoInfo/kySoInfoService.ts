@@ -1,16 +1,18 @@
 import { apiService } from '@/services';
-import {
-  DataToSend,
-  Dictionary,
-  DropdownOption,
-  Response,
-  ResponsePageList,
-} from '@/types/general';
-import {
-  KySoInfoCreateOrUpdateType,
-  KySoInfoSearchType,
-  KySoInfoType,
-} from '@/types/kySoInfo/kySoInfo';
+import
+  {
+    DataToSend,
+    Dictionary,
+    DropdownOption,
+    Response,
+    ResponsePageList,
+  } from '@/types/general';
+import
+  {
+    KySoInfoCreateOrUpdateType,
+    KySoInfoSearchType,
+    KySoInfoType,
+  } from '@/types/kySoInfo/kySoInfo';
 
 class KySoInfoService {
   private static _instance: KySoInfoService;
@@ -112,7 +114,7 @@ class KySoInfoService {
   }
 
   public async updateStatus(model: string): Promise<Response> {
-    const response = await apiService.post<Response>(`/kySoCauHinh/UpdateStatus?Id=${model}`);
+    const response = await apiService.get<Response>(`/kySoCauHinh/UpdateStatus?Id=${model}`);
     return response.data;
   }
 }

@@ -209,6 +209,9 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
         const responseDuLieuBieuMau = await soLieuKeKhaiService.PreSoLieuKeKhai(
           idBieuMau
         );
+        console.log(responseDuLieuBieuMau);
+        
+
         if (responseDuLieuBieuMau?.status && responseDuLieuBieuMau.data?.path) {
           setPdfTempLink(extractFilePath(responseDuLieuBieuMau.data.path));
         } else {
