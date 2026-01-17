@@ -30,7 +30,6 @@ namespace Hinet.Service.KeKhaiSumaryService
         }
 
 
-        pub
 
 
 
