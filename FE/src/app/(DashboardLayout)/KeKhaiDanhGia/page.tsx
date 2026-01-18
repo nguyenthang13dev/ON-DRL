@@ -155,7 +155,7 @@ const KeKhaiDanhGia: React.FC = () => {
         (item) =>
             item.status == StatusConstant.DANGKEKHAI ||
             item.status == StatusConstant.CHUAKEKHAI
-        || (roles.includes(RoleConstant.GIAOVIEN) || roles.includes(RoleConstant.SINHVIEN) && item.isShowDuyet),
+        || (roles?.includes(RoleConstant.GIAOVIEN) || roles?.includes(RoleConstant.SINHVIEN) && item.isShowDuyet),
     );
     // Calculate statistics
     const totalEvaluations = ListFormKeKhai.length;

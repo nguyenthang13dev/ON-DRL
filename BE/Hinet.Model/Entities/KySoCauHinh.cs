@@ -21,6 +21,14 @@ namespace Hinet.Model.Entities
         public string? ImageSrc { get; set; }
         public int? FontSize { get; set; }
         public string? TextColor { get; set; }
+
+        // Lớp trưởng hay giáo viên kí đè sẽ lên trên này
+        public bool IsPheDuyetLopTruong { get; set; }
+        public bool IsPheDuyetGiaoVien { get; set; }
+        public Guid? IdGiaoVien { get; set; }
+        public Guid? IdLopTruong { get; set; }
+        public Guid? IdFileKySo { get; set; }
+
         //Tọa độ thông tin ký số
 
         public AppUser? appUser { get; set; }

@@ -61,9 +61,11 @@ const primaryColor = "#CE1127";
 type KySoInfoProps = {
   idBieuMau: string;
   idDTTienTrinhXuLy: string;
+  isLopTruongOrGvhd?: boolean;
+  idUser?: string;
 };
 
-const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
+const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy, isLopTruongOrGvhd, idUser }: KySoInfoProps) => {
   const [showSignaturePad, setShowSignaturePad] = useState(false);
 
   useEffect(() => {
@@ -205,18 +207,30 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
     cleanUp();
     try {
       // Try to generate/preview the PDF via SoLieuKeKhai preview API
-      try {
-        const responseDuLieuBieuMau = await soLieuKeKhaiService.PreSoLieuKeKhai(
-          idBieuMau
-        );
-        console.log(responseDuLieuBieuMau);
-        
-
-        if (responseDuLieuBieuMau?.status && responseDuLieuBieuMau.data?.path) {
-          setPdfTempLink(extractFilePath(responseDuLieuBieuMau.data.path));
-        } else {
-          message.error("Không thể tải trước file PDF");
+      try
+      {
+        if ( isLopTruongOrGvhd )
+        {
+         const res = await soLieuKeKhaiService.GetDetail(idBieuMau, idUser!);
+          if (res.status) {
+              setPdfTempLink(extractFilePath(res.data));
+          } else {
+              message.error("Không thể xem chi tiết");
+         }
+          
+        } else
+        {
+           const responseDuLieuBieuMau = await soLieuKeKhaiService.PreSoLieuKeKhai(
+            idBieuMau
+          );
+          if (responseDuLieuBieuMau?.status && responseDuLieuBieuMau.data?.path) {
+            setPdfTempLink(extractFilePath(responseDuLieuBieuMau.data.path));
+          } else {
+            message.error("Không thể tải trước file PDF");
+          }
         }
+
+       
       } catch (err) {
         console.error("Lỗi khi gọi PreviewSoLieuFilePdf:", err);
         message.error("Lỗi khi tải trước file PDF");
@@ -499,10 +513,11 @@ const KySoInfo = ({ idBieuMau, idDTTienTrinhXuLy }: KySoInfoProps) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("idBieuMau", idBieuMau);
-    formData.append("idDTTienTrinhXuLy", idDTTienTrinhXuLy);
+    formData.append("idDTTienTrinhXuLy", idDTTienTrinhXuLy );
+    formData.append("idUser", idUser! ?? "");
     formData.append("listCauHinh", JSON.stringify(listCauHinh));
 
-    const response = await kySoCauHinhService.save(formData);
+    const response = await kySoCauHinhService.save(formData, isLopTruongOrGvhd || false);
     if (response?.status) {
       setKySoInfo(response.data);
       setPdfKySoLink(response.data.duongDanFileTemp);

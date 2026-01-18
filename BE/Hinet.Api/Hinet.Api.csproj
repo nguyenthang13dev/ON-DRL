@@ -1303,6 +1303,7 @@
     <Folder Include="wwwroot\previews\" />
     <Folder Include="wwwroot\PreViewTailieu\86325ccb-acf2-4fb0-b99c-244675bde4c3\" />
     <Folder Include="wwwroot\uploads\ImportNguoiDung\" />
+    <Folder Include="wwwroot\uploads\TAILIEU_KYSO\FormTemplate\Data\" />
   </ItemGroup>
 
   <ItemGroup>

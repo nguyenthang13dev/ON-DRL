@@ -15,5 +15,6 @@ namespace Hinet.Service.KeKhaiSumaryService
     public interface IKeKhaiSumaryService : IService<KeKhaiSummary>
     {
         Task<PagedList<StudentSubmission>> GetListStudentSubmission(SearchBase search, Guid IdForm, Guid? IdLop);
+        Task<bool> UpdateIdKySoInfor(Guid FormId, Guid UserId);
     }
 }

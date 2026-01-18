@@ -13,6 +13,7 @@ using Hinet.Service.KySoInfoService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.X509;
+using System.Collections.Generic;
 
 namespace Hinet.Api.Controllers
 {
@@ -34,14 +35,29 @@ namespace Hinet.Api.Controllers
         }
 
         [HttpPost("UpdateStatus")]
-        public async Task<DataResponse<KeKhaiSummary>> UpdateStatus([FromBody] SubmitData model)
+        public async Task<DataResponse<List<KeKhaiSummary>>> UpdateStatus([FromBody] SubmitData model)
         {
-            var response = _keKhaiSumaryService.GetQueryable().Where(t => t.UserId == UserId.Value && t.FormId == model.FormId).FirstOrDefault();
+            var lop = await _aspNetUsersService.GetByIdAsync(UserId.Value);
+            var response = _keKhaiSumaryService.GetQueryable().Where(t => t.FormId == model.FormId).ToList();
+            if (model.Redirect == StatusConstant.GUIGIAOVIEN && IsLopTruong)
+            {
+                response = response.Where(t => t.AppUser.Lop != null && t.AppUser.Lop.Id == lop.Lop.Id).ToList();
+            }
+            else
+            {
+                response = response.Where(t => t.UserId == UserId.Value).ToList();
+            }
             if (response == null)
-                return DataResponse<KeKhaiSummary>.False("Error extisting");
-            response.Status = model.Redirect;
+                return DataResponse<List<KeKhaiSummary>>.False("Error extisting");
+            if (response.Any())
+            {
+                response.ForEach((item) =>
+                {
+                    item.Status = model.Redirect;
+                });
+            }
             await _keKhaiSumaryService.UpdateAsync(response);
-            return DataResponse<KeKhaiSummary>.Success(response);
+            return DataResponse<List<KeKhaiSummary>>.Success(response);
         }
         // Lấy danh sách sinh viên kê khai theo form biểu mẫu nhé
         [HttpPost("GetStudentSubmission")]

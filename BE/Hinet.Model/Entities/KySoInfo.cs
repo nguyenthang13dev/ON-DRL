@@ -18,5 +18,9 @@ namespace Hinet.Model.Entities
         public string? ThongTin { get; set; }
         public string? TrangThai { get; set; } //DAKYSO, CHUAKYSO
         //public string? Method { get; set; }
+        public DateTime? DateSingGiaoVien { get; set; }
+        public DateTime? DateSignLopTruong { get; set; }
+        public Guid? IdGiaoVien { get; set; }
+        public Guid? IdLopTruong { get; set; }
     }
 }

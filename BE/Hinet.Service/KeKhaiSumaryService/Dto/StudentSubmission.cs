@@ -18,6 +18,7 @@ namespace Hinet.Service.KeKhaiSumaryService.Dto
         public decimal? Progress { get; set; }
         public string StudentName { get; set; }
         public string StatusStr => this.Status == StatusConstant.GUIGIAOVIEN ? "Gửi giáo viên" : "Gửi lớp trưởng";
+        public Guid? IdDTTienTrinhXuLy { get; set; } 
 
     }
 }

@@ -7,6 +7,7 @@ import AutoBreadcrumb from "@/components/util-compenents/Breadcrumb";
 import { configFormService } from "@/services/ConfigForm/ConfigForm.service";
 import { configFormKeyService } from "@/services/configFormKey/configFormKey.service";
 import { soLieuKeKhaiService } from "@/services/SoLieuKeKhai/soLieuKeKhai.service";
+import { useSelector } from "@/store/hooks";
 import { ConfigFormKeyType } from "@/types/ConfigFormKey/ConfigFormKey";
 import { SoLieuKeKhaiType, SoLieuKeKhaiUserDto } from "@/types/SoLieuKeKhai/soLieuKeKhai";
 import { message } from "antd";
@@ -19,8 +20,11 @@ const KeKhaiDanhGia = () => {
     const id = params.id as string;
     const [htmlContent, setHtmlContent] = useState<string>("");
     const [fieldConfig, setFieldConfig] = useState<ConfigFormKeyType[]>([]);
+
+  const users = useSelector((state: any) => state.auth.users);
   const [ loading, setLoading ] = useState( false );
-  
+
+
   const [defaultValues, setDefaultValues] = useState<SoLieuKeKhaiUserDto[]>([]);
 
     const handleGetTemplate = useCallback(async () => {
@@ -111,7 +115,7 @@ const KeKhaiDanhGia = () => {
         boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
       }}
     >
-      <KySoInfo idBieuMau={id} idDTTienTrinhXuLy="" />
+      <KySoInfo idBieuMau={id} idDTTienTrinhXuLy="" isLopTruongOrGvhd={false} idUser={users?.id} />
 
 
       <div

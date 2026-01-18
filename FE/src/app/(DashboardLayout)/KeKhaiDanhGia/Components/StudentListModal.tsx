@@ -1,6 +1,7 @@
 "use client";
 
 import Loading from "@/components/effect-components/Loading";
+import KySoInfo from "@/components/signature/SisnatureInfo";
 import { RoleConstant } from "@/constants/RoleConstant";
 import { StatusConstant } from "@/constants/StatusConstant";
 import { keKhaiSummaryService } from "@/services/keKhaiSoLieu/KeKhaiSoLieuService.service";
@@ -15,7 +16,7 @@ import
         EyeOutlined,
         FileTextOutlined,
         UndoOutlined,
-        UserOutlined,
+        UserOutlined
     } from "@ant-design/icons";
 import { PdfJs, Viewer, Worker } from "@react-pdf-viewer/core";
 import { Button, message, Modal, Space, Spin, Table, Tag, Tooltip } from "antd";
@@ -34,6 +35,7 @@ interface StudentSubmission {
     note?: string;
     formId?: string;
     userId?: string;
+    idDTTienTrinhXuLy?: string;
 }
 
 interface StudentListModalProps {
@@ -258,6 +260,14 @@ const StudentListModal: React.FC<StudentListModalProps> = ({
                             />
                         </Tooltip>
                     )}
+                    {( ( roles.includes( RoleConstant.LOPTRUONG ) && record.status == StatusConstant.GUILOPTRUONG ) || (
+                        ( roles.includes(RoleConstant.GIAOVIEN) && record.status == StatusConstant.GUIGIAOVIEN)
+                    )) && (
+                        <Tooltip title="Ký số">
+                            <KySoInfo idBieuMau={record.formId!} idDTTienTrinhXuLy={record.idDTTienTrinhXuLy!} isLopTruongOrGvhd={roles.includes( RoleConstant.GIAOVIEN )
+                                || roles.includes(RoleConstant.LOPTRUONG)} idUser={record.userId} />
+                        </Tooltip>
+                     )}
                 </Space>
             ),
         },

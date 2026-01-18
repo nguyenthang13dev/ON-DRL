@@ -11,6 +11,7 @@ using Hinet.Service.Common;
 using Hinet.Service.Constant;
 using Hinet.Service.Core.Mapper;
 using Hinet.Service.Dto;
+using Hinet.Service.KeKhaiSumaryService;
 using Hinet.Service.KySoCauHinhService;
 using Hinet.Service.KySoCauHinhService.Dto;
 using Hinet.Service.KySoCauHinhService.ViewModels;
@@ -32,13 +33,15 @@ namespace Hinet.Controllers
         private readonly ILogger<KySoCauHinhController> _logger;
         private readonly IKySoInfoService _kySoInfoService;
         private readonly IAspNetUsersService _aspNetUsersService;
+        private readonly IKeKhaiSumaryService _keKhaiSumaryService;
         public KySoCauHinhController(
             IKySoCauHinhService kySoCauHinhService,
             ITaiLieuDinhKemService taiLieuDinhKemService,
             IMapper mapper,
             ILogger<KySoCauHinhController> logger,
             IKySoInfoService kySoInfoService,
-            IAspNetUsersService aspNetUsersService)
+            IAspNetUsersService aspNetUsersService,
+            IKeKhaiSumaryService keKhaiSumaryService)
         {
             this._kySoCauHinhService = kySoCauHinhService;
             this._taiLieuDinhKemService = taiLieuDinhKemService;
@@ -46,6 +49,7 @@ namespace Hinet.Controllers
             _logger = logger;
             _kySoInfoService = kySoInfoService;
             _aspNetUsersService = aspNetUsersService;
+            _keKhaiSumaryService = keKhaiSumaryService;
         }
 
         [HttpPost("Create")]
@@ -91,21 +95,36 @@ namespace Hinet.Controllers
 
 
         [HttpPost("Save")]
-        public async Task<DataResponse<KySoInfoDto>> Save([FromForm] KySoCauHinhSaveVM model)
+        public async Task<DataResponse<KySoInfoDto>> Save(bool IsLopTruongOrGvhd, [FromForm] KySoCauHinhSaveVM model)
         {
             try
             {
                 var appUser = await _aspNetUsersService.GetByIdAsync(UserId.Value);
-
-                var listCauHinh = _kySoCauHinhService
-                    .FindBy(x => x.IdBieuMau == model.IdBieuMau && x.IdDTTienTrinhXuLy == model.IdDTTienTrinhXuLy && x.appUser.Id == UserId.Value)
-                    .ToList();
+                List<KySoCauHinh> listCauHinh = new List<KySoCauHinh>();
+                if (IsLopTruongOrGvhd && model.IdUser != null)
+                {
+                    listCauHinh = _kySoCauHinhService
+                   .FindBy(x => x.IdBieuMau == model.IdBieuMau &&
+                       x.IdFileKySo == model.IdDTTienTrinhXuLy
+                       && ((IsLopTruong && x.IdLopTruong == UserId.Value) || (IsGV && x.IdGiaoVien == UserId.Value))
+                   )
+                   .ToList();
+                }
+                else
+                {
+                    listCauHinh = _kySoCauHinhService
+                   .FindBy(x => x.IdBieuMau == model.IdBieuMau &&
+                       x.IdFileKySo == model.IdDTTienTrinhXuLy
+                       && x.appUser.Id == UserId.Value
+                       && !IsLopTruongOrGvhd
+                   )
+                   .ToList();
+                }
                 //Xóa hết dữ liệu cũ
                 if (listCauHinh.Any())
                 {
                     await _kySoCauHinhService.DeleteAsync(listCauHinh);
                 }
-
                 // Deserialize và lưu listCauHinh
                 if (!string.IsNullOrEmpty(model.ListCauHinh))
                 {
@@ -116,12 +135,11 @@ namespace Hinet.Controllers
                         if (listCauHinhNew != null && listCauHinhNew.Any())
                         {
                             //var listCauHinhEntities = _mapper.Map<List<KySoCauHinhCreateVM>, List<KySoCauHinh>>(listCauHinhNew);
-
                             listCauHinhNew.ForEach(x =>
                             {
                                 x.appUser = appUser;
+                                x.IdFileKySo = model.IdDTTienTrinhXuLy;
                             });
-
                             await _kySoCauHinhService.CreateAsync(listCauHinhNew);
                         }
                     }
@@ -133,22 +151,41 @@ namespace Hinet.Controllers
                 }
                 if (model.File is { Length: > 0 })
                 {
-                    var uploadsFolder = Path.Combine("wwwroot", "uploads", "TAILIEU_KYSO", "FormTemplate", "Temp");
-                    if (!Directory.Exists(uploadsFolder))
+                    var folderKySo = Path.Combine("wwwroot", "uploads", "TAILIEU_KYSO", "FormTemplate", "Data");
+                    // Tạo folder ký số
+                    if (!Directory.Exists(folderKySo))
                     {
-                        Directory.CreateDirectory(uploadsFolder);
+                        Directory.CreateDirectory(folderKySo);
                     }
-
-                    var filePath = Path.Combine(uploadsFolder, model.File.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    var fileNameKySo = $"{model.File.FileName.Substring(0, model.File.FileName.LastIndexOf("."))}{UserId.Value}_{DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss")}.{model.File.FileName.Substring(model.File.FileName.LastIndexOf(".") +  1)}" ;
+                    var filePathKySo = Path.Combine(folderKySo, fileNameKySo);
+                    using (var stream = new FileStream(filePathKySo, FileMode.Create))
                     {
                         await model.File.CopyToAsync(stream);
                     }
-                    var kySoInfo = _kySoInfoService.FindBy(x => x.IdDoiTuong == model.IdBieuMau && x.UserId == UserId.Value).FirstOrDefault();
+                    var kySoInfo = new KySoInfo();
+
+                    if (!IsLopTruongOrGvhd)
+                    {
+                        kySoInfo = _kySoInfoService.FindBy(x => x.IdDoiTuong == model.IdBieuMau && x.UserId == UserId.Value).FirstOrDefault();
+                    } else
+                    {
+                        kySoInfo = _kySoInfoService.FindBy(x => x.IdDoiTuong == model.IdBieuMau && x.UserId == model.IdUser && x.TrangThai == TrangThaiKySoConstant.DAKYSO).FirstOrDefault();
+                    }
                     if (kySoInfo != null)
                     {
                         //UploadFileHelper.RemoveFile(kySoInfo.DuongDanFileTemp);
-                        kySoInfo.DuongDanFileTemp = Path.Combine("TAILIEU_KYSO", "FormTemplate", "Temp", model.File.FileName);
+                        kySoInfo.DuongDanFileTemp = Path.Combine("TAILIEU_KYSO", "FormTemplate", "Data", fileNameKySo);
+                        if (IsLopTruongOrGvhd && IsLopTruong)
+                        {
+                            kySoInfo.DateSignLopTruong = DateTime.Now ;
+                            kySoInfo.IdLopTruong = UserId.Value;
+                        }
+                        if (IsLopTruongOrGvhd && IsGV)
+                        {
+                            kySoInfo.DateSignLopTruong = DateTime.Now;
+                            kySoInfo.IdGiaoVien = UserId.Value;
+                        }
                         await _kySoInfoService.UpdateAsync(kySoInfo);
                     }
                     else
@@ -158,12 +195,19 @@ namespace Hinet.Controllers
                             UserId = UserId.GetValueOrDefault(),
                             IdDoiTuong = model.IdBieuMau,
                             ThongTin = model.IdDTTienTrinhXuLy.ToString(),
-                            DuongDanFileTemp = Path.Combine("TAILIEU_KYSO", "FormTemplate", "Temp", model.File.FileName),
+                            DuongDanFileTemp = Path.Combine("TAILIEU_KYSO", "FormTemplate", "Data", fileNameKySo),
                             LoaiDoiTuong = nameof(FormTemplate),
                             TrangThai = TrangThaiKySoConstant.CHUAKYSO,
                         };
                         await _kySoInfoService.CreateAsync(kySoInfo);
                     }
+
+                    if (!IsLopTruongOrGvhd)
+                    {
+                        _keKhaiSumaryService.UpdateIdKySoInfor(model.IdBieuMau.Value, UserId.Value);
+                    }
+
+
                     //
                     var entity = _mapper.Map<KySoInfo, KySoInfoDto>(kySoInfo);
                     if (!string.IsNullOrEmpty(entity.DuongDanFile))
@@ -173,10 +217,14 @@ namespace Hinet.Controllers
                     return DataResponse<KySoInfoDto>.Success(entity);
                 }
                 ;
+
+
+
+
                 return DataResponse<KySoInfoDto>.False("Không có tệp tin nào được tải lên.");
             }
             catch (Exception ex)
-            {
+            {        
                 _logger.LogError(ex, "Lỗi khi lưu cấu hình", model.IdBieuMau, model.IdDTTienTrinhXuLy);
                 return DataResponse<KySoInfoDto>.False("Đã xảy ra lỗi");
             }
@@ -475,7 +523,7 @@ namespace Hinet.Controllers
                 }
 
                 // 
-                var listKySoCauHinh = _kySoCauHinhService.GetQueryable().Where(t => t.IdBieuMau == Id && t.UpdatedId == UserId.Value).ToList();
+                var listKySoCauHinh = _kySoCauHinhService.GetQueryable().Where(t => t.IdBieuMau == Id && t.appUser.Id == UserId.Value).ToList();
                 // Update =
                 if (listKySoCauHinh.Any())
                 {

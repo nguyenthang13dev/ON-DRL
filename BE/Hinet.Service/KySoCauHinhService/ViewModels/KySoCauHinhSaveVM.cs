@@ -7,6 +7,7 @@ namespace Hinet.Service.KySoCauHinhService.ViewModels
     {
         public Guid? IdBieuMau { get; set; }
         public Guid? IdDTTienTrinhXuLy { get; set; }
+        public Guid? IdUser { get; set; }
         public string? ListCauHinh { get; set; }
         public IFormFile? File { get; set; }
     }

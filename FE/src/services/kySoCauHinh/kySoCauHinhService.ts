@@ -1,17 +1,19 @@
 import { apiService } from "@/services";
-import {
-  DataToSend,
-  Dictionary,
-  DropdownOption,
-  Response,
-  ResponsePageList,
-} from "@/types/general";
+import
+  {
+    DataToSend,
+    Dictionary,
+    DropdownOption,
+    Response,
+    ResponsePageList,
+  } from "@/types/general";
 import { ChuKyType } from "@/types/kySoCauHinh/chuKy";
-import {
-  KySoCauHinhCreateOrUpdateType,
-  KySoCauHinhSearchType,
-  KySoCauHinhType,
-} from "@/types/kySoCauHinh/kySoCauHinh";
+import
+  {
+    KySoCauHinhCreateOrUpdateType,
+    KySoCauHinhSearchType,
+    KySoCauHinhType,
+  } from "@/types/kySoCauHinh/kySoCauHinh";
 
 class KySoCauHinhService {
   private static _instance: KySoCauHinhService;
@@ -108,9 +110,9 @@ class KySoCauHinhService {
   }
 
   //Lưu hoặc tạo mới
-  public async save(formData: FormData): Promise<Response> {
+  public async save(formData: FormData, IsLopTruongOrGvhd: boolean): Promise<Response> {
     const response = await apiService.post<Response>(
-      "/kySoCauHinh/save",
+      `/kySoCauHinh/save?IsLopTruongOrGvhd=${IsLopTruongOrGvhd}`,
       formData
     );
     return response.data;

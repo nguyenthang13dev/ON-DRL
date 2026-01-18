@@ -12,11 +12,11 @@ namespace Hinet.Model.MongoEntities
     {
         public ConfigForm? FormCf { get; set; }
         public AppUser? AppUser { get; set; }
-
         public Guid FormId { get; set; }
         public Guid UserId { get; set; }
         public bool IsDanhGia { get; set; }
         public int Status { get; set; }
         public decimal? Processs { get; set; }
+        public Guid? KySoInforId { get; set; }
     }
 }
